@@ -291,9 +291,11 @@ python -B skills/motor-td3-serial-tuning/scripts/thermal_can.py --log examples/t
 
 **Codex 能分析 TD3 的训练及独立评估结果，也能管理 MCU 部署、烧录回读和板端数据分析。** 本次实测说明它能识别“原始 ADC 正常，但缺少安培标定，因此热预算不可用”的原因。当前 Flash 中部署的是禁止运动的诊断固件；TD3 Actor 的 MCU RAM 推理已在此前验证，真实电机闭环策略尚未批准部署。
 
-新增专用 Flash/prepare/run/finish 入口，17 项软件检查通过；只允许固定镜像，CAN 只发 HELLO/STOP，先暂停板子再释放适配器，失败不自动重试。断电验证没有证明实际过流或热阈值，保护所需的电流及热依据仍待取得。
+随后真实 24V/3A、500 kbit/s CAN 采集取得 **3.063 秒、29 组完整连续热快照**，CRC/会话/序号审计通过；全部说明电流标定、热限值和初始热状态缺失，预算保持 `null`。主机发送 61 次 STOP 心跳，暂停时板端接受序号 60，看门狗与 IRQ 故障为 0。用户断电后再次核验完整镜像并复位暂停，PWM 关闭。
 
-[板上验证记录](docs/thermal-board-validation.md) · [真实烧录摘要](examples/stm32g431-thermal-diagnostic/flash-summary.json) · [复用操作流程](skills/motor-td3-serial-tuning/references/thermal-board-diagnostic.md)
+专用 Flash/prepare/run/finish 入口的 **19 项软件检查通过**；只允许固定镜像，CAN 只发 HELLO/STOP，先暂停板子再释放适配器，失败不自动重试。初次遗漏主机依赖路径，在恢复核心运行前被拦截；已增加准备会话前的依赖检查。实测没有证明实际过流或热阈值，保护所需的电流及热依据仍待取得。
+
+[板上验证记录](docs/thermal-board-validation.md) · [真实烧录摘要](examples/stm32g431-thermal-diagnostic/flash-summary.json) · [真实 CAN 分析](examples/stm32g431-thermal-diagnostic/can-summary.json) · [复用操作流程](skills/motor-td3-serial-tuning/references/thermal-board-diagnostic.md)
 
 ## 组成
 

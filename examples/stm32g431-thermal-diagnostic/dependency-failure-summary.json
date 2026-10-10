@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "verified": false,
+  "scope": "bounded real CAN fixed thermal rejection diagnostic",
+  "hardware_executed": true,
+  "firmware_id": "g431-speedloop-heat-can-v1",
+  "bin_sha256": "69909f289ae5f5bd0f1d4b7fbe888f08f6d2cd3ddc389b363fa99374ca8f9856",
+  "flash_programming": false,
+  "motor_start_requested": false,
+  "gains_applied": false,
+  "td3_experiences": 0,
+  "thermal_protection_verified": false,
+  "preflight_state": {
+    "watchdog": {
+      "magic": 1396987697,
+      "active": 1,
+      "fault": 0,
+      "feeds": 30,
+      "main_count": 36834,
+      "tick_count": 301,
+      "adc_count": 30,
+      "link_armed": 0,
+      "link_seq": 0,
+      "last_feed_ms": 299,
+      "now_ms": 301,
+      "reset_flags": 0,
+      "boot_latched": 0,
+      "irq_fault": 0
+    },
+    "thermal": {
+      "feed_fault": "calibration",
+      "thermal_fault": "config",
+      "current_calibrated": false,
+      "thermal_limits_verified": false,
+      "initial_heat_known": false,
+      "valid_windows": 0,
+      "heat_budget_a2s": [
+        null,
+        null,
+        null
+      ],
+      "motion_approved": false
+    },
+    "pwm_registers": {
+      "0x40012C00": 288,
+      "0x40012C20": 0,
+      "0x40012C44": 33697912
+    }
+  },
+  "error": "No module named 'can'",
+  "held_state": {
+    "watchdog": {
+      "magic": 1396987697,
+      "active": 1,
+      "fault": 0,
+      "feeds": 30,
+      "main_count": 36834,
+      "tick_count": 301,
+      "adc_count": 30,
+      "link_armed": 0,
+      "link_seq": 0,
+      "last_feed_ms": 299,
+      "now_ms": 301,
+      "reset_flags": 0,
+      "boot_latched": 0,
+      "irq_fault": 0
+    },
+    "thermal": {
+      "feed_fault": "calibration",
+      "thermal_fault": "config",
+      "current_calibrated": false,
+      "thermal_limits_verified": false,
+      "initial_heat_known": false,
+      "valid_windows": 0,
+      "heat_budget_a2s": [
+        null,
+        null,
+        null
+      ],
+      "motion_approved": false
+    },
+    "pwm_registers": {
+      "0x40012C00": 288,
+      "0x40012C20": 0,
+      "0x40012C44": 33697912
+    }
+  },
+  "core_left_halted": true,
+  "halted_before_adapter_release": true,
+  "core_resumed": false,
+  "can_channel_initialized": false,
+  "can_commands_sent": 0,
+  "private_source_sha256": "9d5a459780854a70a22532afecc813d6edf21b99946b50f92d98de1fe5ed4fcd"
+}

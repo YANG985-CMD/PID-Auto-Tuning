@@ -1,0 +1,169 @@
+{
+  "schema_version": 1,
+  "verified": true,
+  "scope": "bounded real CAN fixed thermal rejection diagnostic",
+  "hardware_executed": true,
+  "firmware_id": "g431-speedloop-heat-can-v1",
+  "bin_sha256": "69909f289ae5f5bd0f1d4b7fbe888f08f6d2cd3ddc389b363fa99374ca8f9856",
+  "flash_programming": false,
+  "motor_start_requested": false,
+  "gains_applied": false,
+  "td3_experiences": 0,
+  "thermal_protection_verified": false,
+  "preflight_state": {
+    "watchdog": {
+      "magic": 1396987697,
+      "active": 1,
+      "fault": 0,
+      "feeds": 30,
+      "main_count": 36764,
+      "tick_count": 300,
+      "adc_count": 30,
+      "link_armed": 0,
+      "link_seq": 0,
+      "last_feed_ms": 299,
+      "now_ms": 300,
+      "reset_flags": 0,
+      "boot_latched": 0,
+      "irq_fault": 0
+    },
+    "thermal": {
+      "feed_fault": "calibration",
+      "thermal_fault": "config",
+      "current_calibrated": false,
+      "thermal_limits_verified": false,
+      "initial_heat_known": false,
+      "valid_windows": 0,
+      "heat_budget_a2s": [
+        null,
+        null,
+        null
+      ],
+      "motion_approved": false
+    },
+    "pwm_registers": {
+      "0x40012C00": 288,
+      "0x40012C20": 0,
+      "0x40012C44": 33697912
+    }
+  },
+  "capture_duration_s": 3.0630000000819564,
+  "held_state": {
+    "watchdog": {
+      "magic": 1396987697,
+      "active": 1,
+      "fault": 0,
+      "feeds": 409,
+      "main_count": 424563,
+      "tick_count": 4092,
+      "adc_count": 409,
+      "link_armed": 1,
+      "link_seq": 60,
+      "last_feed_ms": 4089,
+      "now_ms": 4092,
+      "reset_flags": 0,
+      "boot_latched": 0,
+      "irq_fault": 0
+    },
+    "thermal": {
+      "feed_fault": "calibration",
+      "thermal_fault": "config",
+      "current_calibrated": false,
+      "thermal_limits_verified": false,
+      "initial_heat_known": false,
+      "valid_windows": 0,
+      "heat_budget_a2s": [
+        null,
+        null,
+        null
+      ],
+      "motion_approved": false
+    },
+    "pwm_registers": {
+      "0x40012C00": 288,
+      "0x40012C20": 0,
+      "0x40012C44": 33697912
+    }
+  },
+  "core_left_halted": true,
+  "halted_before_adapter_release": true,
+  "stop_heartbeats_sent": 61,
+  "tx_frames": 565,
+  "thermal_can_audit": {
+    "schema_version": 1,
+    "scope": "offline locked thermal CAN diagnostic audit",
+    "passed": true,
+    "snapshots": 29,
+    "errors": [],
+    "fault_counts": {
+      "calibration/config": 29
+    },
+    "latest": {
+      "protocol_id": "motor-td3-thermal-diagnostic-v1",
+      "snapshot_seq": 29,
+      "capture_us": 3413000,
+      "flags": 256,
+      "calibrated": false,
+      "limits_verified": false,
+      "initial_heat_known": false,
+      "sample_seq": 0,
+      "sample_capture_us": null,
+      "window_seq": 0,
+      "window_end_us": null,
+      "sample_fresh_at_capture": false,
+      "window_fresh_at_capture": false,
+      "used_a2s": [
+        null,
+        null,
+        null
+      ],
+      "budget_a2s": [
+        null,
+        null,
+        null
+      ],
+      "phase_load": [
+        null,
+        null,
+        null
+      ],
+      "energized_us": null,
+      "stalled_us": null,
+      "sample_period_us": null,
+      "max_age_us": null,
+      "window_us": null,
+      "feed_fault_code": 2,
+      "feed_fault": "calibration",
+      "thermal_fault_code": 1,
+      "thermal_fault": "config",
+      "block_reasons": [
+        "电流增益未标定",
+        "热保护边界未验证",
+        "初始热状态未知",
+        "没有有效的校准电流采样",
+        "尚无完整热预算窗口",
+        "采样接入故障：calibration",
+        "热保护故障：config"
+      ],
+      "motion_inhibited": true,
+      "motion_approved": false,
+      "training_telemetry": false,
+      "temperature_c": null,
+      "assembly_elapsed_us": 0
+    },
+    "hardware_accessed": false,
+    "live_freshness_verified": false,
+    "motion_approved": false,
+    "training_telemetry": false,
+    "thermal_protection_verified": false
+  },
+  "complete_heat_snapshots": 29,
+  "adapter_released": true,
+  "public_redactions": [
+    "nonce",
+    "boot_id",
+    "host_monotonic_s"
+  ],
+  "raw_can_log_sha256": "8bea4c9a3f33f1e10da3418f07ba08057d0e738ad1df677adc18edb558ad8399",
+  "private_source_sha256": "2578a7c66bbfcc228c207345d9444dfc9fb81ee0de54d81732678ca4b86e9c47"
+}

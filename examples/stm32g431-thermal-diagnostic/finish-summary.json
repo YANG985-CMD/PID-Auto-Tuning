@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "verified": true,
+  "scope": "power-off session retirement",
+  "firmware_id": "g431-speedloop-heat-can-v1",
+  "core_left_halted": true,
+  "pwm_registers": {
+    "0x40012C00": 0,
+    "0x40012C20": 0,
+    "0x40012C44": 0
+  },
+  "debug_freeze_restored": true,
+  "motion_approved": false,
+  "option_unchanged": true,
+  "hardware_executed": true,
+  "power_disconnected_confirmed_by_user": true,
+  "private_source_sha256": "62de984af67b3ee06e54f990eeffa53c5e89f6facb70337bb6be570443e6b237"
+}

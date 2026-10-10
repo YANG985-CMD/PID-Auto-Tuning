@@ -6,6 +6,7 @@ confirmation. Sole CAN worker sends only HELLO/STOP; no gain or start path.
 """
 import argparse
 import hashlib
+import importlib
 import json
 import os
 from pathlib import Path
@@ -39,6 +40,19 @@ WORKER_LIMIT_SECONDS=8.0
 
 
 def sha(data): return hashlib.sha256(data).hexdigest()
+
+
+def check_can_dependencies():
+    """Load the package/driver only; never initialize or open a CAN channel."""
+    try:
+        package=importlib.import_module('can')
+        basic=importlib.import_module('can.interfaces.pcan.basic')
+        basic.PCANBasic()  # Loads PCANBasic.dll, without Initialize/SetValue.
+    except (ImportError,OSError) as exc:
+        raise ValueError('CAN dependency unavailable; configure requirements-can.txt in this Python '
+                         'environment/PYTHONPATH before preparing or consuming a session: '+str(exc)) from exc
+    return dict(python_can_version=package.__version__,driver_library_loaded=True,
+                can_channel_opened=False,probe_accessed=False)
 
 
 def validate(m, binary, hex_data):
@@ -203,6 +217,7 @@ def flash(a):
 
 def prepare(a):
     if not a.power_stage_disconnected: raise ValueError('Current physical power disconnection required before prepare/reset')
+    check_can_dependencies()
     load_build(a.build);out=fresh(a.output)
     s=dict(schema_version=1,firmware_id=IDENTITY,build=str(Path(a.build).resolve()),pyocd=a.pyocd,
            uid=a.uid,prepared=False,boot=secrets.randbits(64) or 1)
@@ -314,6 +329,7 @@ def load_session(path,require_fresh=False):
 def run(a):
     if not a.allow_live or not a.board_power_confirmed:
         raise ValueError('Current board-power confirmation and diagnostic authorization required before access')
+    check_can_dependencies()
     path,s=load_session(a.session,True)
     # Exclusive one-use claim before probe/CAN access; never remove or rearm it.
     with path.with_name('run-used-private.json').open('x',encoding='utf-8') as marker:
@@ -390,6 +406,7 @@ def finish(a):
 def main():
     p=argparse.ArgumentParser(description=__doc__);sub=p.add_subparsers(dest='mode',required=True)
     check=sub.add_parser('validate');check.add_argument('--build',required=True)
+    sub.add_parser('dependencies')
     for mode in ('flash','prepare'):
         q=sub.add_parser(mode)
         for name in ('build','output','pyocd','uid'): q.add_argument('--'+name,required=True)
@@ -405,6 +422,7 @@ def main():
     a=p.parse_args()
     if a.mode=='validate':
         load_build(a.build);r=dict(verified=True,scope='offline exact-image/source/Arm ABI check',hardware_accessed=False)
+    elif a.mode=='dependencies': r=dict(verified=True,**check_can_dependencies())
     else: r=globals()[a.mode](a)
     print(json.dumps(r,indent=2,ensure_ascii=False,allow_nan=False))
     if r.get('verified',r.get('prepared')) is not True: raise SystemExit(1)

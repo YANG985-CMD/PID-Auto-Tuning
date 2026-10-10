@@ -1,4 +1,4 @@
-# 热诊断固定镜像的断电上板验证
+# 热诊断固定镜像的上板与真实 CAN 验证
 
 日期：2026-10-11。用户确认 24V 物理断开、USB/STLink 与 CAN 保持连接后，Codex 将禁止运动热诊断镜像写入 STM32G431 Flash，完成全量回读与缺失校准状态检查。没有发送电机启动或增益命令。
 
@@ -16,7 +16,7 @@
 | 输出 | 运行快照及收尾均 `CEN=0、CCER=0、MOE=0` |
 | 收尾 | reset halt，恢复冻结配置，选项字节未变 |
 
-证据：[真实断电烧录与状态](../examples/stm32g431-thermal-diagnostic/flash-summary.json)、[17 项入口及收尾软件检查](../examples/stm32g431-thermal-diagnostic/entry-tests-summary.json)、[目标构建](../examples/thermal-can/build-summary.json)。软件检查使用替身，没有接触硬件；真实 Flash 记录另行标为 `hardware_executed=true`。
+证据：[真实断电烧录与状态](../examples/stm32g431-thermal-diagnostic/flash-summary.json)、[19 项入口及收尾软件检查](../examples/stm32g431-thermal-diagnostic/entry-tests-summary.json)、[目标构建](../examples/thermal-can/build-summary.json)。软件检查使用替身，没有接触硬件；真实 Flash 记录另行标为 `hardware_executed=true`。
 
 编译器检查热接入结构体为 296 B，所有诊断读取位置与本镜像符号/Arm `offsetof` 一致。布局审计对象没有链接进 MCU，固件二进制与此前离线版本完全一致。镜像 SHA256：`69909f289ae5f5bd0f1d4b7fbe888f08f6d2cd3ddc389b363fa99374ca8f9856`。
 
@@ -30,7 +30,30 @@ Codex 完成源码/镜像核验、编译布局检查、设备识别、备份、�
 
 专用入口先在断电状态 prepare，运行约 300ms 后核对同一拒绝状态、暂停核心并生成一次性会话。用户确认板端供电后才运行约 3 秒 HELLO/STOP 采集。收尾先确认核心暂停/PWM 关闭，后停止线程和释放 PCAN。带电时不 reset。
 
-当前已完成断电烧录和准备；真实热 CAN 采集须另记实测结果，不能引用合成日志作为板端证据。复现见 [专用流程](../skills/motor-td3-serial-tuning/references/thermal-board-diagnostic.md)。
+用户确认 24V/3A 已接通后，真实 500 kbit/s CAN 采集通过：
+
+| 检查 | 实测结果 |
+|---|---|
+| 主采集时长 | 3.063 秒 |
+| 完整热快照 | 29 组，序号 1～29 连续，CRC/会话检查通过 |
+| 拒绝原因 | 全部 `calibration/config`；校准、限值、初始热状态均缺失 |
+| 三相预算与累计时间 | 全部未知，保留 `null` |
+| STOP 心跳 | 主机发送 61 次；暂停时 MCU 接受序号 60 |
+| 暂停时采样/喂狗 | 均 409 次；看门狗、IRQ、采样错误为 0 |
+| CAN 收尾 | 先确认核心暂停及 PWM 禁能，再停止线程/释放适配器 |
+| 用户断电后收尾 | 完整镜像核验、reset halt、恢复调试冻结，选项字节未变 |
+
+主采集在完整热包结束；用于暂停和收尾的尾帧单独记录，不将尾部半包并入完整快照分析。61 次发送与 MCU 接受 60 次不等同于丢失热快照：暂停之后发送的 STOP 不再由核心执行。统计不代表运动保护执行时间。
+
+[真实 CAN 摘要](../examples/stm32g431-thermal-diagnostic/can-summary.json)及[断电收尾](../examples/stm32g431-thermal-diagnostic/finish-summary.json)标明实际硬件执行。嵌套的日志审计仍是离线分析，不能把其 `passed` 当作保护阈值验收。nonce、boot token 和主机时钟已从公开摘要移除，原始日志不上传。
+
+复现见 [专用流程](../skills/motor-td3-serial-tuning/references/thermal-board-diagnostic.md)。
+
+## 初次未开始采集的原因及修正
+
+首次尝试在恢复核心运行之前发现 `No module named 'can'`，未初始化 CAN、未发送命令，核心仍暂停。此前已有 python-can 4.6.1，但此次调用遗漏了独立依赖目录的 `PYTHONPATH`。该失败没有重用一次性会话；用户断电后清理旧会话，再建立新会话。
+
+已新增 `dependencies` 库加载检查，并提前到 `prepare/run` 的板子访问及会话使用登记之前。新增两项软件检查验证缺失依赖时不访问板子、不消耗会话。库加载和软件检查通过后才进行上述真实采集。[失败摘要](../examples/stm32g431-thermal-diagnostic/dependency-failure-summary.json)一并保留。
 
 ## 结论范围
 

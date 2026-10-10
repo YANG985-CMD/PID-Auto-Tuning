@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "tests": 17,
+  "tests": 19,
   "passed": true,
   "failures": 0,
   "errors": 0,
@@ -9,8 +9,9 @@
   "thermal_protection_verified": false,
   "motion_approved": false,
   "sources_sha256": {
-    "thermal_diagnostic.py": "3d12c88bf636d5f03b0211d277abef3f811da483b02b7f070b8738579a28bea6",
-    "test_thermal_diagnostic.py": "eed1a55a54b15c185a72fcd48496f605e5a1b20819e0a91f9e6a6467598423ab",
+    "thermal_diagnostic.py": "680287fa34007551f812b83d99b6f54ea8c5369717352ba7bd7dd516d299db5f",
+    "test_thermal_diagnostic.py": "1bcb3d1aa62ecb7bd870603a190827791971e62d1727173dd8565e094c4288ce",
     "build_speedloop_diagnostic.py": "e7d7e907f714a69fc8f68f2a546a2be1f2e321cb971e6febca2f090686fd117c"
-  }
+  },
+  "private_source_sha256": "000a27d1cd3af913c8ec4ad1e068e1fc671270c9ace1d5baf8feba8038461922"
 }

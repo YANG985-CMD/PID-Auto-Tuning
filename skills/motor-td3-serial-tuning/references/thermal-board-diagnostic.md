@@ -16,8 +16,11 @@
 
 必须依据现场最新供电状态执行，命令行开关不能代替用户确认。所有私有构建、日志和一次性会话须在 `E:\simulink\_codex_tmp\` 的独立任务目录；每个输出子目录必须不存在。
 
+先在实际运行的 Python 环境配置 `scripts/requirements-can.txt` 和 PCANBasic 驱动；使用独立依赖目录时，必须在每次调用中设置该环境的 `PYTHONPATH`。下面的 `dependencies` 只加载库，不初始化 CAN 通道、不访问 STLink。`prepare` 与 `run` 也会先检查依赖，缺失时不复位板子、不消耗会话；通过库加载检查后，通道占用或驱动故障仍可能使真实初始化失败。
+
 ```text
 python -B skills/motor-td3-serial-tuning/scripts/thermal_diagnostic.py validate --build TASK_TEMP_BUILD
+python -B skills/motor-td3-serial-tuning/scripts/thermal_diagnostic.py dependencies
 python -B skills/motor-td3-serial-tuning/scripts/test_thermal_diagnostic.py --output TASK_TEMP_TEST
 ```
 

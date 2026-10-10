@@ -95,6 +95,18 @@ class EntryTests(unittest.TestCase):
     def test_unknown_image_or_changed_hex_rejected(self):
         for binary,hex_data in ((b'wrong',b'wrong'),(fake_image(),b'wrong')):
             with self.assertRaises(ValueError): d.validate(manifest(),binary,hex_data)
+    def test_missing_can_dependency_precedes_prepare_probe_and_files(self):
+        with patch.object(d,'check_can_dependencies',side_effect=ValueError('missing library')), \
+             patch.object(d,'load_build',side_effect=AssertionError('file access')), \
+             patch.object(d,'debug',side_effect=AssertionError('probe access')):
+            with self.assertRaisesRegex(ValueError,'missing library'):
+                d.prepare(SimpleNamespace(power_stage_disconnected=True))
+    def test_missing_dependency_does_not_consume_run_session(self):
+        with patch.object(d,'check_can_dependencies',side_effect=ValueError('missing library')), \
+             patch.object(d,'load_session',side_effect=AssertionError('session access')), \
+             patch.object(d.wire,'PcanLink',side_effect=AssertionError('CAN access')):
+            with self.assertRaisesRegex(ValueError,'missing library'):
+                d.run(SimpleNamespace(allow_live=True,board_power_confirmed=True))
     def test_contract_source_offsets_and_symbols_cannot_be_changed(self):
         binary=fake_image();hex_data=b'fake hex'
         actual=d.sha
@@ -161,6 +173,7 @@ class EntryTests(unittest.TestCase):
         path=OUT/'used-session-private.json';s=dict(boot=BOOT)
         path.with_name('run-used-private.json').write_text('{}')
         with patch.object(d,'load_session',return_value=(path,s)), \
+             patch.object(d,'check_can_dependencies'), \
              patch.object(d,'checked_image',side_effect=AssertionError('probe re-opened')):
             with self.assertRaises(FileExistsError):
                 d.run(SimpleNamespace(allow_live=True,board_power_confirmed=True,session=str(path)))
@@ -227,6 +240,7 @@ class EntryTests(unittest.TestCase):
             if audit_error: raise ValueError('injected audit failure')
             return dict(passed=True),[{}]*30
         with patch.object(d,'load_session',return_value=(path,s)),patch.object(d,'checked_image'), \
+             patch.object(d,'check_can_dependencies'), \
              patch.object(d,'debug',side_effect=debug),patch.object(d,'read_state',return_value={}), \
              patch.object(d.wire,'PcanLink',FakeLink),patch.object(d,'Worker',FakeWorker), \
              patch.object(d.threading,'Thread',FakeThread),patch.object(d.heat,'audit',side_effect=audit):
