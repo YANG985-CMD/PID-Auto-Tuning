@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "verified": true,
+  "scope": "power-off fixed thermal diagnostic Flash and boot check",
+  "hardware_executed": true,
+  "flash_programming": true,
+  "firmware_id": "g431-speedloop-heat-can-v1",
+  "bin_sha256": "69909f289ae5f5bd0f1d4b7fbe888f08f6d2cd3ddc389b363fa99374ca8f9856",
+  "motor_start_requested": false,
+  "gains_applied": false,
+  "thermal_protection_verified": false,
+  "full_image_download_compare": true,
+  "watchdog_unfrozen_during_execution": true,
+  "board_state": {
+    "watchdog": {
+      "magic": 1396987697,
+      "active": 1,
+      "fault": 0,
+      "feeds": 60,
+      "main_count": 74598,
+      "tick_count": 600,
+      "adc_count": 60,
+      "link_armed": 0,
+      "link_seq": 0,
+      "last_feed_ms": 599,
+      "now_ms": 600,
+      "reset_flags": 0,
+      "boot_latched": 0,
+      "irq_fault": 0
+    },
+    "thermal": {
+      "feed_fault": "calibration",
+      "thermal_fault": "config",
+      "current_calibrated": false,
+      "thermal_limits_verified": false,
+      "initial_heat_known": false,
+      "valid_windows": 0,
+      "heat_budget_a2s": [
+        null,
+        null,
+        null
+      ],
+      "motion_approved": false
+    },
+    "pwm_registers": {
+      "0x40012C00": 288,
+      "0x40012C20": 0,
+      "0x40012C44": 33697912
+    }
+  },
+  "final_pwm_registers": {
+    "0x40012C00": 0,
+    "0x40012C20": 0,
+    "0x40012C44": 0
+  },
+  "core_left_halted": true,
+  "option_unchanged": true,
+  "debug_freeze_restored": true,
+  "final_full_image_compare": true
+}

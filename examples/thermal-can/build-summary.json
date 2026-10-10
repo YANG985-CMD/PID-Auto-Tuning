@@ -67,5 +67,17 @@
     "text": 43560,
     "data": 20,
     "bss": 8704
+  },
+  "thermal_state_layout": {
+    "size": 296,
+    "guard_fault": 144,
+    "guard_configured": 152,
+    "seed_known": 156,
+    "has_window": 148,
+    "calibrated": 204,
+    "initialized": 272,
+    "fault": 276,
+    "period_us": 264,
+    "sample_sequence": 240
   }
 }

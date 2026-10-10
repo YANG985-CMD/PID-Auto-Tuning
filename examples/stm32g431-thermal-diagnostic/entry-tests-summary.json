@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "tests": 17,
+  "passed": true,
+  "failures": 0,
+  "errors": 0,
+  "scope": "hardware entry/worker checks with software substitutes",
+  "hardware_accessed": false,
+  "thermal_protection_verified": false,
+  "motion_approved": false,
+  "sources_sha256": {
+    "thermal_diagnostic.py": "3d12c88bf636d5f03b0211d277abef3f811da483b02b7f070b8738579a28bea6",
+    "test_thermal_diagnostic.py": "eed1a55a54b15c185a72fcd48496f605e5a1b20819e0a91f9e6a6467598423ab",
+    "build_speedloop_diagnostic.py": "e7d7e907f714a69fc8f68f2a546a2be1f2e321cb971e6febca2f090686fd117c"
+  }
+}

@@ -331,6 +331,26 @@ def build(args):
     if sp!=0x20008000 or not (entry&1 and 0x08000000<=entry<0x08020000) or len(blob)>0x20000:
         raise ValueError('Image vectors/size outside G431 128KB/32KB map')
     size=run([tool('size'),elf]).strip()
+    layout=None
+    if thermal_audit:
+        # Measure the actual Arm ABI separately; never link this audit object.
+        fields={'size':'sizeof(motor_td3_thermal_feed)',
+            'guard_fault':'offsetof(motor_td3_thermal_feed,guard)+offsetof(motor_td3_thermal,fault)',
+            'guard_configured':'offsetof(motor_td3_thermal_feed,guard)+offsetof(motor_td3_thermal,configured)',
+            'seed_known':'offsetof(motor_td3_thermal_feed,guard)+offsetof(motor_td3_thermal,seed_known)',
+            'has_window':'offsetof(motor_td3_thermal_feed,guard)+offsetof(motor_td3_thermal,has_window)',
+            'calibrated':'offsetof(motor_td3_thermal_feed,calibration)+offsetof(motor_td3_current_calibration,calibrated)',
+            'initialized':'offsetof(motor_td3_thermal_feed,initialized)',
+            'fault':'offsetof(motor_td3_thermal_feed,fault)',
+            'period_us':'offsetof(motor_td3_thermal_feed,period_us)',
+            'sample_sequence':'offsetof(motor_td3_thermal_feed,sample_sequence)'}
+        src=out/'thermal-layout.c';obj=out/'thermal-layout.o';raw=out/'thermal-layout-private.bin'
+        src.write_text('#include <stddef.h>\n#include "motor_td3_thermal_feed.h"\n'
+            'const unsigned int td3_heat_layout[] __attribute__((used,section(".td3_layout")))={'
+            +','.join(fields.values())+'};\n',encoding='ascii')
+        run([tool('gcc'),*flags,*['-I'+str(d) for d in includes],'-c',src,'-o',obj])
+        run([tool('objcopy'),'-O','binary','--only-section=.td3_layout',obj,raw])
+        layout=dict(zip(fields,struct.unpack('<'+len(fields)*'I',raw.read_bytes())))
     if inventory(source)!=before: raise RuntimeError('Private source changed during build')
     summary=dict(schema_version=1,mode=MODE,firmware_id=THERMAL_ID if thermal_audit else ('g431-speedloop-wdog-v1' if watchdog else 'g431-speedloop-diag-v1'),
         compiler=version,translation_units=len(sources),source_files_unchanged=True,source_files_checked=len(before),
@@ -348,6 +368,7 @@ def build(args):
         thermal_can_diagnostic_id='0x626' if thermal_audit else None,
         thermal_can_snapshot_bytes=144 if thermal_audit else None,
         thermal_can_training_telemetry=False,
+        thermal_state_layout=layout,
         heartbeat='validated STOP, 200ms deadline; no start/gains' if watchdog else None,
         can_tx_completion='one outstanding request; Tx event; auto retransmission; 50ms deadline' if watchdog else None,
         integration_sha256={name:digest(ours/name) for name in files})
