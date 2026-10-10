@@ -30,6 +30,7 @@ description: "Build or run a Codex-managed motor serial/CAN-to-MATLAB TD3 workfl
 | 在 G431/G441 上验证 Actor 计算 | 断开功率电源后，用 RAM PIL 比较 MCU 与 MATLAB；不应用增益、不写 Flash，结束保持暂停 |
 | 诊断 G431 的 CAN 链路 | 按 [stm32-can-diagnostics.md](references/stm32-can-diagnostics.md) 选择内部回环或有界 PCAN 收发；运行专用 SRAM 程序并检查 PWM 禁能 |
 | 验证 G431 比较器到 Break 的信号路径 | 按 [g431-comp-break.md](references/g431-comp-break.md) 在功率电源物理断开时运行 SRAM DAC 阈值诊断；它不校准电流，也不测量功率输出关闭延迟 |
+| 观察 G431 三相电流 ADC 零点 | 按 [g431-current-zero.md](references/g431-current-zero.md) 在功率电源物理断开时运行 SRAM ADC 观察；它不写偏置、不校准增益，也不批准过流门槛 |
 | 把 CAN 数据接入 TD3 | 按 [can-runtime.md](references/can-runtime.md) 接入 C 协议和板级 hooks，通过现有实机门槛后使用 `--transport can` |
 
 每次先确定“每个试验选择一组固定参数”还是“运行中多次调整参数”。后一种才是此 skill 默认的动态参数策略；不要把单步参数搜索的结果描述为已学会运行中的自适应控制。

@@ -189,7 +189,7 @@ Codex 核对了原 FOC 例程，保留现有 PI + NNSMC，完成禁止运动的 
 | 项目 | 核对结果 |
 |---|---|
 | 温度 | 当前应用没有温度采集；MCSDK 教程亦取消 Temperature Sensing。后续需要测温或经验证的替代热保护方案，不能伪造温度 |
-| 过流 | PID 工程已启用 COMP1→TIM1 Break，DAC 门槛为 3000。按标称换算、零电流偏置 2048 推算约 +20.9 A，**不是 3 A，也不是实测值**；源码只看到 C 相上限比较，尚缺覆盖、封波响应与锁存验收 |
+| 过流 | PID 工程已启用 COMP1→TIM1 Break，DAC 门槛为 3000。按理想零点 2048 的旧标称换算约 +20.9 A，**不是 3 A，也不是实测值**；本次断电 ADC 零点观察约为 A/B/C=`2021.078/2028.781/2024.625`，仍不能代替带电流增益校准；源码只看到 C 相上限比较，尚缺覆盖、封波响应与锁存验收 |
 | 参数限制 | 当前 Iq 指令限制 ±3 A；模糊 PI 的规则范围为 Kp `0.0013556～0.0054224`、Ki `0.00072～0.00216`。这是代码可达范围，未批准为 TD3 实机探索范围 |
 | 示例差异 | `10.TIM1_OPAMP_ADC_DAC.zip` 实际包含较早的 ADC 示例，TIM1 Break 关闭；不能按文件名认定保护已启用 |
 
@@ -202,6 +202,12 @@ Codex 的作用包括追溯保护配置、发现例程版本差异、推算阈�
 Codex 同时给实际接入适配层补上 1ms Break 标志检测：24 项适配层/入口软件检查与 14 项新诊断检查通过；完整 FOC 接入副本 45 单元重建通过，仍未烧录执行。此次验证没有启动电机，**不等于按安培校准的过流保护或功率输出关闭延迟已经验收**，也未开放 TD3 实机动作范围。
 
 [板上结果、首次检查错误的修正及待验证项](docs/stm32g431-comp-break-validation.md) · [结构化证据](examples/stm32g431-comp-break/summary.json)
+
+### 断电观察三相电流 ADC 零点
+
+在 24V 断开、USB/STLink 供电的条件下，Codex 又在实际 G431 SRAM 中读取现有三相电流 ADC 通道：每相 64 个样本，**7/7 检查通过**。A/B/C 均值分别为 `2021.078/2028.781/2024.625` 码，短时标准差分别为 `0.669/0.739/0.696` 码；ADC1/ADC2 单端校准完成且无 overrun。全程 TIM1/CCER/BDTR 为 0、相位引脚未配置、Flash 未变，结束核心暂停。
+
+这说明静态零点读数稳定，但**不能**推出电流增益或实测过流跳闸值。24V 和 PWM 断开时测到的是偏置；下一步仍需已知正负电流的受控校准，并验证 MOE 从 1 的关断和三相正负保护覆盖。Codex 没有写入任何偏置、DAC 门槛或 TD3 参数。[报告](docs/stm32g431-current-zero-validation.md) · [结构化证据](examples/stm32g431-current-zero/summary.json)
 
 ## 组成
 
@@ -217,6 +223,7 @@ Codex 同时给实际接入适配层补上 1ms Break 标志检测：24 项适配
 | `scripts/legacy_hall_monitor.py` | 当前 STM32G4 原固件的只读 24 字节 Hall 遥测解析；不发送启动或增益命令 |
 | `scripts/can_monitor.py` | PCAN 静默监听、驱动模式回读和原始帧记录；不发送 CAN 控制帧 |
 | `scripts/stm32_can_loopback.py` / `scripts/stm32_can_echo.py` | CAN 专用 SRAM 诊断；分别验证内部回环和有界 PCAN 双向收发，保持 PWM 禁能 |
+| `scripts/g431_current_zero.py` | 断开功率电源时观察三相 ADC 零点；不写偏置/门槛，不批准电流保护或 TD3 动作 |
 | `skills/motor-td3-serial-tuning/scripts/can_transport.py` | TD3 经典 CAN 二进制协议与 PCAN 单一所有者；与 `motor_runtime.py --transport can` 配合 |
 | `skills/motor-td3-serial-tuning/firmware/motor_td3_can*.c/.h` | MCU CAN 协议与控制周期接口，需实际板级 hooks |
 | `skills/motor-td3-serial-tuning/scripts/build_g431_locked_foc.py` | 对已审计私有 FOC 工程创建默认禁止运动副本并完整链接，不修改原目录 |
