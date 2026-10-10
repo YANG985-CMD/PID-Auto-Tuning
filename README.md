@@ -211,6 +211,10 @@ Codex 同时给实际接入适配层补上 1ms Break 标志检测：24 项适配
 
 随后在用户确认 24V/3A 接通、仍不按 USER3/RESET 的条件下复测，PWM 保持禁能；A/B/C 零点相对断电分别变化 `+0.281/+0.578/−0.156` 个 ADC 码。这个结果只说明本次静态带电条件下零点没有明显漂移，不能替代带电机电流校准。
 
+### 已知电流校准仍待外部基准
+
+提供的不同示例使用了两个电流换算系数：PID 工程为 `0.02197265625 A/码`，另一个示例为 `0.0193359375 A/码`。因此下一步不能直接把 ADC 码或 DAC 3000 当作安培值。仓库新增了[已知电流校准流程](skills/motor-td3-serial-tuning/references/current-calibration.md)和离线拟合脚本；它只处理同步的参考电流/ADC 数据，永不写入 MCU。当前已知的 24V/3A 电源没有足够的电流测量基准，尚未进行真实增益校准。
+
 ## 组成
 
 | 位置 | 内容 |
@@ -226,6 +230,7 @@ Codex 同时给实际接入适配层补上 1ms Break 标志检测：24 项适配
 | `scripts/can_monitor.py` | PCAN 静默监听、驱动模式回读和原始帧记录；不发送 CAN 控制帧 |
 | `scripts/stm32_can_loopback.py` / `scripts/stm32_can_echo.py` | CAN 专用 SRAM 诊断；分别验证内部回环和有界 PCAN 双向收发，保持 PWM 禁能 |
 | `scripts/g431_current_zero.py` | 断开功率电源时观察三相 ADC 零点；不写偏置/门槛，不批准电流保护或 TD3 动作 |
+| `scripts/fit_current_calibration.py` | 对外部已知电流与 ADC 原始码做离线拟合；不接硬件、不写参数 |
 | `skills/motor-td3-serial-tuning/scripts/can_transport.py` | TD3 经典 CAN 二进制协议与 PCAN 单一所有者；与 `motor_runtime.py --transport can` 配合 |
 | `skills/motor-td3-serial-tuning/firmware/motor_td3_can*.c/.h` | MCU CAN 协议与控制周期接口，需实际板级 hooks |
 | `skills/motor-td3-serial-tuning/scripts/build_g431_locked_foc.py` | 对已审计私有 FOC 工程创建默认禁止运动副本并完整链接，不修改原目录 |
