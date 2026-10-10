@@ -46,5 +46,9 @@ jobs:
         run: python -B skills/motor-td3-serial-tuning/scripts/test_thermal_feed.py --output "${{ runner.temp }}/td3-thermal-feed" --compiler gcc
       - name: RAM PIL refuses unsafe or mismatched requests without hardware
         run: python -B skills/motor-td3-serial-tuning/scripts/test_pil_contract.py --output "${{ runner.temp }}/td3-pil-contract"
+      - name: Coherent locked thermal CAN snapshots and offline rejection of corrupt or replayed data
+        run: python -B skills/motor-td3-serial-tuning/scripts/test_thermal_can.py --output "${{ runner.temp }}/td3-thermal-can" --compiler gcc
+      - name: Published locked thermal diagnostic example parses without hardware
+        run: python -B skills/motor-td3-serial-tuning/scripts/thermal_can.py --log examples/thermal-can/synthetic-raw.jsonl --output "${{ runner.temp }}/td3-thermal-log"
       - name: Published mock Actor MATLAB reference parity
         run: python -B skills/motor-td3-serial-tuning/scripts/actor_codegen.py --model examples/mock-validation/actor.json --output "${{ runner.temp }}/td3-actor" --reference examples/mock-validation/matlab-reference.json --compiler gcc

@@ -18,6 +18,7 @@
 | 验证失联与独立复位 | 集成前台/ADC/心跳监督，分析故障与复位原因，核验复位后禁止启动 | [SpeedLoop 集成实测](docs/speedloop-watchdog-integration-validation.md)：三种断电故障及真实 CAN 停止心跳复位通过；运动停机时限仍待验证 |
 | 设计无传感器热保护 | 核查电流单位和资料来源，实现 MCU 三相热预算，分析异常采样、过载和未知热状态重启的故障结果 | [热预算软件验证](docs/sensorless-thermal-validation.md)：17 组主机测试和 Cortex-M4 对象编译通过；尚未烧录和验证实机热保护 |
 | 接入 ADC 与热预算 | 编写校准范围、采样时刻和故障禁能检查，构建禁止运动的 SpeedLoop 副本并分析链接结果 | [接入离线验证](docs/thermal-feed-integration-validation.md)：17 组采样接入测试、3 组锁定接线检查、52 单元链接通过；电流未标定时拒绝启动，未烧录 |
+| 分析热保护拒绝原因 | 编写 CAN 热状态回传与日志解析，检查三相累计预算、采样时效和故障，解释为何不能启动 | [热反馈离线验证](docs/thermal-can-validation.md)：30 项检查、53 单元链接通过；仅合成日志，未访问板子或烧录 |
 | 接入真实工程 | 核对 PI/NNSMC 与刹车配置，编写锁定板级适配层，完整编译工程副本，在 MCU 验证共享禁能逻辑 | [FOC / CAN 接入](docs/stm32g431-foc-can-integration.md)：45 单元链接成功，16 项软件测试、11 项板上 RAM 测试通过 |
 | 管理正式上线 | 接入真实观测与保护，构建/烧录目标固件，检查输入尺度、性能和实时预算 | 提供接入流程；本次尚未完成电机闭环与永久 Flash 部署 |
 
@@ -268,9 +269,21 @@ Codex 将监督器接入禁止运动的 SpeedLoop 副本，构建并烧录 **356
 
 预算按每相电流平方的平均值累计，任一相超限就调用禁能函数并锁存故障。第一版不自动抵扣冷却量；停止、换回合及重新连接均不清零，未知启动热状态拒绝运行。该数值不是摄氏温度，TD3 无权修改保护限值。
 
-**尚未接入板上 SpeedLoop 或烧录。** 实际相电流增益、连续相 RMS 电流、过载允许时间、功率板热保护以及冷机/持久状态恢复仍待验证。手册示例的 `3.00 Apk` 是峰值设置，`NOMINAL_CURRENT=2183` 是内部码值，都不能直接当成已验证的连续相电流。现有运行器明确拒绝替代热模式，温度缺失保持 NaN。
+**已接入禁止运动的 SpeedLoop 工程副本并完成链接，尚未烧录到板子。** 实际相电流增益、连续相 RMS 电流、过载允许时间、功率板热保护以及冷机/持久状态恢复仍待验证。手册示例的 `3.00 Apk` 是峰值设置，`NOMINAL_CURRENT=2183` 是内部码值，都不能直接当成已验证的连续相电流。现有运行器明确拒绝替代热模式，温度缺失保持 NaN。
 
 原理参考：[Kollmorgen I²t 保护](https://webhelp.kollmorgen.com/studio/Content/Kollmorgen%20Studio/7%202%20I2T%20Motor%20Overload%20Protection.htm)、[Synapticon 逐相 I²t 与堵转保护](https://www.synapticon.com/en/motion-control-academy/motorueberlastschutz-i2t-stillstandsschutz)。绕组 I²t 不能单独覆盖 MOSFET 开关损耗；仍需功率板自己的热保护依据。
+
+### CAN 热状态反馈与 Codex 分析
+
+新增 **`0x626` 热诊断报文**：回传三相 A²·s 预算、预算占比、累计通电/堵转时间、采样时效及首个故障。一次取完整状态再分帧，带 CRC、会话与快照序号；Codex 可读取解析摘要，解释“电流未标定、初始热状态未知、采样过期、预算耗尽”等拒绝原因。未知热量显示 `null`，不伪造温度。
+
+**30 项软件检查通过，53 单元工程链接成功；本轮没有访问板子或烧录。** 示例是 [合成日志分析](examples/thermal-can/synthetic-analysis.json)，不是板端实测。新身份 `g431-speedloop-heat-can-v1` 保持零能力、禁止运动，旧下载器拒绝它；这类诊断日志不用于 TD3 学习，不能批准启动。详见 [验证记录](docs/thermal-can-validation.md) 与 [协议及离线用法](skills/motor-td3-serial-tuning/references/thermal-can.md)。
+
+```text
+python -B skills/motor-td3-serial-tuning/scripts/thermal_can.py --log examples/thermal-can/synthetic-raw.jsonl --output TASK_TEMP_AUDIT
+```
+
+该入口只读已有日志。Windows 输出目录须位于 `E:\simulink\_codex_tmp\` 的独立空任务目录；`summary.json` 的 `passed` 表示日志解析一致，`motion_approved` 始终为 false。
 
 ## 组成
 
@@ -297,6 +310,8 @@ Codex 将监督器接入禁止运动的 SpeedLoop 副本，构建并烧录 **356
 | `skills/motor-td3-serial-tuning/scripts/g431_watchdog_pil.py` | GNU Arm 构建与 RAM IWDG 复位验证，清除旧证据、检查复位入口、恢复调试冻结并比较完整 Flash |
 | `skills/motor-td3-serial-tuning/firmware/motor_td3_health.c/.h` | 前台/时钟/ADC/有效心跳监督与喂狗许可；故障锁存，已接入禁止运动 SpeedLoop 诊断副本 |
 | `skills/motor-td3-serial-tuning/firmware/motor_td3_thermal.c/.h` | 离线验证的三相热预算、累计堵转/通电时限、采样有效性和禁能 hook；未知热状态禁止启动，尚未接入板上固件 |
+| `skills/motor-td3-serial-tuning/firmware/motor_td3_thermal_feed.c/.h` | 校准范围内的 ADC 到相电流接入、完整均方窗口与独立采样期限检查 |
+| `skills/motor-td3-serial-tuning/firmware/motor_td3_thermal_can.c/.h` / `scripts/thermal_can.py` | 禁止运动的热诊断快照、CAN 编码与离线日志分析；不打开硬件、不生成训练经验 |
 | `skills/motor-td3-serial-tuning/scripts/g431_locked_pil.py` | 在真实 MCU SRAM 验证共享禁能函数和锁定端点；不是完整 FOC 固件的运行 |
 | `skills/motor-td3-serial-tuning/scripts/speedloop_watchdog_validate.py` / `speedloop_watchdog_can.py` | 固定镜像核验、断电烧录/故障复位及真实 CAN STOP 心跳失联诊断；禁止运动 |
 | `firmware/` | CRC 协议、参数保护、租约/失联/故障锁存 C 模块 |

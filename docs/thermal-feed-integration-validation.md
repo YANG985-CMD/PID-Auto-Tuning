@@ -2,6 +2,8 @@
 
 日期：2026-10-11。Codex 完成接入层代码、故障测试及私有 SpeedLoop 工程副本的完整链接；本轮没有连接下载器、访问 MCU、烧录或启动电机。
 
+本页记录前阶段 `g431-speedloop-heat-audit-v1` 的 52 单元版本。后续增加 CAN 热诊断，当前构建身份与结果见 [thermal-can-validation.md](thermal-can-validation.md)；本页哈希和摘要保留为该阶段的历史证据。
+
 ## 结果
 
 | 检查 | 结果 | 证据范围 |

@@ -6,7 +6,7 @@
 
 `assets/thermal-profile.example.json` 是待填的工程记录模板，不是运行器支持的新配置。所有实机限值为 `null`，`validated` 与 `deployment_approved` 为 false。单独写入 true 不会产生验证证据。
 
-现有串口/CAN v1 遥测与 `motor_td3_guard` 仍使用实测温度。运行器显式拒绝 `verified_alternative`；诊断固件继续保留 NaN 和能力位 0。后续必须实现带版本的热状态反馈、设备能力协商和 MCU guard 接入，经过验证后才能开放该模式。
+现有串口/CAN v1 遥测与 `motor_td3_guard` 仍使用实测温度。运行器显式拒绝 `verified_alternative`；诊断固件继续保留 NaN 和能力位 0。已增加 [热状态 CAN 诊断](thermal-can.md)，完成离线编解码和锁定工程链接；设备能力协商、训练反馈与 MCU 运动 guard 接入仍须实现和验证后才能开放该模式。
 
 ## 模型与单位
 
@@ -45,9 +45,9 @@ H_{p,k+1}=H_{p,k}+\max(0,\overline{i_p^2}-I_{p,\mathrm{cont,rms}}^2)\Delta t.
 - 校准后的采样峰值达到门槛就立即调用禁能，不等待窗口结束。它仍不能捕捉 ADC 两次采样间的短路尖峰。
 - 完整窗口保守合并任一采样间隔内的实际桥使能与最低绝对速度，提交既有热 guard。`check` 独立于新数据调用；迟到样本不能恢复。保护任务、CAN 和 ADC 之间的真实并发与执行时间仍须板级验证。
 
-`motor_td3_speedloop_thermal.c` 是**禁止运动的接线审计层**：只读校准、热限值、启动 seed 均未提供，初始化预期锁存 `TD3_FEED_CALIBRATION`，不会把原程序的标称安培或 100Hz 软件 ADC 当成已验证热输入。SysTick 仅增加 64 位时钟，热 guard 在前台运行；原有独立输出禁能与看门狗保留。当前故障状态只能在该模块/RAM 中检查，CAN v1 尚未传输热预算。
+`motor_td3_speedloop_thermal.c` 是**禁止运动的接线审计层**：只读校准、热限值、启动 seed 均未提供，初始化预期锁存 `TD3_FEED_CALIBRATION`，不会把原程序的标称安培或 100Hz 软件 ADC 当成已验证热输入。SysTick 仅增加 64 位时钟，热 guard 在前台运行；原有独立输出禁能与看门狗保留。后续新增独立 `0x626` 诊断快照和离线解析；CAN 训练 v1 尚未传输热预算，尚无板端热反馈实测。
 
-离线构建使用 `build_speedloop_diagnostic.py --watchdog --thermal-audit`，身份为 `g431-speedloop-heat-audit-v1`。没有新的烧录入口；旧看门狗下载器按固定身份/哈希拒绝它。不能通过填写 true、零 seed、放宽阈值或更新旧下载白名单直接启用该版本。真实 FOC 接入还需要按实际 PWM 触发建立采样节拍、实际输出活动回读、热状态恢复及保护反馈。
+离线构建使用 `build_speedloop_diagnostic.py --watchdog --thermal-audit`，当前身份为 `g431-speedloop-heat-can-v1`（前阶段无热反馈身份为 `g431-speedloop-heat-audit-v1`）。没有新的烧录入口；旧看门狗下载器按固定身份/哈希拒绝它。不能通过填写 true、零 seed、放宽阈值或更新旧下载白名单直接启用该版本。真实 FOC 接入还需要按实际 PWM 触发建立采样节拍、实际输出活动回读、热状态恢复及保护反馈。
 
 ## 两类热风险分别验收
 

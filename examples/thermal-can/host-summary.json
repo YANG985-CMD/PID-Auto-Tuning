@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "tests": 30,
+  "failures": 0,
+  "errors": 0,
+  "passed": true,
+  "hardware_accessed": false,
+  "thermal_protection_verified": false,
+  "motion_approved": false,
+  "firmware_id": "g431-speedloop-heat-can-v1",
+  "packet_bytes": 144,
+  "can_id": "0x626",
+  "encoder_snapshot_nonmutating": true,
+  "tool_sha256": {
+    "thermal_can.py": "9d6a44e19690e7b5394bd7e816b50428bfbcef65d1fd67e39f9a4931b2fb27e8",
+    "test_thermal_can.py": "caf1846443d76db21a6d20184ed68717d26beb8cd9ae80ebec1ac9d6f3d9d4f0",
+    "build_speedloop_diagnostic.py": "d834dc60c67f341a6331d76858eeea0e15f20e9092b3d409a0db3a905e2667d3"
+  },
+  "source_sha256": {
+    "motor_td3_thermal.c": "15e8ab446309d779cf4388dc616aceb997643eadde1836d143af1665670aa39d",
+    "motor_td3_thermal_feed.c": "6a90143647ff7d4e297b186d981e0abd05230b38dea55f355a58c80a46f0b719",
+    "motor_td3_thermal_can.c": "ac9289da1150133ae19a1050d6ec4ad0dda6e95ec8828adc855f6554b8ecbb12",
+    "motor_td3_can.c": "0654d76969e3004426311f6a7c4eefc4229b6f79ec39bf5abd2f4f57c5885251",
+    "motor_td3_can_control.c": "34ac27d3d48b5c9c5d001a5b61d92f3662830c3c7cdf0d9360dcdf3e99287ff7",
+    "motor_td3_guard.c": "048fd9703f33fb262ac2e1d09a40b6af89a9cca365534eaa147ed4188e866504",
+    "motor_td3_health.c": "321df595dd22ea2d4cdffc612c4b5ed84d1c7d82feb19607e0b2acf0e2354300",
+    "motor_td3_g431_watchdog.c": "4f759561e1981cdd2a8b5785cd0b50fce4f0af6a26c0f37ed1b3596b47ecc05c",
+    "motor_td3_speedloop_thermal.c": "1e88b15811577dfcfe184940070075ccc570032ecb74a0f7e5ba071303e90c91",
+    "motor_td3_thermal.h": "cf7a925fbf7e421b21b5abe1a7e214ede4f1aff4ca44f441b81f8108469a105d",
+    "motor_td3_thermal_can.h": "2ce7f42d9ddfa8856da64cd917057e5d78307a9ffa49b4057ac1b7cb69a45ed6",
+    "tests/thermal_can_host.c": "84330721bfaa371b0963ababb85998f18438f820d9e1ee9c7064ceb6e51989b5"
+  }
+}

@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "scope": "offline locked thermal CAN diagnostic audit",
+  "passed": true,
+  "snapshots": 1,
+  "errors": [],
+  "fault_counts": {
+    "calibration/config": 1
+  },
+  "latest": {
+    "protocol_id": "motor-td3-thermal-diagnostic-v1",
+    "nonce": "0000000000000007",
+    "boot_id": "1234567812345678",
+    "snapshot_seq": 1,
+    "capture_us": 0,
+    "flags": 256,
+    "calibrated": false,
+    "limits_verified": false,
+    "initial_heat_known": false,
+    "sample_seq": 0,
+    "sample_capture_us": null,
+    "window_seq": 0,
+    "window_end_us": null,
+    "sample_fresh_at_capture": false,
+    "window_fresh_at_capture": false,
+    "used_a2s": [
+      null,
+      null,
+      null
+    ],
+    "budget_a2s": [
+      null,
+      null,
+      null
+    ],
+    "phase_load": [
+      null,
+      null,
+      null
+    ],
+    "energized_us": null,
+    "stalled_us": null,
+    "sample_period_us": null,
+    "max_age_us": null,
+    "window_us": null,
+    "feed_fault_code": 2,
+    "feed_fault": "calibration",
+    "thermal_fault_code": 1,
+    "thermal_fault": "config",
+    "block_reasons": [
+      "电流增益未标定",
+      "热保护边界未验证",
+      "初始热状态未知",
+      "没有有效的校准电流采样",
+      "尚无完整热预算窗口",
+      "采样接入故障：calibration",
+      "热保护故障：config"
+    ],
+    "motion_inhibited": true,
+    "motion_approved": false,
+    "training_telemetry": false,
+    "temperature_c": null,
+    "host_monotonic_s": 0.0135,
+    "assembly_elapsed_us": 3500
+  },
+  "hardware_accessed": false,
+  "live_freshness_verified": false,
+  "motion_approved": false,
+  "training_telemetry": false,
+  "thermal_protection_verified": false,
+  "evidence_origin": "software-only C feed and synthetic CAN frames; not board readings"
+}

@@ -27,8 +27,43 @@ WATCHDOG_FILES=('motor_td3_health.c','motor_td3_health.h',
                 'motor_td3_g431_watchdog.c','motor_td3_g431_watchdog.h')
 THERMAL_FILES=('motor_td3_thermal.c','motor_td3_thermal.h',
                'motor_td3_thermal_feed.c','motor_td3_thermal_feed.h',
+               'motor_td3_thermal_can.c','motor_td3_thermal_can.h',
                'motor_td3_speedloop_thermal.c','motor_td3_speedloop_thermal.h')
-THERMAL_ID='g431-speedloop-heat-audit-v1'
+THERMAL_ID='g431-speedloop-heat-can-v1'
+
+
+def patch_thermal_adapter(text):
+    """Patch only the private locked copy. Keep the proven legacy image intact."""
+    if text.count('g431-speedloop-wdog-v1')!=2:
+        raise ValueError('Watchdog identity anchors changed')
+    text=text.replace('g431-speedloop-wdog-v1',THERMAL_ID)
+    text=replace_once(text,'#include "motor_td3_g431_off.h"',
+        '#include "motor_td3_g431_off.h"\n#include "motor_td3_speedloop_thermal.h"')
+    text=replace_once(text,'static int endpoint_ready;', '''static int endpoint_ready;
+static uint8_t heat_packet[TD3_THERMAL_CAN_BYTES],heat_transfer;
+static uint32_t heat_length,heat_index,heat_sequence;
+static uint64_t heat_started_us,heat_due_us;''')
+    text=replace_once(text,'    if(diag_ready && n>=diag_due_us) {', '''    /* Freeze one complete heat snapshot. Existing HELLO response is sent first;
+     * RX and watchdog service continue each poll. All frames use send_frame()
+     * and its one-outstanding-request Tx event validation. No second CAN owner. */
+    if(diag_ready && !heat_length && n>=heat_due_us) {
+        uint64_t nonce,boot;
+        if(heat_sequence==UINT32_MAX) { motor_td3_g431_fault_irq();return; }
+        p=lock();nonce=endpoint.nonce;boot=endpoint.boot;unlock(p);
+        heat_length=(uint32_t)motor_td3_speedloop_thermal_packet(heat_packet,nonce,boot,++heat_sequence);
+        if(heat_length!=TD3_THERMAL_CAN_BYTES) { motor_td3_g431_fault_irq();return; }
+        heat_index=0;heat_started_us=n;++heat_transfer;
+    }
+    if(heat_length) {
+        if(n-heat_started_us>=TX_DEADLINE_US) { motor_td3_g431_fault_irq();heat_length=0;return; }
+        if(motor_td3_can_fragment(heat_packet,heat_length,heat_transfer,heat_index,frame) &&
+           send_frame(TD3_THERMAL_CAN_ID,frame)) {
+            if(++heat_index>=(heat_length+3)/4) { heat_length=0;heat_due_us=n+DIAG_PERIOD_US; }
+        }
+        return;
+    }
+    if(diag_ready && n>=diag_due_us) {''')
+    return text
 
 
 def inventory(source):
@@ -247,9 +282,7 @@ def build(args):
     if thermal_audit:
         # Separate identity; old Flash/capture validators must reject this image.
         adapter=ours/'motor_td3_g431_adapter.c';text=adapter.read_text(encoding='utf-8')
-        if text.count('g431-speedloop-wdog-v1')!=2:
-            raise ValueError('Watchdog identity anchors changed')
-        adapter.write_text(text.replace('g431-speedloop-wdog-v1',THERMAL_ID),encoding='utf-8',newline='\n')
+        adapter.write_text(patch_thermal_adapter(text),encoding='utf-8',newline='\n')
     sources.extend(Path('codex-can')/name for name in files if name.endswith('.c'))
     includes=[copy/p for p in ('Core/Inc','Drivers/STM32G4xx_HAL_Driver/Inc',
         'Drivers/STM32G4xx_HAL_Driver/Inc/Legacy','Drivers/CMSIS/Device/ST/STM32G4xx/Include',
@@ -291,7 +324,8 @@ def build(args):
     if thermal_audit:
         required={'motor_td3_speedloop_thermal_state','motor_td3_speedloop_thermal_init',
                   'motor_td3_speedloop_thermal_poll','motor_td3_speedloop_thermal_sample',
-                  'motor_td3_speedloop_thermal_tick_1ms','motor_td3_thermal_feed_sample'}
+                  'motor_td3_speedloop_thermal_tick_1ms','motor_td3_thermal_feed_sample',
+                  'motor_td3_speedloop_thermal_packet','motor_td3_thermal_can_packet'}
         if not required.issubset(symbols): raise ValueError('Thermal audit hooks missing from linked image')
     blob=(out/'speedloop-diagnostic.bin').read_bytes();sp,entry=struct.unpack('<II',blob[:8])
     if sp!=0x20008000 or not (entry&1 and 0x08000000<=entry<0x08020000) or len(blob)>0x20000:
@@ -311,6 +345,9 @@ def build(args):
         thermal_audit_integrated=thermal_audit,current_gain_calibrated=False,
         thermal_protection_verified=False,thermal_deployment_approved=False,
         thermal_expected_boot_fault='TD3_FEED_CALIBRATION' if thermal_audit else None,
+        thermal_can_diagnostic_id='0x626' if thermal_audit else None,
+        thermal_can_snapshot_bytes=144 if thermal_audit else None,
+        thermal_can_training_telemetry=False,
         heartbeat='validated STOP, 200ms deadline; no start/gains' if watchdog else None,
         can_tx_completion='one outstanding request; Tx event; auto retransmission; 50ms deadline' if watchdog else None,
         integration_sha256={name:digest(ours/name) for name in files})

@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "hardware_accessed": false,
+  "thermal_guard": {
+    "schema_version": 1,
+    "test_groups": 17,
+    "passed": true,
+    "hardware_accessed": false,
+    "thermal_protection_verified": false,
+    "motion_authorized": false,
+    "synthetic_parameters_only": true,
+    "source_sha256": {
+      "motor_td3_thermal.c": "15e8ab446309d779cf4388dc616aceb997643eadde1836d143af1665670aa39d",
+      "motor_td3_thermal.h": "cf7a925fbf7e421b21b5abe1a7e214ede4f1aff4ca44f441b81f8108469a105d",
+      "tests/thermal_host.c": "569ff81134ff480ce4989f2d5366ebd36095dc5803cdaea1eade0a365060bced"
+    },
+    "arm_object_compiled": false,
+    "linked_into_speedloop": false
+  },
+  "thermal_feed": {
+    "feed": {
+      "schema_version": 1,
+      "test_groups": 17,
+      "passed": true,
+      "hardware_accessed": false,
+      "synthetic_parameters_only": true,
+      "current_gain_calibrated": false,
+      "thermal_protection_verified": false
+    },
+    "speedloop": {
+      "test_groups": 3,
+      "passed": true,
+      "hardware_accessed": false,
+      "calibration_absence_latched": true
+    },
+    "unlocked_build_rejected_before_source_access": true,
+    "schema_version": 1,
+    "passed": true,
+    "hardware_accessed": false,
+    "current_gain_calibrated": false,
+    "thermal_protection_verified": false,
+    "source_sha256": {
+      "motor_td3_thermal.c": "15e8ab446309d779cf4388dc616aceb997643eadde1836d143af1665670aa39d",
+      "motor_td3_thermal.h": "cf7a925fbf7e421b21b5abe1a7e214ede4f1aff4ca44f441b81f8108469a105d",
+      "motor_td3_thermal_feed.c": "6a90143647ff7d4e297b186d981e0abd05230b38dea55f355a58c80a46f0b719",
+      "motor_td3_thermal_feed.h": "aec97a00ef99b4552d60604986f4aab10738da8859c1c6309c495b779e43a550",
+      "motor_td3_speedloop_thermal.c": "1e88b15811577dfcfe184940070075ccc570032ecb74a0f7e5ba071303e90c91",
+      "motor_td3_speedloop_thermal.h": "3fb3aec36f92cb81cbce96d951fd793c75385657cfdcffffac23af594be2044d",
+      "motor_td3_thermal_can.c": "ac9289da1150133ae19a1050d6ec4ad0dda6e95ec8828adc855f6554b8ecbb12",
+      "motor_td3_thermal_can.h": "2ce7f42d9ddfa8856da64cd917057e5d78307a9ffa49b4057ac1b7cb69a45ed6",
+      "tests/thermal_feed_host.c": "046dcc26d8a22fbf53166a8cfa602fccb8f8ecc31f82ce6b27235823f366753b",
+      "tests/speedloop_thermal_host.c": "a73d32b65ed63da89968d32c8ad2f08a3bc40ae1a049a67bb41918039e74ec26"
+    }
+  },
+  "watchdog": {
+    "schema_version": 1,
+    "scope": "actual locked adapter with software HAL/CMSIS/model substitutes",
+    "tests": 15,
+    "watchdog_integration": true,
+    "failures": 0,
+    "errors": 0,
+    "passed": true,
+    "hardware_accessed": false,
+    "motor_output": false,
+    "profile": "g431-speedloop-wdog-v1"
+  },
+  "legacy_firmware_id": "g431-speedloop-wdog-v1",
+  "legacy_image_bytes": 35620,
+  "legacy_bin_sha256": "ea6bb46181092ed415cdcc804ceccac6c14fdedfa8861d3797f1f6fa9c41e54d",
+  "legacy_exact_audited_image": true,
+  "legacy_offline_gate_accepted": true,
+  "new_thermal_image_rejected_by_legacy_gate": true
+}

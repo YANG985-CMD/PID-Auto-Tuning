@@ -22,6 +22,10 @@ static uint64_t now(void) {
     __disable_irq();n=clock_us;__set_PRIMASK(mask);return n;
 }
 static void disable(void *user) { (void)user;motor_td3_g431_disable(); }
+int motor_td3_speedloop_thermal_packet(uint8_t out[TD3_THERMAL_CAN_BYTES],
+    uint64_t nonce,uint64_t boot,uint32_t seq) {
+    return motor_td3_thermal_can_packet(out,&motor_td3_speedloop_thermal_state,nonce,boot,seq,now());
+}
 void motor_td3_speedloop_thermal_tick_1ms(void) { clock_us+=1000U; }
 void motor_td3_speedloop_thermal_init(void) {
     (void)motor_td3_thermal_feed_init(&motor_td3_speedloop_thermal_state,&calibration,&limits,&seed,now(),disable,0);

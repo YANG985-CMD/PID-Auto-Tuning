@@ -36,7 +36,7 @@ typedef struct {
     motor_td3_thermal_limits limits;
     double used_a2s[3];
     uint64_t last_end_us, last_now_us, sequence, energized_us, stalled_us;
-    unsigned fault, has_window, configured;
+    unsigned fault, has_window, configured, seed_known;
     void (*disable)(void *);
     void *user;
 } motor_td3_thermal;

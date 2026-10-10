@@ -65,6 +65,7 @@ int motor_td3_thermal_init(motor_td3_thermal *g,const motor_td3_thermal_limits *
     }
     g->energized_us=seed->energized_us;g->stalled_us=seed->stalled_us;
     if(g->stalled_us>g->energized_us) return trip(g,TD3_THERMAL_BOOT_UNKNOWN);
+    g->seed_known=1; /* Valid retained state remains known even when already hot. */
     for(p=0;p<3;++p) if(g->used_a2s[p]>=l->budget_a2s[p]) return trip(g,TD3_THERMAL_BUDGET);
     if(g->energized_us>=l->max_energized_us) return trip(g,TD3_THERMAL_DURATION);
     if(g->stalled_us>=l->max_stalled_us) return trip(g,TD3_THERMAL_STALL);
@@ -126,7 +127,7 @@ int motor_td3_thermal_may_start(motor_td3_thermal *g,uint64_t now) {
 }
 float motor_td3_thermal_load(const motor_td3_thermal *g) {
     unsigned p;float load=0.0f;
-    if(!g||!g->configured||g->fault==TD3_THERMAL_BOOT_UNKNOWN) return NAN;
+    if(!g||!g->configured||!g->seed_known) return NAN;
     for(p=0;p<3;++p) load=fmaxf(load,g->used_a2s[p]/g->limits.budget_a2s[p]);
     return load;
 }

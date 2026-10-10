@@ -34,6 +34,7 @@ def main():
                '-Wall', '-Wextra', '-Werror', '-DMOTOR_TD3_SPEEDLOOP_DIAGNOSTIC',
                '-DMOTOR_TD3_SPEEDLOOP_WATCHDOG', '-I', str(out), '-I', str(fw),
                str(fw/'motor_td3_thermal.c'), str(fw/'motor_td3_thermal_feed.c'),
+               str(fw/'motor_td3_thermal_can.c'),
                str(fw/'tests'/host), *extra, '-lm', '-o', str(exe)]
         build = subprocess.run(cmd, env=env, capture_output=True, text=True)
         (out/(name+'-build.log')).write_text(build.stdout+build.stderr, encoding='utf-8')
@@ -52,6 +53,7 @@ def main():
         raise AssertionError('Thermal audit accepted a build without watchdog lock')
     sources = ('motor_td3_thermal.c', 'motor_td3_thermal.h', 'motor_td3_thermal_feed.c',
                'motor_td3_thermal_feed.h', 'motor_td3_speedloop_thermal.c', 'motor_td3_speedloop_thermal.h',
+               'motor_td3_thermal_can.c', 'motor_td3_thermal_can.h',
                'tests/thermal_feed_host.c', 'tests/speedloop_thermal_host.c')
     results.update(schema_version=1, passed=True, hardware_accessed=False,
                    current_gain_calibrated=False, thermal_protection_verified=False,
