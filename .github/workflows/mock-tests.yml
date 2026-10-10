@@ -28,6 +28,8 @@ jobs:
         run: python -B skills/motor-td3-serial-tuning/scripts/test_speedloop_sample.py --output "${{ runner.temp }}/td3-speedloop-sampler" --compiler gcc
       - name: SpeedLoop HELLO-only capture rejects identity, stale ADC and enabled outputs
         run: python -B skills/motor-td3-serial-tuning/scripts/test_speedloop_can_capture.py
+      - name: Watchdog feed supervisor and SRAM reset evidence without hardware
+        run: python -B skills/motor-td3-serial-tuning/scripts/test_g431_watchdog.py --output "${{ runner.temp }}/td3-watchdog" --compiler gcc
       - name: COMP Break diagnostic rejects unsafe traces and always cleans up
         run: python -B skills/motor-td3-serial-tuning/scripts/test_g431_comp_break.py --output "${{ runner.temp }}/td3-g431-comp-break"
       - name: Offline current calibration fit keeps hardware approval closed

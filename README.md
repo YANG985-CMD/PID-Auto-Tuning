@@ -15,6 +15,7 @@
 | **分析训练好坏** | 比较固定 PI 与固定 TD3 的误差、超调、电流、饱和和故障；解释候选是否值得使用 | [独立评估](examples/mock-validation/evaluation-summary.json)：改进 TD3 在 mock 工况优于 PI，但仍未批准电机闭环部署 |
 | **部署到单片机** | 导出 Actor C、目标编译、核对芯片、加载到 MCU RAM、读取并分析推理结果 | [G431 板上验证](docs/stm32g431-validation.md)：40 组通过，Kp/Ki 与 MATLAB 一致 |
 | 诊断实际通信 | 对照示例与原理图，构建 CAN 专用 RAM 程序，分析控制器状态、回包与 PWM 禁能状态 | [CAN 板上验证](docs/stm32g431-can-diagnostics.md)：64 组内部回环、16 组电脑与板端双向收发通过 |
+| 验证独立复位 | 核对调试冻结，构建 RAM 看门狗程序，分析新复位原因和输出隔离，比较完整 Flash | [IWDG 板上验证](docs/stm32g431-watchdog-validation.md)：前台停止喂狗、中断关闭两种复位通过；监督器集成待验证 |
 | 接入真实工程 | 核对 PI/NNSMC 与刹车配置，编写锁定板级适配层，完整编译工程副本，在 MCU 验证共享禁能逻辑 | [FOC / CAN 接入](docs/stm32g431-foc-can-integration.md)：45 单元链接成功，16 项软件测试、11 项板上 RAM 测试通过 |
 | 管理正式上线 | 接入真实观测与保护，构建/烧录目标固件，检查输入尺度、性能和实时预算 | 提供接入流程；本次尚未完成电机闭环与永久 Flash 部署 |
 
@@ -235,9 +236,15 @@ MOE 门控的私有副本改动建议见 [SpeedLoop MOE 检查](docs/speedloop-m
 
 随后 Codex 在真实 24V/3A 条件下接通 CAN，发现并修正握手首帧竞态、调整为先暂停禁止运动固件再释放适配器，并重新烧录 **32832B** 镜像。最终 **3 秒握手与 30 组连续诊断通过**：母线标称 24.068～24.341V、ADC 年龄 1～2ms、速度 0；收尾 CAN 错误计数和 IRQ 故障为 0，PWM 全禁能。用户断电后再次全量回读一致、清除会话并保持核心暂停。[真实 CAN 采集、原因分析与修正](docs/speedloop-can-live-validation.md) · [结构化证据](examples/stm32g431-speedloop-can/summary.json)
 
-这是 Codex 管理真实采集、定位故障、修改固件、编译烧录并分析结果的证据。四个诊断帧不含动作应用序号/时间且不是原子快照，温度和电流标定仍缺失，**没有形成 TD3 训练经验，也没有运行网络增益**。实体急停、独立看门狗、完整保护及电机闭环仍待验收。
+这是 Codex 管理真实采集、定位故障、修改固件、编译烧录并分析结果的证据。四个诊断帧不含动作应用序号/时间且不是原子快照，温度和电流标定仍缺失，**没有形成 TD3 训练经验，也没有运行网络增益**。实体急停、看门狗与控制固件的集成、完整保护及电机闭环仍待验收。
 
 **Codex 的作用贯穿数据检查、TD3 结果比较、Actor 导出、工程接入、编译烧录和上板核验。** 当前已验证 Actor 的 MCU RAM 推理；本次 SpeedLoop 诊断固件承担真实采样/保护接口验证。训练策略通过独立性能和设备保护验收后，才可用于电机增益调度。
+
+### 独立看门狗：软件监督与板上复位
+
+2026-10-11，Codex 在 24V 物理断开时完成 **两种真实 IWDG 复位测试**。专用 RAM 程序先持续约 600ms 正常喂狗，再停止喂狗：SysTick 继续运行时约 **203.67ms** 复位；关闭全部可屏蔽中断时约 **203.33ms** 复位。新 IWDG 复位标志、原 Flash 复位入口和输出禁能均通过检查，完整 128KB Flash 保持不变，核心最终暂停。[测试记录](docs/stm32g431-watchdog-validation.md) · [结构化证据](examples/stm32g431-watchdog/summary.json)
+
+另新增前台/时钟/ADC 进展与心跳期限监督器，**15 项 C 检查和 6 项 Python 合同/证据检查通过**。它只允许健康状态喂狗，故障锁存。监督器尚未接入 SpeedLoop；这次 RAM 程序不运行 CAN、FOC 或 Actor，约 200ms 诊断超时也不是已验证的电机停机阈值。下一步先在禁止运动副本验证集成与真实失联路径。[操作与接入要求](skills/motor-td3-serial-tuning/references/g431-watchdog.md)
 
 ## 组成
 
@@ -261,6 +268,8 @@ MOE 门控的私有副本改动建议见 [SpeedLoop MOE 检查](docs/speedloop-m
 | `skills/motor-td3-serial-tuning/scripts/build_g431_locked_foc.py` | 对已审计私有 FOC 工程创建默认禁止运动副本并完整链接，不修改原目录 |
 | `skills/motor-td3-serial-tuning/scripts/build_speedloop_diagnostic.py` | GNU Arm 构建受审计 SpeedLoop 的禁止运动 CAN/软件 ADC 副本，验证链接中没有 PWM 启动或 FOC 执行入口 |
 | `skills/motor-td3-serial-tuning/scripts/speedloop_can_capture.py` | 核对完整镜像/禁能状态，发送一次 HELLO，限时采集诊断并在释放 CAN 前暂停；不启动、不下发增益、不训练 |
+| `skills/motor-td3-serial-tuning/scripts/g431_watchdog_pil.py` | GNU Arm 构建与 RAM IWDG 复位验证，清除旧证据、检查复位入口、恢复调试冻结并比较完整 Flash |
+| `skills/motor-td3-serial-tuning/firmware/motor_td3_health.c/.h` | 前台/时钟/ADC/有效心跳监督与喂狗许可；故障锁存，尚未集成到 SpeedLoop |
 | `skills/motor-td3-serial-tuning/scripts/g431_locked_pil.py` | 在真实 MCU SRAM 验证共享禁能函数和锁定端点；不是完整 FOC 固件的运行 |
 | `firmware/` | CRC 协议、参数保护、租约/失联/故障锁存 C 模块 |
 | `scripts/session_checks.py` | 配置与经验审计 |
