@@ -147,6 +147,12 @@ Codex 查阅板卡原理图与安全说明，经 STLink 核对芯片后，将已
 
 随后在断开 24 V、只保留 USB/STLink 的条件下检查了原固件 USER3/PC13 停机路径。默认状态和 TIM1 功率输出均为关闭，但测试窗口没有观测到按键切换；因此 USER3 尚未被认定为可靠的唯一急停路径。详见 [USER3 停机路径检查](docs/legacy-button-safety-check.md)。
 
+### `17.SpeedLoop` 基线试验：Codex 读取、分析并管理收尾
+
+2026-10-11，Codex 在用户确认的 `17.SpeedLoop` 基础上构建并烧录了有界基线副本。USER3 启动后运行 3 s，Codex 通过 CAN 接收状态快照，分析母线、Hall、速度、三相名义电流、PI 增益和故障码；到时由 MCU 自动关闭六路 PWM，Codex 在确认输出关闭后才暂停核心。实测最终约 1036.5 rpm、326 个 Hall 边沿、约 68198 次 ADC 采样、名义电流峰值约 1.10 A，故障码为 0。
+
+这次明确体现了 Codex 的作用：它负责构建/烧录检查、实时读取和分析 TD3 训练所需的运行结果、判断候选是否可以继续，以及管理停机收尾；本次仍使用原例程的模糊 PI，没有接入 Actor 或应用 TD3 增益。电流是源码名义换算，板上无温度传感器，热保护和 TD3 实机调参仍未验收。[完整基线记录](docs/speedloop-baseline-run-20261011.md) · [机器可读摘要](examples/speedloop-baseline-20261011/summary.json)
+
 ### CAN 板上实测
 
 2026-10-10，Codex 对照套件 CAN 示例、实物接口和原理图，编写并在 STM32G431 SRAM 中运行了独立 CAN 诊断程序：
