@@ -145,6 +145,7 @@ Codex 查阅板卡原理图与安全说明，经 STLink 核对芯片后，将已
 | `matlab/exportMotorActor.m` | Actor 权重、尺度和参考输出 |
 | `scripts/actor_codegen.py` | 无动态内存 C99 导出与主机编译检查 |
 | `scripts/stm32_actor_pil.py` | G431/G441 目标编译、RAM 部署、MCU 推理/周期/栈验证 |
+| `scripts/legacy_hall_monitor.py` | 当前 STM32G4 原固件的只读 24 字节 Hall 遥测解析；不发送启动或增益命令 |
 | `firmware/` | CRC 协议、参数保护、租约/失联/故障锁存 C 模块 |
 | `scripts/session_checks.py` | 配置与经验审计 |
 | `assets/` | 未配置的实机模板、仅用于模拟的配置 |
@@ -171,6 +172,8 @@ Actor 是 `10 → 16 → 16 → 2` 的小网络，仅权重约 1.9 KB。部署�
 Codex 可在目标条件齐全的已授权会话中完成导出、工程接入、编译、烧录和结果分析。本次完成的是 **RAM 中运行 Actor**；尚未把它烧录成常驻电机控制固件。原固件与电机保护没有被替换。
 
 原始遥测、令牌、私有工程和训练检查点不上传公开仓库。
+
+当前板上原固件的只读串口布局见 [legacy-board-telemetry.md](docs/legacy-board-telemetry.md)。它只适合 shadow 观测，缺少 TD3 所需的动作应用确认和独立停机协议。
 
 ## 独立测试
 
