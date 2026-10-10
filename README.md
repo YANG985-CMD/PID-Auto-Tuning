@@ -223,6 +223,10 @@ Codex 同时给实际接入适配层补上 1ms Break 标志检测：24 项适配
 
 MOE 门控的私有副本改动建议见 [SpeedLoop MOE 检查](docs/speedloop-moe-gate-review.md)。在该门控、过流标定和独立停机路径完成前，TD3 仍保持 shadow/离线模式。
 
+### Codex 实际烧录的安全基线
+
+2026-10-11，Codex 在 24 V 断开的条件下编译并通过 ST-Link 烧录了一个带 MOE/相位 CCER 门控的 SpeedLoop 副本。Codex 完成了镜像生成、Flash 全量回读比较、ADC 零点运行检查和 TIM1 安全状态分析；烧录后核心保持暂停，未启动电机，也没有把 TD3 增益写入板子。该版本保留 CH4 的 ADC 采样触发，同时明确关闭 CH1/2/3 及互补相位通道，因此 `ADC_offset` 可以完成而 `Motor_state` 仍为 0。完整记录见 [SpeedLoop 门控镜像烧录验证](docs/speedloop-moe-gated-flash-validation.md)。
+
 ## 组成
 
 | 位置 | 内容 |

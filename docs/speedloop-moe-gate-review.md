@@ -16,14 +16,16 @@ TIM1->BDTR = 0x0202B078    // MOE=1，Break 配置仍在
 打开 CH1/2/3，MOE 已经允许主输出，可能在母线接通时产生栅极驱动。`Motor_state=0` 不是硬件急停，
 `BDTR.MOE=1` 也不应作为“电机可以安全上电”的证明。
 
-## 建议的源代码改动（仅用于私有副本）
+## 修订后的源代码改动（仅用于私有副本）
 
-在启动 ADC 的 CH4 后立即显式关闭 MOE：
+不要在启动 ADC 的 CH4 后直接关闭 MOE。该板的 TIM1 CH4 触发链路依赖 MOE；应在启动 CH4 后显式清除三相相位 CCER 位，只保留 CH4，再保留 MOE：
 
 ```c
 HAL_TIM_Base_Start(&htim1);
 HAL_TIM_PWM_Start(&htim1, TIM_CHANNEL_4);
-__HAL_TIM_MOE_DISABLE(&htim1);
+TIM1->CCER &= ~(TIM_CCER_CC1E | TIM_CCER_CC2E | TIM_CCER_CC3E |
+                TIM_CCER_CC1NE | TIM_CCER_CC2NE | TIM_CCER_CC3NE);
+__HAL_TIM_MOE_ENABLE(&htim1); /* 仅维持 CH4 的 ADC 触发 */
 ```
 
 把 USER3 的启动路径改为“先关闭 MOE、再一次性打开三相通道、最后打开 MOE”，并在停止路径的最后再次关闭：
@@ -58,7 +60,7 @@ static void MotorPwmEnable(void)
 ```
 
 实际接入时还需要把比较器 Break、故障锁存、失联租约和 USER3 停机统一调用 `MotorPwmDisable()`。
-这段代码没有写入用户工程；在复制工程中编译后，先用 24 V 断开检查 `MOE=0`，再做任何带母线试验。
+这段代码没有写入用户原始工程；已在带门控的临时副本中编译并烧录验证。断电读回确认 `CCER` 只有 CH4、相位通道关闭，`ADC_offset=1` 后才允许进入 USER3 启动路径。由于 CH4 触发需要 MOE，不能把 `MOE=0` 单独作为此板的启动检查；重新接通母线前仍需完成独立急停、过流和失联验收。完整证据见 [门控镜像烧录验证](speedloop-moe-gated-flash-validation.md)。
 
 ## TD3 门槛
 
