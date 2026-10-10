@@ -100,8 +100,9 @@ def check_profile(profile, live=False):
     for key in ("port", "firmware_id", "protocol_id"):
         if not nonempty(d.get(key)):
             errors.append(f"device.{key} is required")
-    if not integer(d.get("baudrate"), 1):
-        errors.append("device.baudrate must be a positive integer")
+    rate_field = "bitrate" if d.get("transport") == "can" else "baudrate"
+    if not integer(d.get(rate_field), 1):
+        errors.append(f"device.{rate_field} must be a positive integer")
     required_verified = {
         "device": ("protocol_verified", "applied_parameter_feedback_verified",
                    "atomic_gain_update_verified", "single_parameter_owner_verified"),

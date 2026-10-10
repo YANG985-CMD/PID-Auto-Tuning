@@ -64,15 +64,37 @@ def decode_frame(line):
         raise SafetyError(str(exc)) from exc
 
 
-def validate_runtime(p, live=False):
+def validate_runtime(p, live=False, transport=None):
+    transport = transport or ('serial' if live else 'mock')
+    if transport not in {'mock', 'serial', 'can'} or live != (transport != 'mock'):
+        raise SafetyError('Transport/live-mode mismatch')
     errors, _ = check_profile(p, live=True)
     if errors:
         raise SafetyError('; '.join(errors))
     if p['training'].get('state_fields') != FIELDS:
         errors.append('This runtime requires the documented ten state fields in order')
     r = p.get('runtime', {})
-    if p['device'].get('protocol_id') != PROTOCOL:
+    expected_protocol = 'motor-td3-can-v1' if transport == 'can' else PROTOCOL
+    if p['device'].get('protocol_id') != expected_protocol:
         errors.append('Unsupported firmware protocol; legacy P1/P3 commands are not supported')
+    if transport == 'can':
+        from can_transport import ident
+        d, link = p['device'], p.get('can', {})
+        if d.get('transport') != 'can' or not str(d.get('port', '')).startswith('PCAN_USBBUS') or d.get('bitrate') != 500000:
+            errors.append('CAN requires explicit transport, PCAN USB channel and 500000 bitrate')
+        for name in ('profile_id',):
+            try: ident(p[name])
+            except (KeyError, RuntimeError): errors.append('CAN profile identifier invalid')
+        try: ident(d['firmware_id'])
+        except (KeyError, RuntimeError): errors.append('CAN firmware identifier invalid')
+        period = link.get('telemetry_period_ms')
+        timeout = link.get('fragment_timeout_ms')
+        if timeout != 50:
+            errors.append('CAN v1 requires a 50 ms fragment deadline')
+        if (not number(period) or not 20 <= period <= p['safety']['max_frame_gap_ms']):
+            errors.append('CAN telemetry period must be >=20 ms and fit the maximum frame gap')
+        if (number(period) and p['safety']['max_apply_latency_ms'] <= period + 50):
+            errors.append('CAN apply deadline must cover fragment assembly and telemetry delay')
     scales = r.get('state_scale', [])
     if len(scales) != 10 or not all(number(x) and x > 0 for x in scales):
         errors.append('runtime.state_scale requires ten positive physical scales')
@@ -95,7 +117,7 @@ def validate_runtime(p, live=False):
     if number(window) and window + s['max_apply_latency_ms'] >= s['max_trial_seconds'] * 1000:
         errors.append('Trial must cover one complete command and response')
     if live and (p.get('simulation_only') is not False or p['device']['port'] == 'MOCK_ONLY'):
-        errors.append('Simulation profile cannot authorize a serial session')
+        errors.append('Simulation profile cannot authorize a hardware session')
     if live and p['mode'] not in {'train-live', 'evaluate'}:
         errors.append('Live bridge requires train-live/evaluate mode')
     if not live and p.get('simulation_only') is not True:
@@ -124,7 +146,7 @@ def observation(state, p):
             for k, scale in zip(FIELDS, p['runtime']['state_scale'])]
 
 
-def telemetry_check(f, p):
+def telemetry_shape(f):
     for k in ('seq', 't_us', 't_apply_us', 'applied_seq', 'fault'):
         if not integer(f.get(k)):
             raise SafetyError('Missing/invalid telemetry field ' + k)
@@ -134,6 +156,10 @@ def telemetry_check(f, p):
             raise SafetyError('Missing/non-finite telemetry field ' + k)
     if type(f.get('enabled')) is not bool:
         raise SafetyError('Missing enabled feedback')
+
+
+def telemetry_check(f, p):
+    telemetry_shape(f)
     s, c = p['safety'], p['controller']
     if f['fault'] or abs(f['current']) >= s['current_limit_a'] or abs(f['speed']) >= s['speed_limit_rpm']:
         raise SafetyError('Device fault, overcurrent or overspeed')
@@ -230,15 +256,7 @@ class SerialDevice:
             import serial
         except ImportError as exc:
             raise SafetyError('Live mode requires pyserial (see requirements-serial.txt)') from exc
-        self.p = p
-        self.cv = threading.Condition()
-        self.write_lock = threading.Lock()
-        self.frames = collections.deque(maxlen=4096)
-        self.error = None
-        self.hello = None
-        self.closed = False
-        self.last_rx = time.monotonic()
-        self.raw_log = (Path(output) / 'serial-raw.jsonl').open('w',encoding='utf-8') if output else None
+        self._buffers(p, output, 'serial')
         # Explicit DTR/RTS before open; target reset behavior still needs verification.
         self.port = serial.Serial(port=None, baudrate=p['device']['baudrate'], timeout=.02, write_timeout=.1)
         self.port.dtr = self.port.rts = False
@@ -246,6 +264,22 @@ class SerialDevice:
         self.port.open()
         self.reader = threading.Thread(target=self._read, daemon=True)
         self.reader.start()
+        self._handshake()
+
+    def _buffers(self, p, output, transport):
+        self.p = p
+        self.cv = threading.Condition()
+        self.write_lock = threading.Lock()
+        self.frames = collections.deque(maxlen=4096)
+        self.error = None
+        self.motion_error = None
+        self.hello = None
+        self.closed = False
+        self.last_rx = time.monotonic()
+        self.raw_log = (Path(output) / (transport + '-raw.jsonl')).open('w',encoding='utf-8') if output else None
+
+    def _handshake(self):
+        p = self.p
         try:
             self.send({'type': 'hello', 'profile_id': p['profile_id']})
             self.wait(lambda: self.hello is not None, 2)
@@ -257,6 +291,7 @@ class SerialDevice:
             if not required.issubset(set(h.get('capabilities', []))) or h.get('profile_id') != p['profile_id']:
                 raise SafetyError('Firmware capabilities/profile mismatch')
             self.boot_id = h['boot_id']
+            self.handshake_verified = True
             self.wait(lambda: bool(self.frames), 2)
         except BaseException:
             self.close()
@@ -281,48 +316,57 @@ class SerialDevice:
                             self.raw_log.flush()
                         f = decode_frame(bytes(buf))
                         buf.clear()
-                        with self.cv:
-                            self.last_rx = time.monotonic()
-                            if f.get('type') == 'hello':
-                                if self.hello is not None:
-                                    raise SafetyError('Device reboot/new handshake during session')
-                                self.hello = f
-                            elif f.get('type') == 'telemetry':
-                                telemetry_check(f, self.p)
-                                if self.hello is None or f.get('boot_id') != self.hello.get('boot_id'):
-                                    raise SafetyError('Unknown boot identity')
-                                if self.frames:
-                                    prev = self.frames[-1]
-                                    if f['seq'] != prev['seq'] + 1 or f['t_us'] <= prev['t_us']:
-                                        raise SafetyError('Sequence gap/reorder or clock reset')
-                                    if (f['t_us'] - prev['t_us']) / 1000 > self.p['safety']['max_frame_gap_ms']:
-                                        raise SafetyError('Excessive device frame gap')
-                                self.frames.append(f)
-                            else:
-                                raise SafetyError('Unknown firmware response')
-                            self.cv.notify_all()
+                        self._accept(f)
         except BaseException as exc:
             with self.cv:
                 self.error = str(exc)
                 self.cv.notify_all()
 
+    def _accept(self, f):
+        with self.cv:
+            if f.get('type') == 'hello':
+                if self.hello is not None:
+                    raise SafetyError('Device reboot/new handshake during session')
+                self.hello = f
+            elif f.get('type') == 'telemetry':
+                telemetry_shape(f)
+                if self.hello is None or f.get('boot_id') != self.hello.get('boot_id'):
+                    raise SafetyError('Unknown boot identity')
+                if self.frames:
+                    prev = self.frames[-1]
+                    if f['seq'] != prev['seq'] + 1 or f['t_us'] <= prev['t_us']:
+                        raise SafetyError('Sequence gap/reorder or clock reset')
+                    if (f['t_us'] - prev['t_us']) / 1000 > self.p['safety']['max_frame_gap_ms']:
+                        raise SafetyError('Excessive device frame gap')
+                try:
+                    telemetry_check(f, self.p)
+                except SafetyError as exc:
+                    # Keep valid fault telemetry for fresh physical-disabled confirmation.
+                    # A latched motion error blocks every future observation/action/episode.
+                    if self.motion_error is None: self.motion_error = str(exc)
+                self.frames.append(f)
+            else:
+                raise SafetyError('Unknown firmware response')
+            self.last_rx = time.monotonic()
+            self.cv.notify_all()
+
     def wait(self, predicate, seconds):
         deadline = time.monotonic() + seconds
         with self.cv:
             while not predicate():
-                if self.error:
-                    raise SafetyError(self.error)
+                if self.error or self.motion_error:
+                    raise SafetyError(self.error or self.motion_error)
                 remaining = deadline - time.monotonic()
                 if remaining <= 0:
                     raise SafetyError('Firmware response timeout')
                 self.cv.wait(min(.02, remaining))
-            if self.error:
-                raise SafetyError(self.error)
+            if self.error or self.motion_error:
+                raise SafetyError(self.error or self.motion_error)
 
     def frame(self):
         with self.cv:
-            if self.error:
-                raise SafetyError(self.error)
+            if self.error or self.motion_error:
+                raise SafetyError(self.error or self.motion_error)
             if time.monotonic() - self.last_rx > self.p['safety']['max_frame_gap_ms'] / 1000:
                 raise SafetyError('Telemetry stale')
             return copy.deepcopy(self.frames[-1])
@@ -392,16 +436,85 @@ class SerialDevice:
             self.raw_log.close()
 
 
+class CanDevice(SerialDevice):
+    """CAN wire adapter sharing serial's actual-ACK, window and STOP checks."""
+    def __init__(self, p, output=None, link=None):
+        from can_transport import PcanLink, Reassembler
+        validate_runtime(p, live=True, transport='can')
+        self._buffers(p, output, 'can')
+        self.nonce = secrets.randbits(64) or 1
+        self.wire_seq = self.transfer = 0
+        self.reassembler = Reassembler()
+        try:
+            self.link = link if link is not None else PcanLink(p['device']['port'])
+            self.reader = threading.Thread(target=self._read, daemon=True)
+            self.reader.start()
+        except BaseException:
+            if hasattr(self, 'link'): self.close()
+            elif self.raw_log: self.raw_log.close()
+            raise
+        self._handshake()
+
+    def send(self, obj):
+        from can_transport import fragment, pack
+        with self.write_lock:
+            if obj['type'] == 'hello':
+                data = pack(obj, self.nonce)
+            else:
+                if self.hello is None or not getattr(self, 'handshake_verified', False):
+                    raise SafetyError('CAN command before verified handshake')
+                if self.wire_seq == 0xFFFFFFFF:
+                    raise SafetyError('CAN command sequence exhausted')
+                self.wire_seq += 1
+                expires = 0 if obj['type'] == 'stop' else self.frame()['t_us'] + round(self.p['safety']['max_apply_latency_ms'] * 1000)
+                data = pack(obj, self.nonce, int(self.hello['boot_id'], 16), self.wire_seq, expires)
+            for frame in fragment(data, self.transfer):
+                self.link.send(frame)
+            self.transfer = (self.transfer + 1) & 255
+
+    def _read(self):
+        from can_transport import unpack
+        try:
+            while not self.closed:
+                data = self.link.receive()
+                now = time.monotonic()
+                self.reassembler.check_timeout(now)
+                if data is None: continue
+                packet = self.reassembler.feed(data, now)
+                if packet is None: continue
+                obj, meta = unpack(packet)
+                if meta['nonce'] != self.nonce:
+                    raise SafetyError('CAN session identity mismatch')
+                if self.raw_log:
+                    self.raw_log.write(json.dumps(dict(host_monotonic=now, packet_hex=packet.hex())) + '\n')
+                    self.raw_log.flush()
+                self._accept(obj)
+        except BaseException as exc:
+            with self.cv:
+                self.error = str(exc)
+                self.cv.notify_all()
+
+    def close(self):
+        self.stop()
+        self.closed = True
+        if hasattr(self, 'reader'): self.reader.join(.2)
+        try: self.link.close()
+        finally:
+            if self.raw_log: self.raw_log.close()
+
+
 class Engine:
-    def __init__(self, profile, output, device=None, live=False):
-        validate_runtime(profile, live)
+    def __init__(self, profile, output, device=None, live=False, transport=None):
+        transport = transport or ('serial' if live else 'mock')
+        validate_runtime(profile, live, transport)
         self.p, self.live = profile, live
         self.output = Path(output)
         self.output.mkdir(parents=True, exist_ok=True)
         self.run_id = str(uuid.uuid4())
         self.log = (self.output / 'transitions.jsonl').open('w', encoding='utf-8')
         self.events = (self.output / 'events.jsonl').open('w', encoding='utf-8')
-        self.device = device or (SerialDevice(profile, self.output) if live else MockDevice(profile))
+        self.device = device or (CanDevice(profile, self.output) if transport == 'can'
+                                 else SerialDevice(profile, self.output) if live else MockDevice(profile))
         self.lock = threading.RLock()
         self.active = self.closed = False
         self.latched = None
@@ -523,7 +636,7 @@ class Engine:
                                       self.session_seconds * 1000 + reserve > self.p['safety']['max_session_seconds'] * 1000)
             row = dict(schema_version=1, run_id=self.run_id, episode_id=str(self.episode),
                        profile_id=self.p['profile_id'], firmware_id=self.p['device']['firmware_id'],
-                       protocol_id=PROTOCOL, policy_version=self.policy_version, step=self.step_index,
+                       protocol_id=self.p['device']['protocol_id'], policy_version=self.policy_version, step=self.step_index,
                        state=state, next_state=next_state, action_normalized=action,
                        action_proposed=gains, action_applied={'kp': end['kp'], 'ki': end['ki']},
                        command_seq=seq, applied_command_seq=ack['applied_seq'],
@@ -652,15 +765,15 @@ def main():
     parser.add_argument('--output', required=True)
     parser.add_argument('--port', type=int, default=47653)
     parser.add_argument('--token-file', required=True)
-    parser.add_argument('--transport', choices=['mock', 'serial'], default='mock')
+    parser.add_argument('--transport', choices=['mock', 'serial', 'can'], default='mock')
     parser.add_argument('--allow-live', action='store_true', help='Explicit operator live-motion selection')
     parser.add_argument('--approved-policy', help='Exact reviewed policy identity allowed for live evaluation')
     args = parser.parse_args()
-    live = args.transport == 'serial'
+    live = args.transport != 'mock'
     if live and not args.allow_live:
-        parser.error('Serial motion requires explicit --allow-live and complete device validation')
+        parser.error('Hardware motion requires explicit --allow-live and complete device validation')
     p = load_json(args.profile)
-    validate_runtime(p, live)
+    validate_runtime(p, live, args.transport)
     output = Path(args.output)
     output.mkdir(parents=True, exist_ok=True)
     if (output / 'transitions.jsonl').exists():
@@ -674,7 +787,7 @@ def main():
         token_path.parent.mkdir(parents=True, exist_ok=True)
         token = secrets.token_hex(32)
         token_path.write_text(token, encoding='utf-8')
-    engine = Engine(p, output, live=live)
+    engine = Engine(p, output, live=live, transport=args.transport)
     try:
         serve(engine, args.port, token, args.approved_policy)
     finally:

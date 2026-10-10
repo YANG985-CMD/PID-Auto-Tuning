@@ -83,7 +83,7 @@ python -B scripts/test_can_monitor.py
 
 CAN 链路层自带帧校验，但 TD3 仍需要应用层的序号、原子增益应用回读、动作租约、失联停机、故障锁存和唯一写入者。CAN 的 ACK 只说明有接收节点收到帧，不代表 PI 已应用参数。经典 CAN 单帧只有 8 字节，现有 JSON/CRC 串口帧不能直接塞进一帧；当前适配器不支持 FD，因此后续应采用版本化的经典 CAN 二进制协议或有明确时限/序号/完整性检查的分帧传输。
 
-改造位置已明确：在 FDCAN 接收端校验并暂存完整命令，在控制周期边界一次应用 Kp/Ki；把真实参数、应用序号、设备时间、速度、电流、母线和故障写入一致遥测快照；控制任务独立执行租约/失联禁能。训练器的 `Engine` 和 MATLAB 接口可以保留，但当前 `motor_runtime.py` 仍只支持 mock/serial，**没有 `--transport can` 训练入口**。
+已新增 C 协议与控制任务接口：接收端校验并暂存完整命令，在控制周期边界应用 Kp/Ki；board callback 成功且实际 PI 回读一致后才提交应用序号；控制任务独立执行租约/失联禁能。`motor_runtime.py` 现支持 **`--transport can`**，保留现有 `Engine` 和 MATLAB 接口。Python 与编译 C 端点的 16 项软件检查通过，3 条完整回合经验通过审计；这些是软件证据，尚未在实际 FOC 固件中接入和验证。详见 [CAN 运行与协议](../skills/motor-td3-serial-tuning/references/can-runtime.md)。
 
 在没有完成上述固件改造、编译和断电验证前，CAN 只能作为物理通信通道，不能作为 TD3 实机控制接口。Codex 可以先监听并分析帧，再在协议固定后把 MATLAB/桥接器的传输层接到 CAN。
 

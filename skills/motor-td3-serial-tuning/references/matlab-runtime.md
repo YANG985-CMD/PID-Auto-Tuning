@@ -88,6 +88,8 @@ trainMotorTD3(47653,'TOKEN_FILE','MODEL_OUTPUT',6);
 
 实机第一版用已验证基准周围的小幅探索收集经验，每轮停机后训练候选；训练出来的新网络不会自动接管实机。网络从零开始训练的数据量通常远多于演示的 180 条，应优先改用可信仿真预训练，再规划有界实机微调。
 
+经典 CAN 也可使用同一个 MATLAB 接口：在板端已接入 `motor-td3-can-v1` 并完成独立保护验证后，使用 CAN 配置与 `--transport can --allow-live` 启动桥接器，详见 [can-runtime.md](can-runtime.md)。原厂占位帧和独立诊断回包没有训练语义；本次 CAN 应用层验证来自软件 C 端点，尚未在实际 FOC 固件中运行。
+
 要评估已训练的实机候选，启动新的桥接器并增加 `--approved-policy candidate-NNN`，随后调用 `evaluateCheckpoint(PORT,TOKEN_FILE,CHECKPOINT,REPORT_FILE)`。版本身份、尺度和增益映射必须完全一致；模拟训练的模型被此实机入口拒绝。固定 PI 和候选使用相同给定与计划。实机负载、初始转速、积分状态和冷却条件必须由操作者/固件建立；mock 的 seed 不会创造实际负载或替代可重复初态。不要据此报告不存在的负载对比。
 
 ## 上传与部署

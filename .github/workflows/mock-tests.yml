@@ -18,6 +18,8 @@ jobs:
         run: python -B scripts/test_can_echo.py --output "${{ runner.temp }}/td3-can-echo"
       - name: Bridge faults and serial byte stream
         run: python -B skills/motor-td3-serial-tuning/scripts/test_runtime.py --output "${{ runner.temp }}/td3-runtime"
+      - name: CAN binary protocol and actual applied feedback over compiled C peer
+        run: python -B skills/motor-td3-serial-tuning/scripts/test_can_runtime.py --output "${{ runner.temp }}/td3-can-runtime" --compiler gcc
       - name: MCU C protocol and guard
         run: python -B skills/motor-td3-serial-tuning/scripts/test_firmware.py --output "${{ runner.temp }}/td3-firmware" --compiler gcc
       - name: RAM PIL refuses unsafe or mismatched requests without hardware

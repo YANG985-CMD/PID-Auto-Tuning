@@ -2,6 +2,8 @@
 
 把电机串口数据送进 MATLAB 训练 TD3，输出有界的速度环 Kp、Ki，经串口应用确认后形成学习经验；Codex 管理实验和分析结果，最终导出仅用于推理的 Actor C 代码。
 
+现已增加经典 CAN 的应用层与 `--transport can` 入口：沿用 MATLAB 的状态/动作接口，加入会话、时效、分帧校验和实际参数回读。**CAN 物理链路已实测；新训练协议目前完成软件端点验证与目标编译，板级接入和实机保护仍待验证。**
+
 **Codex 可以管理 TD3 训练、分析训练结果，并将 Actor 部署到单片机执行。** 本项目已跑通真实 MATLAB TD3 训练与独立评估，并在实际 **STM32G431** 上完成 Actor 的 **RAM 部署及推理验证（PIL）**：40 组测试通过，原 Flash 内容保持不变。电机闭环训练和永久 Flash 部署仍待验证。
 
 ## Codex 在这里做什么
@@ -153,6 +155,22 @@ Codex 查阅板卡原理图与安全说明，经 STLink 核对芯片后，将已
 
 [实测与原因分析](docs/stm32g431-can-diagnostics.md) · [可复用 CAN 诊断流程](skills/motor-td3-serial-tuning/references/stm32-can-diagnostics.md) · [内部回环摘要](examples/stm32g431-can-loopback/summary.json) · [双向收发摘要](examples/stm32g431-can-echo/summary.json)
 
+### CAN 接入 TD3 的进展
+
+Codex 在链路验证后新增 `motor-td3-can-v1` 与 MCU 控制任务接口：固定内存分帧/CRC、启动与会话绑定、连续序号、绝对命令有效期、原子 Kp/Ki 更新与实际回读、独立租约/失联故障锁存。主机不把“收到命令”当成应用成功；C 端板级更新 callback 成功且实际 PI 回读一致后，才提交应用序号。
+
+| 检查 | 当前结果 |
+|---|---|
+| CAN 协议与 Python/C 端点 | 16 项软件检查通过，包括旧启动/旧会话、重放、过期、缺片、CRC、错参数、假成功回调、固件身份不符和遥测丢失 |
+| 完整桥接回合 | 经编译 C 软件端点形成 3 条可审计经验，实际参数、序号和设备时间一致 |
+| 原串口/C 接口 | 14 项串口测试和 19 项既有 C 协议/保护测试通过 |
+| MCU 编译 | 3 个新增/复用模块通过 Cortex-M4F Arm Compiler 对象编译，警告按错误处理 |
+| 实际 FOC 固件 | 仍需板级 FDCAN、计时、真实传感器/PI/PWM hooks 接入和保护验证；本轮未烧录、未启动电机 |
+
+故障发生后，主机锁住学习和动作，仍读取有效的故障遥测以确认实际禁能；无法确认动作或终点的数据不会进入训练。本地原速度环还有 NNSMC 补偿，实机基准须按实际控制结构建立，不能把软件端点数据当成电机效果。
+
+[CAN 协议、命令与板级接入](skills/motor-td3-serial-tuning/references/can-runtime.md) · [未配置 CAN 模板](skills/motor-td3-serial-tuning/assets/can-session-profile.example.json) · [软件验证摘要](examples/can-runtime-validation/summary.json)
+
 ## 组成
 
 | 位置 | 内容 |
@@ -167,6 +185,8 @@ Codex 查阅板卡原理图与安全说明，经 STLink 核对芯片后，将已
 | `scripts/legacy_hall_monitor.py` | 当前 STM32G4 原固件的只读 24 字节 Hall 遥测解析；不发送启动或增益命令 |
 | `scripts/can_monitor.py` | PCAN 静默监听、驱动模式回读和原始帧记录；不发送 CAN 控制帧 |
 | `scripts/stm32_can_loopback.py` / `scripts/stm32_can_echo.py` | CAN 专用 SRAM 诊断；分别验证内部回环和有界 PCAN 双向收发，保持 PWM 禁能 |
+| `skills/motor-td3-serial-tuning/scripts/can_transport.py` | TD3 经典 CAN 二进制协议与 PCAN 单一所有者；与 `motor_runtime.py --transport can` 配合 |
+| `skills/motor-td3-serial-tuning/firmware/motor_td3_can*.c/.h` | MCU CAN 协议与控制周期接口，需实际板级 hooks |
 | `firmware/` | CRC 协议、参数保护、租约/失联/故障锁存 C 模块 |
 | `scripts/session_checks.py` | 配置与经验审计 |
 | `assets/` | 未配置的实机模板、仅用于模拟的配置 |
@@ -196,7 +216,7 @@ Codex 可在目标条件齐全的已授权会话中完成导出、工程接入�
 
 当前板上原固件的只读串口布局见 [legacy-board-telemetry.md](docs/legacy-board-telemetry.md)。它只适合 shadow 观测，缺少 TD3 所需的动作应用确认和独立停机协议。
 
-CAN 是另一条可接入 MATLAB 的通信路径。对应原固件的工程已包含 500 kbit/s 经典 CAN，发送扩展 ID `0x1B`、8 字节占位帧；尚未实现 TD3 增益应用确认或通信保护。本项目提供 [PCAN 静默监听器](scripts/can_monitor.py) 和 [CAN 专用诊断](docs/stm32g431-can-diagnostics.md)。电脑与板端的 16 组双向收发已通过，但 `motor_runtime.py` 目前仍仅支持 mock/serial，尚无 CAN 训练入口。详见 [CAN 接入与验证状态](docs/stm32g4-can-path.md)。
+CAN 是另一条可接入 MATLAB 的通信路径。对应原固件的工程已包含 500 kbit/s 经典 CAN，发送扩展 ID `0x1B`、8 字节占位帧；尚未接入 TD3 应用确认或通信保护。本项目提供 [PCAN 静默监听器](scripts/can_monitor.py)、[CAN 专用诊断](docs/stm32g431-can-diagnostics.md) 及 [新的 CAN 训练传输入口](skills/motor-td3-serial-tuning/references/can-runtime.md)。电脑与板端的 16 组双向收发已通过；新增应用层的软件验证通过，实际 FOC 固件接入仍待完成。详见 [CAN 接入与验证状态](docs/stm32g4-can-path.md)。
 
 ## 独立测试
 

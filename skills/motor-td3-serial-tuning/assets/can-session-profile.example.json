@@ -1,0 +1,103 @@
+{
+  "schema_version": 1,
+  "profile_id": "motor-can-unconfigured-v1",
+  "mode": "plan",
+  "device": {
+    "port": "PCAN_USBBUS1",
+    "firmware_id": null,
+    "protocol_id": "motor-td3-can-v1",
+    "protocol_verified": false,
+    "applied_parameter_feedback_verified": false,
+    "atomic_gain_update_verified": false,
+    "single_parameter_owner_verified": false,
+    "transport": "can",
+    "bitrate": 500000
+  },
+  "controller": {
+    "loop": "speed-pi",
+    "kp_baseline": 0.003389,
+    "ki_baseline": 0.00144,
+    "baseline_verified": false,
+    "baseline_evidence": null,
+    "ki_convention": null,
+    "bumpless_update_verified": false,
+    "kp_min": null,
+    "kp_max": null,
+    "ki_min": null,
+    "ki_max": null,
+    "max_kp_step": null,
+    "max_ki_step": null
+  },
+  "safety": {
+    "current_limit_a": null,
+    "speed_limit_rpm": null,
+    "vbus_min_v": null,
+    "vbus_max_v": null,
+    "thermal_protection": null,
+    "temperature_limit_c": null,
+    "max_trial_seconds": null,
+    "max_session_seconds": null,
+    "max_commands_per_trial": null,
+    "max_frame_gap_ms": null,
+    "max_apply_latency_ms": null,
+    "decision_window_min_ms": null,
+    "decision_window_max_ms": null,
+    "action_lease_ms": null,
+    "firmware_link_timeout_ms": null,
+    "learner_progress_timeout_ms": null,
+    "limit_evidence": null,
+    "thermal_evidence": null,
+    "safe_stop_verified": false,
+    "independent_overcurrent_verified": false,
+    "firmware_link_loss_verified": false,
+    "emergency_stop_verified": false,
+    "action_lease_verified": false,
+    "host_stall_verified": false,
+    "protection_evidence": null
+  },
+  "training": {
+    "algorithm": "TD3",
+    "task": "adaptive-gains",
+    "framework": "MATLAB Reinforcement Learning Toolbox",
+    "state_fields": [
+      "speed_ref",
+      "speed",
+      "speed_error",
+      "error_history",
+      "integral_output",
+      "current",
+      "vbus",
+      "kp",
+      "ki",
+      "elapsed_ms"
+    ],
+    "state_units_verified": false,
+    "normalization_id": null,
+    "action_mapping_id": null,
+    "fixed_policy_evaluation_verified": false,
+    "fault_penalty": null
+  },
+  "simulation_only": false,
+  "runtime": {
+    "state_scale": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "window_ms": null,
+    "current_saturation_a": null,
+    "max_steps": null,
+    "speed_refs_rpm": []
+  },
+  "can": {
+    "telemetry_period_ms": 20,
+    "fragment_timeout_ms": 50
+  }
+}
