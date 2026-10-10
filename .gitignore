@@ -8,6 +8,7 @@ venv/
 !.env.example
 *.log
 *.jsonl
+!examples/thermal-can/synthetic-raw.jsonl
 checkpoints/
 runs/
 bridge-token.txt
