@@ -30,6 +30,7 @@ description: "Build or run a Codex-managed motor serial/CAN-to-MATLAB TD3 workfl
 | 在 G431/G441 上验证 Actor 计算 | 断开功率电源后，用 RAM PIL 比较 MCU 与 MATLAB；不应用增益、不写 Flash，结束保持暂停 |
 | 诊断 G431 的 CAN 链路 | 按 [stm32-can-diagnostics.md](references/stm32-can-diagnostics.md) 选择内部回环或有界 PCAN 收发；运行专用 SRAM 程序并检查 PWM 禁能 |
 | 验证 G431 独立看门狗 | 按 [g431-watchdog.md](references/g431-watchdog.md) 在功率物理断开时运行 RAM 复位诊断；SpeedLoop 禁止运动集成及真实心跳停止按 [speedloop-watchdog.md](references/speedloop-watchdog.md)；不等于运动停机验收 |
+| 没有温度传感器，设计热保护 | 按 [sensorless-thermal.md](references/sensorless-thermal.md) 完成 MCU 三相热预算的离线检查；先标定电流并取得过载/功率板依据，软件通过不批准实机 |
 | 验证 G431 比较器到 Break 的信号路径 | 按 [g431-comp-break.md](references/g431-comp-break.md) 在功率电源物理断开时运行 SRAM DAC 阈值诊断；它不校准电流，也不测量功率输出关闭延迟 |
 | 观察 G431 三相电流 ADC 零点 | 按 [g431-current-zero.md](references/g431-current-zero.md) 在功率电源物理断开时运行 SRAM ADC 观察；它不写偏置、不校准增益，也不批准过流门槛 |
 | 用已知电流拟合 ADC 增益 | 按 [current-calibration.md](references/current-calibration.md) 准备同步参考电流/ADC 数据并运行离线拟合；没有已知电流源时不得估算或写入保护参数 |
@@ -55,7 +56,7 @@ CAN 通信问题单独按 [stm32-can-diagnostics.md](references/stm32-can-diagno
 
 CAN 训练接入读 [can-runtime.md](references/can-runtime.md)。已有 PCAN 主机入口和可编译 C 端点，软件完整回合已验证；G431 原 FOC 工程的锁定接入副本已完整编译，具体按 [g431-locked-integration.md](references/g431-locked-integration.md) 操作。其能力为 0，禁止启动/增益应用；共享禁能函数与协议端点的真实 RAM 测试通过，完整 FOC 接入固件尚未烧录执行。缺失温度保留 NaN，不伪造训练观测。使用 `can-session-profile.example.json` 配置，不复制软件测试 peer 的验证标记到真实配置。
 
-检查温度及参数限制时，先核对应用实际采样通道、板卡原理图和具体示例版本。没有温度传感器时记录能力缺失，再设计测温或经验证的替代热保护；当前运行器尚不支持替代模式。模糊规则的可达增益集合、Iq 指令限幅和 DAC 码值不是已验证的实机安全域。
+检查温度及参数限制时，先核对应用实际采样通道、板卡原理图和具体示例版本。没有温度传感器时记录能力缺失，再设计测温或经验证的替代热保护；按 [sensorless-thermal.md](references/sensorless-thermal.md) 使用离线 MCU 热预算模块，当前运行器仍显式拒绝替代模式，协议与板级接入未完成。预算不是摄氏温度；STOP/新回合保留预算，未知启动热状态拒绝运行。模糊规则的可达增益集合、Iq 指令限幅和 DAC 码值不是已验证的实机安全域。
 
 用户指定 `17.SpeedLoop` 时按 [speedloop-diagnostic.md](references/speedloop-diagnostic.md) 创建禁止运动的 GNU Arm 诊断副本，不复用 PID/NNSMC 的状态字段。该版本取消 TIM1/CH4 启动，使用约 100Hz 软件 ADC 诊断；不是 10kHz FOC 或训练遥测。原 CH4 触发依赖 MOE；调试器暂停也不会自动关闭 PWM。允许运动前应先禁能再确认停机，不能把 halt 当急停或把逐个 HAL Start 声称为原子输出使能。
 

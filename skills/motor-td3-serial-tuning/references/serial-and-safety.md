@@ -44,7 +44,7 @@ DISARMED → 版本/健康握手 → 验证基准 → SHADOW
 
 `assets/session-profile.example.json` 为正式会话配置模板，`mode=plan`，未配置数值为 null。运行 `check-profile --live` 检查针对实机的完整性，不应修改模板里的开关来伪造验证。
 
-配置中的 `verified` 项必须关联验证记录或源码和试验依据。`fixed_policy_evaluation_verified` 表示固定策略评估流程已验证可用；每个待发布模型仍需单独评估，不能据此自动上线。若没有温度遥测，可以选择 `verified_alternative` 并给出经过验证的替代保护依据；不能为了通过校验填一个假的温度。
+配置中的 `verified` 项必须关联验证记录或源码和试验依据。`fixed_policy_evaluation_verified` 表示固定策略评估流程已验证可用；每个待发布模型仍需单独评估，不能据此自动上线。规划/经验检查器允许以 `verified_alternative` 记录经过验证的替代保护依据；**当前实机运行器、v1 遥测和 guard 尚未接通替代模式，运行器会明确拒绝它**。已有三相热预算的离线模块和接入合同见 [sensorless-thermal.md](sensorless-thermal.md)；不能为了通过校验填一个假的温度。
 
 配置完整性不等于硬件安全认证、授权、闭环稳定或某次试验已完成。
 

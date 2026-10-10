@@ -40,6 +40,8 @@ jobs:
         run: python -B skills/motor-td3-serial-tuning/scripts/test_fit_current_calibration.py
       - name: MCU C protocol and guard
         run: python -B skills/motor-td3-serial-tuning/scripts/test_firmware.py --output "${{ runner.temp }}/td3-firmware" --compiler gcc
+      - name: Sensorless MCU overload budget refuses stale samples and unknown warm restart
+        run: python -B skills/motor-td3-serial-tuning/scripts/test_thermal_guard.py --output "${{ runner.temp }}/td3-thermal" --compiler gcc
       - name: RAM PIL refuses unsafe or mismatched requests without hardware
         run: python -B skills/motor-td3-serial-tuning/scripts/test_pil_contract.py --output "${{ runner.temp }}/td3-pil-contract"
       - name: Published mock Actor MATLAB reference parity

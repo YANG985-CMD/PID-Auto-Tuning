@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "profile_id": "motor-thermal-unconfigured-v1",
+  "model": "per-phase-positive-excess-i2t-no-cooling-v1",
+  "deployment_approved": false,
+  "temperature_measured": false,
+  "limits": {
+    "continuous_rms_a": [null, null, null],
+    "instantaneous_trip_a": [null, null, null],
+    "budget_a2s": [null, null, null],
+    "stall_speed_rpm": null,
+    "stall_rms_a": null,
+    "window_us": null,
+    "window_samples": null,
+    "max_age_us": null,
+    "max_energized_us": null,
+    "max_stalled_us": null,
+    "validated": false
+  },
+  "restart_policy": "deny-unknown-thermal-state",
+  "cooling_credit": "none",
+  "evidence": {
+    "current_calibration": null,
+    "continuous_phase_current": null,
+    "overload_current_and_duration": null,
+    "ambient_and_cooling_conditions": null,
+    "power_stage_thermal_protection": null,
+    "adc_window_coverage_and_timing": null,
+    "physical_output_disable": null,
+    "retained_state_or_verified_cold_procedure": null
+  },
+  "source_candidates": [
+    {
+      "source": "User manual V13.1, PDF page 24, MCSDK Motor Parameters screenshot",
+      "field": "Nominal Current",
+      "value": 3.0,
+      "unit": "Apk",
+      "status": "example setting only; not verified continuous phase RMS current"
+    },
+    {
+      "source": "BLDC_hallsensor_CAN/Noname/Inc/pmsm_motor_parameters.h",
+      "field": "NOMINAL_CURRENT",
+      "value": 2183,
+      "unit": "internal int16 current code",
+      "status": "not amperes; depends on shunt, amplifier gain and MCU supply"
+    }
+  ]
+}

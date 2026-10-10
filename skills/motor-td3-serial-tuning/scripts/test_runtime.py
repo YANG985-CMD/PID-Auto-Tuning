@@ -155,6 +155,17 @@ class RuntimeTests(unittest.TestCase):
             bad['runtime']['current_saturation_a'] = value
             with self.assertRaises(SafetyError): validate_runtime(bad)
 
+    def test_alternative_thermal_profile_cannot_bypass_live_guard(self):
+        bad = copy.deepcopy(self.p)
+        bad['safety']['thermal_protection'] = 'verified_alternative'
+        with self.assertRaisesRegex(SafetyError, 'Alternative thermal protection'):
+            validate_runtime(bad)
+        bad['simulation_only'] = False
+        bad['mode'] = 'evaluate'
+        bad['device']['port'] = 'UNOPENED_TEST_PORT'
+        with self.assertRaisesRegex(SafetyError, 'Alternative thermal protection'):
+            validate_runtime(bad, live=True)
+
     def test_overcurrent_nan_unknown_endpoint_not_learned(self):
         for value in (5.0,math.nan):
             device = MockDevice(self.p)

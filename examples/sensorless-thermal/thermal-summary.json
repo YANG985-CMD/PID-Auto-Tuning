@@ -1,0 +1,18 @@
+{
+  "schema_version": 1,
+  "test_groups": 17,
+  "passed": true,
+  "hardware_accessed": false,
+  "thermal_protection_verified": false,
+  "motion_authorized": false,
+  "synthetic_parameters_only": true,
+  "source_sha256": {
+    "motor_td3_thermal.c": "9cff71025c89acf598fb848e4be1fd4e0ae85d6f2ec97c668f5108a1ed2b3a12",
+    "motor_td3_thermal.h": "5734ad7cc991c5d295e4cc80cecd3bb0a652d53b7da5dd7c8c25a298e2573526",
+    "tests/thermal_host.c": "569ff81134ff480ce4989f2d5366ebd36095dc5803cdaea1eade0a365060bced"
+  },
+  "arm_object_compiled": true,
+  "linked_into_speedloop": false,
+  "arm_object_sha256": "672f56da76c6fc501ec422b29193262b6d1a06d1152823ace91705648b1b736c",
+  "arm_compiler_version": "arm-none-eabi-gcc.exe (Arm GNU Toolchain 14.2.Rel1 (Build arm-14.52)) 14.2.1 20241119"
+}

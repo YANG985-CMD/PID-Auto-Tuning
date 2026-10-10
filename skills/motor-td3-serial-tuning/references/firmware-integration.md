@@ -4,6 +4,7 @@
 
 - `firmware/motor_td3_protocol.c/.h`：固定内存 JSON 命令解析、CRC32、hello 和遥测编码。
 - `firmware/motor_td3_guard.c/.h`：增益边界/步长、命令序号、租约、失联、试验时限、传感器/电流/转速/电压/温度、故障锁存。
+- `firmware/motor_td3_thermal.c/.h`：离线验证的三相 I²t 过载预算、累计堵转/通电时限、采样期限与禁能 hook；尚未接入实机 guard 和 v1 热遥测，详见 [sensorless-thermal.md](sensorless-thermal.md)。
 - `firmware/motor_td3_can.c/.h` 与 `motor_td3_can_control.c/.h`：经典 CAN 分帧/CRC、会话与绝对有效期、控制周期实际参数应用；板级 hooks 与命令布局见 [can-runtime.md](can-runtime.md)。
 - `motor_td3_g431_adapter.c/.h`、`motor_td3_g431_off.h` 与 `scripts/build_g431_locked_foc.py`：已审计 G431 例程的默认禁止运动接入、私有副本构建；完整编译和共享禁能函数的板上测试见 [g431-locked-integration.md](g431-locked-integration.md)。真实温度、生产启动身份和增益应用未完成，不能用于训练。
 - 导出的 `motor_actor.c/.h`：仅本机推理，不含训练、Critic 和回放池。

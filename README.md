@@ -16,6 +16,7 @@
 | **部署到单片机** | 导出 Actor C、目标编译、核对芯片、加载到 MCU RAM、读取并分析推理结果 | [G431 板上验证](docs/stm32g431-validation.md)：40 组通过，Kp/Ki 与 MATLAB 一致 |
 | 诊断实际通信 | 对照示例与原理图，构建 CAN 专用 RAM 程序，分析控制器状态、回包与 PWM 禁能状态 | [CAN 板上验证](docs/stm32g431-can-diagnostics.md)：64 组内部回环、16 组电脑与板端双向收发通过 |
 | 验证失联与独立复位 | 集成前台/ADC/心跳监督，分析故障与复位原因，核验复位后禁止启动 | [SpeedLoop 集成实测](docs/speedloop-watchdog-integration-validation.md)：三种断电故障及真实 CAN 停止心跳复位通过；运动停机时限仍待验证 |
+| 设计无传感器热保护 | 核查电流单位和资料来源，实现 MCU 三相热预算，分析异常采样、过载和未知热状态重启的故障结果 | [热预算软件验证](docs/sensorless-thermal-validation.md)：17 组主机测试和 Cortex-M4 对象编译通过；尚未烧录和验证实机热保护 |
 | 接入真实工程 | 核对 PI/NNSMC 与刹车配置，编写锁定板级适配层，完整编译工程副本，在 MCU 验证共享禁能逻辑 | [FOC / CAN 接入](docs/stm32g431-foc-can-integration.md)：45 单元链接成功，16 项软件测试、11 项板上 RAM 测试通过 |
 | 管理正式上线 | 接入真实观测与保护，构建/烧录目标固件，检查输入尺度、性能和实时预算 | 提供接入流程；本次尚未完成电机闭环与永久 Flash 部署 |
 
@@ -179,7 +180,7 @@ Codex 核对了原 FOC 例程，保留现有 PI + NNSMC，完成禁止运动的 
 
 **16 项板级软件测试与 11 项真实 MCU RAM 测试通过。** 板上测试执行共享 TIM1 禁能函数与锁定协议端点；未执行完整 HAL/FOC 接入固件。55 次实际 SysTick 检查、71 次禁能调用，结束 TIM1/GPIO 关闭、核心暂停、完整 128KB Flash 未变。没有产生电机驱动波形或应用 TD3 增益。
 
-已检查的板卡资料及当前示例没有电机/功率器件温度采集实现，缺失值保留 NaN，能力位恒为 0；训练器会拒绝该诊断固件。下一阶段需建立热保护方案，验证过流阈值、独立硬件看门狗、生产启动身份和无扰增益切换，才能开放有界基准试验及真实训练。
+已检查的板卡资料及当前示例没有电机/功率器件温度采集实现，缺失值保留 NaN，能力位恒为 0；训练器会拒绝该诊断固件。现已建立下述三相热预算的离线模块，仍需标定实际电流、取得热限值并完成板级验证。禁止运动固件的看门狗结果不能替代运动保护、生产启动身份及无扰增益切换验收。
 
 [接入实现、证据和待验证项](docs/stm32g431-foc-can-integration.md) · [结构化验证摘要](examples/stm32g431-foc-can-integration/summary.json)
 
@@ -189,7 +190,7 @@ Codex 核对了原 FOC 例程，保留现有 PI + NNSMC，完成禁止运动的 
 
 | 项目 | 核对结果 |
 |---|---|
-| 温度 | 当前应用没有温度采集；MCSDK 教程亦取消 Temperature Sensing。后续需要测温或经验证的替代热保护方案，不能伪造温度 |
+| 温度 | 当前应用没有温度采集；MCSDK 教程亦取消 Temperature Sensing。已有离线三相热预算模块，实际电流和电机/功率板热依据仍缺失；替代模式尚未开放，不能伪造温度 |
 | 过流 | PID 工程已启用 COMP1→TIM1 Break，DAC 门槛为 3000。按理想零点 2048 的旧标称换算约 +20.9 A，**不是 3 A，也不是实测值**；本次断电 ADC 零点观察约为 A/B/C=`2021.078/2028.781/2024.625`，仍不能代替带电流增益校准；源码只看到 C 相上限比较，尚缺覆盖、封波响应与锁存验收 |
 | 参数限制 | 当前 Iq 指令限制 ±3 A；模糊 PI 的规则范围为 Kp `0.0013556～0.0054224`、Ki `0.00072～0.00216`。这是代码可达范围，未批准为 TD3 实机探索范围 |
 | 示例差异 | `10.TIM1_OPAMP_ADC_DAC.zip` 实际包含较早的 ADC 示例，TIM1 Break 关闭；不能按文件名认定保护已启用 |
@@ -258,6 +259,16 @@ Codex 将监督器接入禁止运动的 SpeedLoop 副本，构建并烧录 **356
 
 本次验证应用心跳超时，没有物理拔 CAN 线或测量运动停机延迟。Flash 中仍是禁止运动的保护诊断固件；**TD3 Actor 已通过 MCU RAM 推理，真实电机闭环和 Actor 常驻 Flash 部署尚未完成。** 下一阶段需完成电流/热保护、实体急停、动作应用回读及基准验证。
 
+### 无温度传感器的热保护进展
+
+已实现 **MCU 三相独立 I²t 过载预算 + 累计堵转时间 + 累计通电时限**。Codex 核查了电流单位，编写保护模块并分析故障测试结果：17 组主机测试通过，Cortex-M4 对象编译通过，桥接保护回归 15 项通过。详见 [验证记录](docs/sensorless-thermal-validation.md) 与 [MCU 接入合同](skills/motor-td3-serial-tuning/references/sensorless-thermal.md)。
+
+预算按每相电流平方的平均值累计，任一相超限就调用禁能函数并锁存故障。第一版不自动抵扣冷却量；停止、换回合及重新连接均不清零，未知启动热状态拒绝运行。该数值不是摄氏温度，TD3 无权修改保护限值。
+
+**尚未接入板上 SpeedLoop 或烧录。** 实际相电流增益、连续相 RMS 电流、过载允许时间、功率板热保护以及冷机/持久状态恢复仍待验证。手册示例的 `3.00 Apk` 是峰值设置，`NOMINAL_CURRENT=2183` 是内部码值，都不能直接当成已验证的连续相电流。现有运行器明确拒绝替代热模式，温度缺失保持 NaN。
+
+原理参考：[Kollmorgen I²t 保护](https://webhelp.kollmorgen.com/studio/Content/Kollmorgen%20Studio/7%202%20I2T%20Motor%20Overload%20Protection.htm)、[Synapticon 逐相 I²t 与堵转保护](https://www.synapticon.com/en/motion-control-academy/motorueberlastschutz-i2t-stillstandsschutz)。绕组 I²t 不能单独覆盖 MOSFET 开关损耗；仍需功率板自己的热保护依据。
+
 ## 组成
 
 | 位置 | 内容 |
@@ -282,6 +293,7 @@ Codex 将监督器接入禁止运动的 SpeedLoop 副本，构建并烧录 **356
 | `skills/motor-td3-serial-tuning/scripts/speedloop_can_capture.py` | 核对完整镜像/禁能状态，发送一次 HELLO，限时采集诊断并在释放 CAN 前暂停；不启动、不下发增益、不训练 |
 | `skills/motor-td3-serial-tuning/scripts/g431_watchdog_pil.py` | GNU Arm 构建与 RAM IWDG 复位验证，清除旧证据、检查复位入口、恢复调试冻结并比较完整 Flash |
 | `skills/motor-td3-serial-tuning/firmware/motor_td3_health.c/.h` | 前台/时钟/ADC/有效心跳监督与喂狗许可；故障锁存，已接入禁止运动 SpeedLoop 诊断副本 |
+| `skills/motor-td3-serial-tuning/firmware/motor_td3_thermal.c/.h` | 离线验证的三相热预算、累计堵转/通电时限、采样有效性和禁能 hook；未知热状态禁止启动，尚未接入板上固件 |
 | `skills/motor-td3-serial-tuning/scripts/g431_locked_pil.py` | 在真实 MCU SRAM 验证共享禁能函数和锁定端点；不是完整 FOC 固件的运行 |
 | `skills/motor-td3-serial-tuning/scripts/speedloop_watchdog_validate.py` / `speedloop_watchdog_can.py` | 固定镜像核验、断电烧录/故障复位及真实 CAN STOP 心跳失联诊断；禁止运动 |
 | `firmware/` | CRC 协议、参数保护、租约/失联/故障锁存 C 模块 |

@@ -102,6 +102,8 @@ def validate_runtime(p, live=False, transport=None):
         errors.append('runtime.max_steps must be a positive integer')
     window = r.get('window_ms')
     s = p['safety']
+    if s['thermal_protection'] != 'measured':
+        errors.append('Alternative thermal protection is not supported by the live telemetry/MCU guard yet')
     if not number(window) or not s['decision_window_min_ms'] <= window <= s['decision_window_max_ms']:
         errors.append('Invalid response window')
     refs = r.get('speed_refs_rpm', [])
