@@ -23,6 +23,8 @@ FILES = ('motor_td3_can.c','motor_td3_can.h','motor_td3_can_control.c','motor_td
          'motor_td3_guard.c','motor_td3_guard.h','motor_td3_protocol.h',
          'motor_td3_g431_adapter.c','motor_td3_g431_adapter.h','motor_td3_g431_off.h',
          'motor_td3_speedloop_sample.c','motor_td3_speedloop_sample.h')
+WATCHDOG_FILES=('motor_td3_health.c','motor_td3_health.h',
+                'motor_td3_g431_watchdog.c','motor_td3_g431_watchdog.h')
 
 
 def inventory(source):
@@ -38,7 +40,7 @@ def validate_source(source):
     return before
 
 
-def patch_copy(copy):
+def patch_copy(copy,watchdog=False):
     main=copy/'Core/Src/main.c';text=main.read_text(encoding='utf-8')
     text=replace_once(text,'#include "FOC_Model.h"',
         '#include "FOC_Model.h"\n#include "motor_td3_g431_adapter.h"\n#include "motor_td3_speedloop_sample.h"')
@@ -79,6 +81,13 @@ def patch_copy(copy):
         HallThetaAdd=0; /* No 10 kHz control integration in diagnostic mode. */
         HallSpeed=(PI/3)/(HallTemp/3200000)*30/(2*PI);''')
     text=replace_once(text,'  __disable_irq();','  motor_td3_g431_disable();\n  __disable_irq();')
+    if watchdog:
+        text=replace_once(text,'#include "motor_td3_speedloop_sample.h"',
+            '#include "motor_td3_speedloop_sample.h"\n#include "motor_td3_g431_watchdog.h"')
+        text=replace_once(text,'  HAL_Init();',
+            '  if(motor_td3_g431_wd_boot_check()) while(1) { motor_td3_g431_disable(); }\n  HAL_Init();')
+        text=replace_once(text,'      motor_td3_speedloop_sample();',
+            '      if(!motor_td3_g431_wd_skip_adc()) motor_td3_speedloop_sample();')
     main.write_text(text,encoding='utf-8',newline='\n')
     if re.search(r'HAL_TIM(?:Ex)?_(?:PWMN?|Base)_Start\s*\(',text) or 'FOC_Model_step();' in text:
         raise ValueError('Unexpected timer start or control step in diagnostic copy')
@@ -100,6 +109,11 @@ def patch_copy(copy):
     it.write_text(text,encoding='utf-8',newline='\n')
     fdcan=copy/'Core/Src/fdcan.c';text=fdcan.read_text(encoding='utf-8')
     text=replace_once(text,'hfdcan1.Init.ExtFiltersNbr = 1;','hfdcan1.Init.ExtFiltersNbr = 0;')
+    if watchdog:
+        # DAR cancels a frame after arbitration loss; HAL enqueue still returns
+        # success. Serialized Tx events plus a 50ms fault deadline bound retry.
+        text=replace_once(text,'hfdcan1.Init.AutoRetransmission = DISABLE;',
+                         'hfdcan1.Init.AutoRetransmission = ENABLE;')
     fdcan.write_text(text,encoding='utf-8',newline='\n')
     if digest(copy/'MATLAB/FOC_Model.c')!=MODEL_SHA256: raise ValueError('Generated model changed')
 
@@ -200,12 +214,14 @@ def build(args):
     out.mkdir(parents=True,exist_ok=True);copy=out/'private-copy';copy.mkdir()
     for folder in ('Core','Drivers','MATLAB','Middlewares/ST/ARM/DSP/Inc'):
         shutil.copytree(source/folder,copy/folder,ignore=shutil.ignore_patterns('*.o','*.d','*.axf','*.hex','*.bak'))
-    patch_copy(copy)
+    watchdog=getattr(args,'watchdog',False)
+    patch_copy(copy,watchdog)
     startup=out/'startup.S';startup.write_text(startup_from_vectors((source/sources[0]).read_text(encoding='utf-8')),encoding='ascii')
     linker=out/'diagnostic.ld';linker.write_text(LINKER,encoding='ascii')
     ours=copy/'codex-can';ours.mkdir()
-    for name in FILES: shutil.copy2(SKILL/'firmware'/name,ours/name)
-    sources.extend(Path('codex-can')/name for name in FILES if name.endswith('.c'))
+    files=FILES+(WATCHDOG_FILES if watchdog else ())
+    for name in files: shutil.copy2(SKILL/'firmware'/name,ours/name)
+    sources.extend(Path('codex-can')/name for name in files if name.endswith('.c'))
     includes=[copy/p for p in ('Core/Inc','Drivers/STM32G4xx_HAL_Driver/Inc',
         'Drivers/STM32G4xx_HAL_Driver/Inc/Legacy','Drivers/CMSIS/Device/ST/STM32G4xx/Include',
         'Drivers/CMSIS/Include','Middlewares/ST/ARM/DSP/Inc','MATLAB','codex-can')]
@@ -224,6 +240,7 @@ def build(args):
            '-std=gnu99','-O2','-g','-pipe','-ffunction-sections','-fdata-sections','-ffp-contract=off','-fno-fast-math',
            '-DSTM32G431xx','-DUSE_HAL_DRIVER','-DARM_MATH_CM4','-DMOTOR_TD3_SPEEDLOOP_DIAGNOSTIC',
            '-Wall','-Wextra']
+    if watchdog: flags.append('-DMOTOR_TD3_SPEEDLOOP_WATCHDOG')
     objects=[]
     for i,p in enumerate(sources):
         obj=out/(f'{i:02d}_'+p.stem+'.o');objects.append(obj)
@@ -247,7 +264,7 @@ def build(args):
         raise ValueError('Image vectors/size outside G431 128KB/32KB map')
     size=run([tool('size'),elf]).strip()
     if inventory(source)!=before: raise RuntimeError('Private source changed during build')
-    summary=dict(schema_version=1,mode=MODE,firmware_id='g431-speedloop-diag-v1',
+    summary=dict(schema_version=1,mode=MODE,firmware_id='g431-speedloop-wdog-v1' if watchdog else 'g431-speedloop-diag-v1',
         compiler=version,translation_units=len(sources),source_files_unchanged=True,source_files_checked=len(before),
         source_tree_sha256=SOURCE_TREE_SHA256,model_sha256=MODEL_SHA256,model_executed=False,
         hardware_executed=False,flash_programming=False,capabilities=0,motion_enable_implemented=False,
@@ -256,7 +273,10 @@ def build(args):
         foc_sampling_preserved=False,forbidden_motion_symbols_absent=True,image_bytes=len(blob),elf_sha256=digest(elf),
         bin_sha256=digest(out/'speedloop-diagnostic.bin'),hex_sha256=digest(out/'speedloop-diagnostic.hex'),
         initial_sp=sp,entry=entry,size_report=size,symbols=symbols,
-        integration_sha256={name:digest(ours/name) for name in FILES})
+        watchdog_integrated=watchdog,diagnostic_fault_injection=watchdog,
+        heartbeat='validated STOP, 200ms deadline; no start/gains' if watchdog else None,
+        can_tx_completion='one outstanding request; Tx event; auto retransmission; 50ms deadline' if watchdog else None,
+        integration_sha256={name:digest(ours/name) for name in files})
     (out/'build-summary.json').write_text(json.dumps(summary,indent=2)+'\n',encoding='utf-8')
     return {k:v for k,v in summary.items() if k!='symbols'}
 
@@ -265,6 +285,7 @@ def main():
     p=argparse.ArgumentParser(description=__doc__)
     for name in ('source','arm-bin','output'): p.add_argument('--'+name,required=True)
     p.add_argument('--temp-root',default=r'E:\simulink\_codex_tmp')
+    p.add_argument('--watchdog',action='store_true',help='Integrate foreground health/IWDG; remains motion inhibited')
     print(json.dumps(build(p.parse_args()),indent=2))
 
 

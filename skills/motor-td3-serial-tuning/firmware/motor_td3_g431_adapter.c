@@ -10,12 +10,18 @@
 #include "FOC_Model.h"
 #include <math.h>
 #include <string.h>
+#ifdef MOTOR_TD3_SPEEDLOOP_WATCHDOG
+#include "motor_td3_g431_watchdog.h"
+#endif
 
 #define RX_CAPACITY 64U
 #define MAIN_DEADLINE_US 5000U
 #define TX_DEADLINE_US 50000U
 #define DIAG_PERIOD_US 100000U
-#ifdef MOTOR_TD3_SPEEDLOOP_DIAGNOSTIC
+#ifdef MOTOR_TD3_SPEEDLOOP_WATCHDOG
+#define LOCKED_FIRMWARE "g431-speedloop-wdog-v1"
+#define LOCKED_PROFILE "g431-speedloop-wdog-v1"
+#elif defined(MOTOR_TD3_SPEEDLOOP_DIAGNOSTIC)
 #define LOCKED_FIRMWARE "g431-speedloop-diag-v1"
 #define LOCKED_PROFILE "g431-speedloop-diag-v1"
 #else
@@ -35,6 +41,13 @@ static uint64_t ring_time[RX_CAPACITY];
 static uint32_t tx_length,tx_index,diag_index;
 static uint8_t tx_transfer;
 static int endpoint_ready;
+#ifdef MOTOR_TD3_SPEEDLOOP_WATCHDOG
+static uint32_t tx_inflight,tx_frame_id;
+static uint8_t tx_marker;
+static uint64_t tx_queued_us;
+volatile uint32_t motor_td3_g431_tx_fault;
+volatile FDCAN_TxEventFifoTypeDef motor_td3_g431_tx_last_event;
+#endif
 
 static uint32_t lock(void) { uint32_t p=__get_PRIMASK(); __disable_irq(); return p; }
 static void unlock(uint32_t p) { __set_PRIMASK(p); }
@@ -79,6 +92,9 @@ void motor_td3_g431_init(void) {
        HAL_FDCAN_ActivateNotification(&hfdcan1,FDCAN_IT_RX_FIFO0_NEW_MESSAGE|FDCAN_IT_RX_FIFO0_MESSAGE_LOST|
            FDCAN_IT_BUS_OFF|FDCAN_IT_ERROR_PASSIVE|FDCAN_IT_ARB_PROTOCOL_ERROR|FDCAN_IT_DATA_PROTOCOL_ERROR,0)!=HAL_OK ||
        HAL_FDCAN_Start(&hfdcan1)!=HAL_OK) irq_fault=1;
+#ifdef MOTOR_TD3_SPEEDLOOP_WATCHDOG
+    if(!motor_td3_g431_wd_init(clock_us())) motor_td3_g431_fault_irq();
+#endif
     main_seen_us=clock_us(); initialized=1;
 }
 void motor_td3_g431_tick_1ms(void) {
@@ -132,11 +148,50 @@ static int send_frame(uint32_t id,const uint8_t data[8]) {
     h.Identifier=id;h.IdType=FDCAN_STANDARD_ID;h.TxFrameType=FDCAN_DATA_FRAME;
     h.DataLength=FDCAN_DLC_BYTES_8;h.ErrorStateIndicator=FDCAN_ESI_ACTIVE;
     h.BitRateSwitch=FDCAN_BRS_OFF;h.FDFormat=FDCAN_CLASSIC_CAN;h.TxEventFifoControl=FDCAN_NO_TX_EVENTS;
+#ifdef MOTOR_TD3_SPEEDLOOP_WATCHDOG
+    if(tx_inflight) return 0;
+    h.TxEventFifoControl=FDCAN_STORE_TX_EVENTS;h.MessageMarker=(uint32_t)(uint8_t)(tx_marker+1U);
+#endif
     if(HAL_FDCAN_AddMessageToTxFifoQ(&hfdcan1,&h,(uint8_t *)data)!=HAL_OK) { motor_td3_g431_fault_irq();return 0; }
+#ifdef MOTOR_TD3_SPEEDLOOP_WATCHDOG
+    tx_marker=(uint8_t)h.MessageMarker;tx_frame_id=id;tx_queued_us=clock_us();tx_inflight=1;
+#endif
     return 1;
 }
+#ifdef MOTOR_TD3_SPEEDLOOP_WATCHDOG
+static int tx_completed(uint64_t n) {
+    FDCAN_TxEventFifoTypeDef e;
+    if(motor_td3_g431_tx_fault) return 0; /* Preserve the first failure/event. */
+    /* HAL enqueue success is not transmission completion. Keep one request
+     * outstanding and consume its actual Tx event before reusing the FIFO.
+     * Nonblocking: foreground health, ADC and RX continue while awaiting ACK. */
+    if(!tx_inflight) {
+        if(hfdcan1.Instance->TXEFS & FDCAN_TXEFS_EFFL) { motor_td3_g431_tx_fault=1;motor_td3_g431_fault_irq();return 0; }
+        return 1;
+    }
+    if(n-tx_queued_us>=TX_DEADLINE_US) { motor_td3_g431_tx_fault=2;motor_td3_g431_fault_irq();return 0; }
+    if(!(hfdcan1.Instance->TXEFS & FDCAN_TXEFS_EFFL)) return 0;
+    if(HAL_FDCAN_GetTxEvent(&hfdcan1,&e)!=HAL_OK) { motor_td3_g431_tx_fault=3;motor_td3_g431_fault_irq();return 0; }
+    motor_td3_g431_tx_last_event=e;
+    if(e.MessageMarker!=tx_marker || e.Identifier!=tx_frame_id || e.EventType!=FDCAN_TX_EVENT ||
+       e.IdType!=FDCAN_STANDARD_ID || e.TxFrameType!=FDCAN_DATA_FRAME ||
+       e.DataLength!=FDCAN_DLC_BYTES_8 || e.FDFormat!=FDCAN_CLASSIC_CAN || e.BitRateSwitch!=FDCAN_BRS_OFF) {
+        motor_td3_g431_tx_fault=4;motor_td3_g431_fault_irq();return 0;
+    }
+    tx_inflight=0;return 1;
+}
+#endif
 void motor_td3_g431_poll(void) {
     unsigned budget=RX_CAPACITY; int diag_ready=0; uint32_t p;uint8_t frame[8];uint64_t n=clock_us();
+#ifdef MOTOR_TD3_SPEEDLOOP_WATCHDOG
+    uint32_t adc,seq,bad;unsigned owner;
+    motor_td3_g431_wd_test_point();
+    p=lock();n=now_us;adc=adc_samples;
+    owner=endpoint_ready&&(unsigned)endpoint.owner;
+    seq=endpoint_ready?endpoint.wire_seq:0;
+    bad=irq_fault||(endpoint_ready&&(endpoint.rx_fault||endpoint.protocol_fault));unlock(p);
+    if(!motor_td3_g431_wd_service(n,adc,owner,seq,bad)) motor_td3_g431_fault_irq();
+#endif
     p=lock();main_seen_us=n;
     if(!endpoint_ready && motor_td3_g431_debugger_boot_token) {
         const motor_td3_can_hooks h={0,disable_hook,reject_begin,reject_apply,actual_snapshot};
@@ -154,6 +209,9 @@ void motor_td3_g431_poll(void) {
         motor_td3_can_receive(&endpoint,TD3_CAN_REQUEST_ID,1,frame,8,arrived);unlock(p);
     }
     if(!endpoint_ready) return;
+#ifdef MOTOR_TD3_SPEEDLOOP_WATCHDOG
+    if(!tx_completed(n)) return;
+#endif
     if(!tx_length) {
         int len; p=lock();len=motor_td3_can_make_hello(&endpoint,tx_packet);
         /* SysTick can accept HELLO immediately after unlock. Snapshot permission

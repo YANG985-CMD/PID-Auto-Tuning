@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "power_disconnected_confirmed_by_user": true,
+  "core": "Halted",
+  "pwm_enabled": false,
+  "tim1_cr1": 0,
+  "tim1_ccer": 0,
+  "tim1_bdtr": 0,
+  "two_full_image_readbacks_match": true,
+  "bin_sha256": "ea6bb46181092ed415cdcc804ceccac6c14fdedfa8861d3797f1f6fa9c41e54d",
+  "option_unchanged": true,
+  "debug_freeze_restored": true,
+  "can_adapter_released": true,
+  "automatic_restart": false
+}

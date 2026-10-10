@@ -86,3 +86,5 @@ Kp/Ki 是存储值，当前没有运行 PI/FOC；电压、电流采用原标称�
 软件检查：`python -B scripts/test_speedloop_can_capture.py`，不连接硬件。
 
 此版本用于把真实板端诊断接到 Codex 日志分析，未部署 TD3 Actor，未验收功率输出的过流关断延迟。
+
+已另增 `--watchdog` 禁止运动版本：三种断电故障和真实 CAN 停止心跳复位通过，见 [speedloop-watchdog.md](speedloop-watchdog.md)。原 HELLO-only 镜像入口仍绑定旧诊断版；新版本使用专用看门狗验证入口。

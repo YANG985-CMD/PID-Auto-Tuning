@@ -6,7 +6,7 @@
 
 | 项目 | 做什么 | 不代表什么 |
 |---|---|---|
-| `motor_td3_health.c/.h` | 主机 C 检查前台、时钟、ADC 进展及已验证心跳期限；控制是否允许喂狗，故障锁存 | 尚未接入 SpeedLoop；不执行封波、协议认证或自动复位 |
+| `motor_td3_health.c/.h` | 主机 C 检查前台、时钟、ADC 进展及已验证心跳期限；控制是否允许喂狗，故障锁存 | 模块自身不执行封波、协议校验或自动复位；已接入禁止运动 SpeedLoop 诊断副本 |
 | `stm32_g431_watchdog.c/.S` | 专用 RAM 程序直接验证 IWDG 硬件复位：先正常喂狗，再停止喂狗，分别保留/关闭可屏蔽中断 | 不执行上述监督器、CAN、ADC、FOC 或 Actor；不测运动中的功率输出关闭延迟 |
 
 芯片 ID 检查限定器件家族 `0x468`、128KB Flash；不能凭它确定板卡型号。检查现有 `FLASH_OPTR.IWDG_SW=1`，拒绝硬件自动启动模式，不修改选项字节。
@@ -44,6 +44,6 @@ python -B scripts/g431_watchdog_pil.py run --build NEW_TASK_TEMP_BUILD --output 
 
 ## 本次结果
 
-2026-10-11，实际板上 RAM 镜像 1160B：两种模式各先喂狗 60 次后触发 IWDG 复位；按 HSI16 标称周期估算分别约 203.67ms、203.33ms。SysTick 在停止喂狗后分别增加 204、0 次。完整 Flash 未变，核心最终暂停、输出为 0。监督器 15 项 C 检查和 6 项 Python 合同/证据检查通过。真实 CAN 心跳失联与 SpeedLoop 集成仍待验证。
+2026-10-11，实际板上 RAM 镜像 1160B：两种模式各先喂狗 60 次后触发 IWDG 复位；按 HSI16 标称周期估算分别约 203.67ms、203.33ms。SysTick 在停止喂狗后分别增加 204、0 次。完整 Flash 未变，核心最终暂停、输出为 0。监督器 15 项 C 检查和 6 项 Python 合同/证据检查通过。随后禁止运动 SpeedLoop 集成版已烧录，三种断电故障与真实 CAN 应用心跳停止均触发独立复位，复位后保持禁止启动。具体流程及限制见 [speedloop-watchdog.md](speedloop-watchdog.md)，运动保护时限仍待验证。
 
 依据 ST [RM0440 独立看门狗说明](https://www.st.com/resource/en/reference_manual/dm00355726.pdf) 与目标工程内 ST HAL IWDG/CMSIS 定义：IWDG 使用独立 LSI；软件启动后需复位才能停止；调试冻结会影响验证，测试时须明确关闭。

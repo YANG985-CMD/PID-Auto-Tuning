@@ -29,7 +29,7 @@ description: "Build or run a Codex-managed motor serial/CAN-to-MATLAB TD3 workfl
 | 评估或部署 | 固定网络版本，关闭探索，按独立测试工况比较现有控制器 |
 | 在 G431/G441 上验证 Actor 计算 | 断开功率电源后，用 RAM PIL 比较 MCU 与 MATLAB；不应用增益、不写 Flash，结束保持暂停 |
 | 诊断 G431 的 CAN 链路 | 按 [stm32-can-diagnostics.md](references/stm32-can-diagnostics.md) 选择内部回环或有界 PCAN 收发；运行专用 SRAM 程序并检查 PWM 禁能 |
-| 验证 G431 独立看门狗 | 按 [g431-watchdog.md](references/g431-watchdog.md) 在功率物理断开时运行 RAM 复位诊断；喂狗监督器单独做软件检查，不能把两者当完整失联停机验收 |
+| 验证 G431 独立看门狗 | 按 [g431-watchdog.md](references/g431-watchdog.md) 在功率物理断开时运行 RAM 复位诊断；SpeedLoop 禁止运动集成及真实心跳停止按 [speedloop-watchdog.md](references/speedloop-watchdog.md)；不等于运动停机验收 |
 | 验证 G431 比较器到 Break 的信号路径 | 按 [g431-comp-break.md](references/g431-comp-break.md) 在功率电源物理断开时运行 SRAM DAC 阈值诊断；它不校准电流，也不测量功率输出关闭延迟 |
 | 观察 G431 三相电流 ADC 零点 | 按 [g431-current-zero.md](references/g431-current-zero.md) 在功率电源物理断开时运行 SRAM ADC 观察；它不写偏置、不校准增益，也不批准过流门槛 |
 | 用已知电流拟合 ADC 增益 | 按 [current-calibration.md](references/current-calibration.md) 准备同步参考电流/ADC 数据并运行离线拟合；没有已知电流源时不得估算或写入保护参数 |
@@ -61,7 +61,7 @@ CAN 训练接入读 [can-runtime.md](references/can-runtime.md)。已有 PCAN �
 
 SpeedLoop 已有 `scripts/speedloop_can_capture.py`：完整镜像/禁能状态核验后只发一次 HELLO，限时采集原始诊断；身份或顺序异常立即拒绝，不重试。结束先暂停已核验的禁止运动固件、确认输出关闭，再释放 PCAN，避免残留发送失去 ACK。它不启动、应用增益或生成训练经验。下载前必须在功率物理断开时 reset halt，确认 SysTick/外设复位，不能只接到已暂停的应用就擦写 Flash。
 
-独立看门狗按 [g431-watchdog.md](references/g431-watchdog.md) 处理。专用 RAM guest 已验证停止前台喂狗、关闭可屏蔽中断两种 IWDG 复位，并保持 Flash 未变；`motor_td3_health` 监督器只在前台处理一致快照，要求主循环/时钟/ADC 新进展和有效心跳期限，故障锁存。它尚未接入 SpeedLoop。实际集成须先执行已验证的禁能再停止喂狗，复位后保持禁止启动；不把约 200ms 诊断超时作为运动保护阈值。
+独立看门狗按 [g431-watchdog.md](references/g431-watchdog.md) 处理。专用 RAM guest 已验证停止前台喂狗、关闭可屏蔽中断两种 IWDG 复位，并保持 Flash 未变；`motor_td3_health` 监督器只在前台处理一致快照，要求主循环/时钟/ADC 新进展和有效心跳期限，故障锁存。它已接入禁止运动 SpeedLoop 副本，三种断电故障与真实 CAN 应用心跳停止均产生 IWDG 复位，复位后保持禁止启动。按 [speedloop-watchdog.md](references/speedloop-watchdog.md) 构建/核验固定镜像并使用专用入口；CAN 只发 HELLO/STOP，心跳撤回期间保留 ACK，故障不自动重装会话。重新烧录、复位或 prepare 须功率物理断开；run 须现场板端供电确认。约 200ms 诊断超时不作为运动保护阈值。
 
 ## 实机门槛
 

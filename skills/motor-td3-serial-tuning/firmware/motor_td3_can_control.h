@@ -21,7 +21,7 @@ typedef struct {
     const float *references;
     unsigned reference_count;
     uint16_t capabilities;
-    int queued,rx_fault,hello_pending,owner;
+    int queued,rx_fault,hello_pending,owner,protocol_fault;
     char firmware[65],profile[65];
 } motor_td3_can_control;
 int motor_td3_can_control_init(motor_td3_can_control *,const motor_td3_limits *,

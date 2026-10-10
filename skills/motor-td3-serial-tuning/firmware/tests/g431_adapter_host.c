@@ -3,7 +3,8 @@
 TIM_TypeDef test_tim;
 RCC_TypeDef test_rcc;
 GPIO_TypeDef test_gpio;
-FDCAN_HandleTypeDef hfdcan1;
+FDCAN_TypeDef test_fdcan;
+FDCAN_HandleTypeDef hfdcan1={&test_fdcan};
 ExtU rtU;
 DW rtDW;
 spd_kpki_type spd_kpki;
@@ -13,6 +14,27 @@ static FDCAN_RxHeaderTypeDef rxh;
 static uint8_t rxd[8],sent[256][8];
 static uint32_t sent_id[256],sent_count,available,freelevel,send_error;
 static unsigned unlock_tick_countdown;
+#ifdef MOTOR_TD3_SPEEDLOOP_WATCHDOG
+IWDG_TypeDef test_iwdg;
+FLASH_TypeDef test_flash;
+DBGMCU_TypeDef test_debug;
+static unsigned sync_delay_ticks;
+static FDCAN_TxEventFifoTypeDef tx_event;
+static unsigned event_ready,event_held;
+HAL_StatusTypeDef HAL_FDCAN_GetTxEvent(FDCAN_HandleTypeDef *h,FDCAN_TxEventFifoTypeDef *e) {
+    (void)h;*e=tx_event;event_ready=0;test_fdcan.TXEFS=0;return HAL_OK;
+}
+void test_tx_hold(unsigned hold) { event_held=hold;test_fdcan.TXEFS=event_ready&&!event_held; }
+void test_tx_bad_marker(void) { ++tx_event.MessageMarker; }
+uint32_t HAL_GetTick(void) {
+    if(sync_delay_ticks) {
+        unsigned count=sync_delay_ticks;sync_delay_ticks=0;
+        while(count--) motor_td3_g431_tick_1ms();
+        test_iwdg.SR=0;
+    }
+    return (uint32_t)(now_us/1000U);
+}
+#endif
 void test_unlock_hook(void) {
     if(unlock_tick_countdown && --unlock_tick_countdown==0) motor_td3_g431_tick_1ms();
 }
@@ -32,10 +54,27 @@ HAL_StatusTypeDef HAL_FDCAN_GetRxMessage(FDCAN_HandleTypeDef *h,uint32_t f,FDCAN
 uint32_t HAL_FDCAN_GetTxFifoFreeLevel(FDCAN_HandleTypeDef *h) { (void)h;return freelevel; }
 HAL_StatusTypeDef HAL_FDCAN_AddMessageToTxFifoQ(FDCAN_HandleTypeDef *h,FDCAN_TxHeaderTypeDef *t,uint8_t *b) {
     (void)h;if(send_error) return 1;
+#ifdef MOTOR_TD3_SPEEDLOOP_WATCHDOG
+    if(event_ready || t->TxEventFifoControl!=FDCAN_STORE_TX_EVENTS) return 1;
+    memset(&tx_event,0,sizeof(tx_event));tx_event.Identifier=t->Identifier;
+    tx_event.IdType=t->IdType;tx_event.TxFrameType=t->TxFrameType;tx_event.DataLength=t->DataLength;
+    tx_event.BitRateSwitch=t->BitRateSwitch;tx_event.FDFormat=t->FDFormat;
+    tx_event.MessageMarker=t->MessageMarker;tx_event.EventType=FDCAN_TX_EVENT;event_ready=1;
+    test_fdcan.TXEFS=!event_held;
+#endif
     if(sent_count<256) { sent_id[sent_count]=t->Identifier;memcpy(sent[sent_count++],b,8); }
     return HAL_OK;
 }
 void test_reset(void) {
+#ifdef MOTOR_TD3_SPEEDLOOP_WATCHDOG
+    memset((void *)&motor_td3_g431_wd_status,0,sizeof(motor_td3_g431_wd_status));
+    memset(&test_iwdg,0,sizeof(test_iwdg));test_iwdg.WINR=4095;
+    if(sync_delay_ticks) test_iwdg.SR=3;
+    test_flash.OPTR=FLASH_OPTR_IWDG_SW;test_debug.APB1FZR1=0x1000;
+    motor_td3_g431_wd_test_mode=0;
+    tx_inflight=tx_frame_id=tx_marker=0;tx_queued_us=0;event_ready=event_held=0;test_fdcan.TXEFS=0;
+    motor_td3_g431_tx_fault=0;memset((void *)&motor_td3_g431_tx_last_event,0,sizeof(motor_td3_g431_tx_last_event));
+#endif
     memset(&test_tim,0,sizeof(test_tim));memset(&test_rcc,0,sizeof(test_rcc));memset(&test_gpio,0,sizeof(test_gpio));
     memset(&endpoint,0,sizeof(endpoint));memset(&rtU,0,sizeof(rtU));memset(&rtDW,0,sizeof(rtDW));
     Motor_state=ADC_offset=0;Ia=Ib=Ic=Vbus=HallSpeed=HallThetaAdd=0;
@@ -78,3 +117,17 @@ void test_can_error(void) { HAL_FDCAN_ErrorStatusCallback(&hfdcan1,FDCAN_IT_BUS_
 void test_break_flags(unsigned flags) { test_tim.SR=flags; }
 void test_timer_clock(unsigned on) { test_rcc.APB2ENR=on?RCC_APB2ENR_TIM1EN:0; }
 void test_hall_pins(unsigned idr) { test_gpio.IDR=idr; }
+#ifdef MOTOR_TD3_SPEEDLOOP_WATCHDOG
+void test_adc(void) { motor_td3_g431_adc_sample(); }
+unsigned test_wd_fault(void) { return motor_td3_g431_wd_status.fault; }
+unsigned test_wd_feeds(void) { return motor_td3_g431_wd_status.feeds; }
+unsigned test_wd_seq(void) { return motor_td3_g431_wd_status.link_seq; }
+unsigned test_wd_boot(unsigned reset_flags) {
+    memset((void *)&motor_td3_g431_wd_status,0,sizeof(motor_td3_g431_wd_status));
+    test_rcc.CSR=reset_flags;return motor_td3_g431_wd_boot_check();
+}
+unsigned test_wd_boot_latched(void) { return motor_td3_g431_wd_status.boot_latched; }
+unsigned test_wd_active(void) { return motor_td3_g431_wd_status.active; }
+unsigned test_wd_freeze(void) { return test_debug.APB1FZR1&0x1000; }
+void test_wd_delayed_init(unsigned ticks) { sync_delay_ticks=ticks;test_reset(); }
+#endif

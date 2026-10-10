@@ -2,6 +2,7 @@
 #include <math.h>
 #include <string.h>
 static void trip(motor_td3_can_control *c,int fault) {
+    if(fault==TD3_CAN_PROTOCOL_FAULT) c->protocol_fault=1;
     motor_td3_stop(&c->guard); if(!c->guard.fault) c->guard.fault=fault;
     c->hooks.disable(c->hooks.user);
 }

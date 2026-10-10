@@ -1,0 +1,30 @@
+{
+  "watchdog_adapter": {
+    "schema_version": 1,
+    "scope": "actual locked adapter with software HAL/CMSIS/model substitutes",
+    "tests": 15,
+    "watchdog_integration": true,
+    "failures": 0,
+    "errors": 0,
+    "passed": true,
+    "hardware_accessed": false,
+    "motor_output": false,
+    "profile": "g431-speedloop-wdog-v1"
+  },
+  "legacy_adapter": {
+    "schema_version": 1,
+    "scope": "actual locked adapter with software HAL/CMSIS/model substitutes",
+    "tests": 26,
+    "watchdog_integration": false,
+    "failures": 0,
+    "errors": 0,
+    "passed": true,
+    "hardware_accessed": false,
+    "motor_output": false,
+    "profile": "g431-speedloop-diag-v1"
+  },
+  "can_runtime_checks": 16,
+  "watchdog_entry_checks": 8,
+  "can_capture_checks": 9,
+  "hardware_accessed_by_software_tests": false
+}

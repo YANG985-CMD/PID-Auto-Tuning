@@ -30,6 +30,10 @@ jobs:
         run: python -B skills/motor-td3-serial-tuning/scripts/test_speedloop_can_capture.py
       - name: Watchdog feed supervisor and SRAM reset evidence without hardware
         run: python -B skills/motor-td3-serial-tuning/scripts/test_g431_watchdog.py --output "${{ runner.temp }}/td3-watchdog" --compiler gcc
+      - name: SpeedLoop watchdog integration and serialized Tx completion
+        run: python -B skills/motor-td3-serial-tuning/scripts/test_g431_integration.py --watchdog --output "${{ runner.temp }}/td3-speedloop-watchdog" --compiler gcc
+      - name: SpeedLoop watchdog Flash and CAN evidence rejects unsafe requests
+        run: python -B skills/motor-td3-serial-tuning/scripts/test_speedloop_watchdog_validate.py
       - name: COMP Break diagnostic rejects unsafe traces and always cleans up
         run: python -B skills/motor-td3-serial-tuning/scripts/test_g431_comp_break.py --output "${{ runner.temp }}/td3-g431-comp-break"
       - name: Offline current calibration fit keeps hardware approval closed

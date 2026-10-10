@@ -148,8 +148,9 @@ def decode_diag(identifier, data):
 
 class Collector:
     """No learning, command application, retry or automatic rearming path."""
-    def __init__(self, nonce, boot, write_row):
+    def __init__(self, nonce, boot, write_row, identity=IDENTITY):
         self.nonce, self.boot, self.write_row = nonce, boot, write_row
+        self.identity=identity
         self.rx = wire.Reassembler()
         self.hello = None
         self.expected = 0x622
@@ -169,8 +170,8 @@ class Collector:
             packet = self.rx.feed(data, host_s)
             if packet:
                 obj, meta = wire.unpack(packet)
-                if (obj.get('type') != 'hello' or obj.get('firmware_id') != IDENTITY
-                        or obj.get('profile_id') != IDENTITY or obj.get('capabilities') != []
+                if (obj.get('type') != 'hello' or obj.get('firmware_id') != self.identity
+                        or obj.get('profile_id') != self.identity or obj.get('capabilities') != []
                         or meta['nonce'] != self.nonce or meta['boot'] != self.boot):
                     raise wire.WireError('HELLO identity/session/capability mismatch')
                 self.hello = obj

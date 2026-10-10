@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "attempts": [
+    {
+      "image_bytes": 35056,
+      "stage": "power_off",
+      "verified": false,
+      "reason": "IWDG register synchronization counted against foreground deadline",
+      "fix": "Start health accounting after synchronization"
+    },
+    {
+      "image_bytes": 35064,
+      "stage": "real_can",
+      "verified": false,
+      "reason": "Fourth diagnostic cycle missed 0x623",
+      "fix": "One pending Tx request, actual Tx event, auto retransmission with 50ms deadline",
+      "cause": "DAR arbitration cancellation is consistent with evidence; not individually measured"
+    },
+    {
+      "image_bytes": 35508,
+      "stage": "image_preflight",
+      "verified": false,
+      "reason": "One bulk read differed; independent read matched",
+      "can_transmitted": false,
+      "fix": "Require two complete matching image readbacks; never ignore a mismatch"
+    },
+    {
+      "image_bytes": 35508,
+      "stage": "real_can",
+      "verified": false,
+      "reason": "HELLO only first fragment; expected Tx event 01 in DAR mode",
+      "fix": "Use automatic retransmission; valid normal event 01"
+    },
+    {
+      "image_bytes": 35608,
+      "stage": "real_can",
+      "verified": false,
+      "reason": "Instrumented event 10 proved successful transmission in DAR mode was misclassified",
+      "fix": "Enable retransmission and preserve first Tx fault"
+    }
+  ]
+}

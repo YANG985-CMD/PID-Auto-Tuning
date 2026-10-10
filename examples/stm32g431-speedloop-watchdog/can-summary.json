@@ -1,0 +1,140 @@
+{
+  "schema_version": 1,
+  "mode": "speedloop-real-can-stop-heartbeat-withdrawal",
+  "verified": true,
+  "firmware_id": "g431-speedloop-wdog-v1",
+  "bin_sha256": "ea6bb46181092ed415cdcc804ceccac6c14fdedfa8861d3797f1f6fa9c41e54d",
+  "board_power_confirmed_by_user": true,
+  "motor_start_requested": false,
+  "gains_applied": false,
+  "td3_experiences": 0,
+  "physical_cable_disconnected": false,
+  "physical_shutoff_latency_validated": false,
+  "hello": {
+    "type": "hello",
+    "protocol_id": "motor-td3-can-v1",
+    "firmware_id": "g431-speedloop-wdog-v1",
+    "profile_id": "g431-speedloop-wdog-v1",
+    "capabilities": []
+  },
+  "frame_counts": {
+    "0x621": 21,
+    "0x622": 9,
+    "0x623": 9,
+    "0x624": 9,
+    "0x625": 9
+  },
+  "complete_cycles": 9,
+  "partial_cycle_at_end": false,
+  "ranges": {
+    "guard_fault": [
+      12,
+      12
+    ],
+    "hall_code": [
+      3,
+      3
+    ],
+    "adc_age_ms": [
+      1,
+      1
+    ],
+    "stored_kp": [
+      0.0033889999613165855,
+      0.0033889999613165855
+    ],
+    "stored_ki": [
+      0.0014400000218302011,
+      0.0014400000218302011
+    ],
+    "nominal_vbus_v": [
+      24.08935546875,
+      24.235984802246094
+    ],
+    "nominal_current_a": [
+      0.0,
+      0.06591796875
+    ],
+    "hall_speed_rpm": [
+      0.0,
+      0.0
+    ],
+    "pi_integral_output": [
+      0.0,
+      0.0
+    ]
+  },
+  "max_status_gap_s": 0.10900000017136335,
+  "stop_heartbeats_sent": 13,
+  "tx_frames": 132,
+  "fault_status_observed_on_can": true,
+  "at_reset": {
+    "magic": 1396987697,
+    "active": 1,
+    "fault": 7,
+    "feeds": 135,
+    "main_count": 179757,
+    "tick_count": 1551,
+    "adc_count": 155,
+    "link_armed": 1,
+    "link_seq": 13,
+    "last_feed_ms": 1349,
+    "now_ms": 1551,
+    "reset_flags": 0,
+    "boot_latched": 0,
+    "irq_fault": 1
+  },
+  "real_link_timeout_validated": true,
+  "post_reset_boot": {
+    "magic": 1396987697,
+    "active": 0,
+    "fault": 0,
+    "feeds": 0,
+    "main_count": 0,
+    "tick_count": 0,
+    "adc_count": 0,
+    "link_armed": 0,
+    "link_seq": 0,
+    "last_feed_ms": 0,
+    "now_ms": 0,
+    "reset_flags": 603979776,
+    "boot_latched": 1,
+    "irq_fault": 0
+  },
+  "held_status": {
+    "magic": 1396987697,
+    "active": 0,
+    "fault": 0,
+    "feeds": 0,
+    "main_count": 0,
+    "tick_count": 0,
+    "adc_count": 0,
+    "link_armed": 0,
+    "link_seq": 0,
+    "last_feed_ms": 0,
+    "now_ms": 0,
+    "reset_flags": 603979776,
+    "boot_latched": 1,
+    "irq_fault": 0
+  },
+  "tx_fault": 0,
+  "last_tx_event": {
+    "id": 0,
+    "id_type": 0,
+    "frame_type": 0,
+    "dlc": 0,
+    "esi": 0,
+    "brs": 0,
+    "format": 0,
+    "timestamp": 0,
+    "marker": 0,
+    "event_type": 0
+  },
+  "final_pwm_registers": {
+    "0x40012C00": 0,
+    "0x40012C20": 0,
+    "0x40012C44": 0
+  },
+  "core_left_halted": true,
+  "adapter_released": true
+}
