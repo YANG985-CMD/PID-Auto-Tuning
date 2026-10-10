@@ -34,39 +34,39 @@
       "fault_count": 0
     },
     {
-      "policy": "candidate-006",
+      "policy": "candidate-020",
       "seed": 101,
-      "reward": -0.343243490210641,
-      "rmse_normalized": 0.10357260226797653,
-      "peak_current_a": 1.6982192601426505,
+      "reward": -0.33756226395745942,
+      "rmse_normalized": 0.100525266413492,
+      "peak_current_a": 1.7301124980440363,
       "overshoot_rpm": 0,
       "saturation_fraction": 0,
       "fault_count": 0
     },
     {
-      "policy": "candidate-006",
+      "policy": "candidate-020",
       "seed": 202,
-      "reward": -0.91944817530613454,
-      "rmse_normalized": 0.16959431709268902,
-      "peak_current_a": 2.7171665295027196,
+      "reward": -0.88345350924320287,
+      "rmse_normalized": 0.16451461637153011,
+      "peak_current_a": 2.7729881163686514,
       "overshoot_rpm": 0,
       "saturation_fraction": 0,
       "fault_count": 0
     },
     {
-      "policy": "candidate-006",
+      "policy": "candidate-020",
       "seed": 303,
-      "reward": -1.8614340572065711,
-      "rmse_normalized": 0.24197125746134734,
+      "reward": -1.7954653410763339,
+      "rmse_normalized": 0.23618852639721052,
       "peak_current_a": 3,
       "overshoot_rpm": 0,
-      "saturation_fraction": 0.026666666666666668,
+      "saturation_fraction": 0.028333333333333332,
       "fault_count": 0
     }
   ],
   "baseline_mean_rmse": 0.17169512121822741,
-  "candidate_mean_rmse": 0.17171272560733764,
-  "candidate_rmse_better": false,
+  "candidate_mean_rmse": 0.16707613639407756,
+  "candidate_rmse_better": true,
   "hardware_deployment_approved": false,
   "scope": "Mock plant comparison; no hardware performance or stability claim"
 }

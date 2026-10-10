@@ -39,6 +39,16 @@ for roundIndex = 1:rounds
         % Exploration coordinate is part of the actual causal action.
         noise = .1 * randn(2,1);
         if ~client.SimulationOnly, noise = .03 * randn(2,1); end
+        if client.SimulationOnly
+            % The action is a local gain step. Independent zero-mean noise
+            % mostly returns to the baseline and does not cover the validated
+            % gain rectangle. Use a bounded, episode-level direction only in
+            % the mock plant; live hardware keeps the conservative noise path.
+            directions = [1 1; 1 -1; -1 1; -1 -1; 1 1; -1 -1];
+            direction = directions(mod(roundIndex-1,size(directions,1))+1,:).';
+            coverage = .65 * direction;
+            action = max(-1,min(1,.45*action + .55*coverage + noise));
+        end
         action = max(-1,min(1,action + noise));
         reply = client.call(struct('op','step','action',action(:)'));
         row = reply.transition;
@@ -58,8 +68,15 @@ for roundIndex = 1:rounds
     end
     client.stop(); % Fresh disabled feedback required by bridge before learning.
     bufferLengths(roundIndex) = agent.ExperienceBuffer.Length;
-    if agent.ExperienceBuffer.Length >= 32
-        options = rlTrainingFromDataOptions('MaxEpochs',1,'NumStepsPerEpoch',20, ...
+    if agent.ExperienceBuffer.Length >= 128
+        if client.SimulationOnly
+            % The mock experiment has cheap, reproducible data. More updates
+            % let the critics learn the effect of the local-step action map.
+            epochs = 3; stepsPerEpoch = 100;
+        else
+            epochs = 1; stepsPerEpoch = 20;
+        end
+        options = rlTrainingFromDataOptions('MaxEpochs',epochs,'NumStepsPerEpoch',stepsPerEpoch, ...
             'Plots','none','Verbose',false,'SaveAgentCriteria','none');
         stats = trainFromData(agent,options); %#ok<NASGU>
     end
@@ -82,7 +99,12 @@ report = struct('schema_version',1,'simulation_only',client.SimulationOnly, ...
     'replay_experiences',agent.ExperienceBuffer.Length, ...
     'actor_weight_change_l2',sqrt(delta),'episode_rewards',episodeRewards, ...
     'policy_version',versionNext,'gradient_updates_while_motor_stopped',true, ...
-    'live_candidate_auto_applied',false);
+    'live_candidate_auto_applied',false, ...
+    'exploration_strategy', ternary(client.SimulationOnly, ...
+        'bounded_directional_coverage_plus_noise', 'small_zero_mean_noise'), ...
+    'training_schedule', ternary(client.SimulationOnly, ...
+        'replay_warmup_128_epochs_3_steps_per_epoch_100', ...
+        'replay_warmup_128_epochs_1_steps_per_epoch_20'));
 save(fullfile(outputDir,'trained-agent.mat'),'agent','profile','report');
 writeJSON(fullfile(outputDir,'training-summary.json'),report);
 exportMotorActor(agent,profile,fullfile(outputDir,'actor'),versionNext);
@@ -91,6 +113,14 @@ if client.SimulationOnly
     writeJSON(fullfile(outputDir,'evaluation-summary.json'),evaluation);
 end
 clear cleanup
+end
+
+function value = ternary(condition, whenTrue, whenFalse)
+if condition
+    value = whenTrue;
+else
+    value = whenFalse;
+end
 end
 
 function release = versionRelease()
