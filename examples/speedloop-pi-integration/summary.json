@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "build_id": "g431-speedloop-pi-review-v1",
+  "passed": true,
+  "core_checks": {
+    "tests": 20,
+    "passed": true,
+    "schema_version": 1,
+    "scope": "host C gain owner and bumpless parameter changes",
+    "hardware_accessed": false,
+    "motion_approved": false
+  },
+  "actual_model_checks": {
+    "tests": 10,
+    "passed": true,
+    "scope": "actual generated SpeedLoop PI with synthetic observations",
+    "hardware_accessed": false,
+    "baseline_trace_rows": 2000,
+    "baseline_trace_identical": true,
+    "trace_observation_fields": 9
+  },
+  "translation_units": 44,
+  "compiler": "arm-none-eabi-gcc.exe (Arm GNU Toolchain 14.2.Rel1 (Build arm-14.52)) 14.2.1 20241119",
+  "binary_bytes": 41016,
+  "bin_sha256": "39fbd74916b1aee7891a3373ac5eb0c720babf78880c3f7651afc0e5dd6ff36f",
+  "hex_sha256": "7574297509c57636496ddd7ead907940fe127574a07ee2498c11eb897fa78fb5",
+  "model_input_sha256": "2e13cbff00ac51cd4510db7645a5ccf8855c5d15d468399f8f04e5516ca23e42",
+  "own_source_sha256": {
+    "motor_td3_speedloop_pi.c": "e3ca4b5790b253ce4f7936ea58b46bac5b32e4759084d248beb21c5b7e6bd13e",
+    "motor_td3_speedloop_pi.h": "2debc2979c1d82ce79d140d7a9aa4981739731129ed7e237c0d2b8b8481d2d5c",
+    "motor_td3_speedloop_pi_bind.c": "c08e941ace8afc9fe8fdfdf933bec6744b7dd15eaebf7d27b22d720e783b5a90",
+    "motor_td3_speedloop_pi_bind.h": "8688b1e94780c0c3da19d2b71b19c16729f7b1b71e9b81c65e02652e50207b13"
+  },
+  "image_sections_bytes": {
+    "text": 40888,
+    "data": 128,
+    "bss": 6408
+  },
+  "source_unchanged": true,
+  "reference_profile": {
+    "reference": "user-selected 17.SpeedLoop known-running source",
+    "base_period_s": 0.0001,
+    "speed_pi_period_s": 0.001,
+    "kp": 0.003389,
+    "ki": 0.00144,
+    "ki_semantics": "continuous integral gain; generated model applies 0.001s once",
+    "phase_current_nominal_a_per_count": 0.02197265625,
+    "dynamic_offset_samples": 10,
+    "iq_reference_clamp": [
+      -3,
+      3
+    ],
+    "comparator_dac_code": 3000,
+    "comparator_path": "COMP1 PB1 positive / DAC3_CH1 negative -> TIM1 Break high/filter2",
+    "independent_current_calibration": false,
+    "measured_trip_current_a": null,
+    "temperature_sensor_in_example": false,
+    "validated_thermal_limits": null,
+    "fuzzy_gain_envelope": {
+      "kp": [
+        0.0013556000000000002,
+        0.005422400000000001
+      ],
+      "ki": [
+        0.00072,
+        0.00216
+      ]
+    },
+    "fuzzy_envelope_is_verified_td3_safety_domain": false
+  },
+  "phase_start_calls_removed": true,
+  "hardware_accessed": false,
+  "flash_programmed": false,
+  "motion_approved": false,
+  "transport_gain_commands_connected": false,
+  "td3_actor_connected": false,
+  "remaining": "connect guarded CAN actions and coherent applied feedback; validate stop/progress protection in the motion implementation"
+}

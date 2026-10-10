@@ -26,6 +26,8 @@ jobs:
         run: python -B skills/motor-td3-serial-tuning/scripts/test_g431_integration.py --speedloop --output "${{ runner.temp }}/td3-speedloop-adapter" --compiler gcc
       - name: Diagnostic software ADC sampling rejects incomplete and invalid conversions
         run: python -B skills/motor-td3-serial-tuning/scripts/test_speedloop_sample.py --output "${{ runner.temp }}/td3-speedloop-sampler" --compiler gcc
+      - name: SpeedLoop PI pair publication, bumpless change, replay and lease rejection
+        run: python -B skills/motor-td3-serial-tuning/scripts/test_speedloop_pi.py --output "${{ runner.temp }}/td3-speedloop-pi" --compiler gcc
       - name: SpeedLoop HELLO-only capture rejects identity, stale ADC and enabled outputs
         run: python -B skills/motor-td3-serial-tuning/scripts/test_speedloop_can_capture.py
       - name: Watchdog feed supervisor and SRAM reset evidence without hardware

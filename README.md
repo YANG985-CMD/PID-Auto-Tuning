@@ -6,6 +6,8 @@
 
 **Codex 可以管理 TD3 训练、分析训练结果，并将 Actor 部署到单片机执行。** 本项目已跑通真实 MATLAB TD3 训练与独立评估，并在实际 **STM32G431** 上完成 Actor 的 **RAM 部署及推理验证（PIL）**：40 组测试通过，原 Flash 内容保持不变。电机闭环训练和 TD3 Actor 的永久 Flash 部署仍待验证。
 
+**最新工程进展：以用户正常运行的 `17.SpeedLoop` 为基准，已完成真实速度 PI 的增益接入。** Codex 定位并解决模糊模块覆盖外部增益的问题，在原生成模型的 1ms 边界成对应用 Kp/Ki，修正积分状态以保持切换瞬间输出连续。20 项模块检查、10 项原模型检查和 2000 步默认模糊模式对照通过，44 单元 Cortex-M4 工程编译成功。当前复核副本禁止相桥启动，尚未接通 CAN 动作或 Actor，也没有烧录到板子。[实现与验证](docs/speedloop-pi-integration-validation.md)
+
 ## Codex 在这里做什么
 
 | 工作 | Codex 的具体作用 | 本项目证据 |
@@ -16,9 +18,10 @@
 | **部署到单片机** | 导出 Actor C、目标编译、核对芯片、加载到 MCU RAM、读取并分析推理结果 | [G431 板上验证](docs/stm32g431-validation.md)：40 组通过，Kp/Ki 与 MATLAB 一致 |
 | 诊断实际通信 | 对照示例与原理图，构建 CAN 专用 RAM 程序，分析控制器状态、回包与 PWM 禁能状态 | [CAN 板上验证](docs/stm32g431-can-diagnostics.md)：64 组内部回环、16 组电脑与板端双向收发通过 |
 | 验证失联与独立复位 | 集成前台/ADC/心跳监督，分析故障与复位原因，核验复位后禁止启动 | [SpeedLoop 集成实测](docs/speedloop-watchdog-integration-validation.md)：三种断电故障及真实 CAN 停止心跳复位通过；运动停机时限仍待验证 |
-| 设计无传感器热保护 | 核查电流单位和资料来源，实现 MCU 三相热预算，分析异常采样、过载和未知热状态重启的故障结果 | [热预算软件验证](docs/sensorless-thermal-validation.md)：17 组主机测试和 Cortex-M4 对象编译通过；尚未烧录和验证实机热保护 |
-| 接入 ADC 与热预算 | 编写校准范围、采样时刻和故障禁能检查，构建禁止运动的 SpeedLoop 副本并分析链接结果 | [接入离线验证](docs/thermal-feed-integration-validation.md)：17 组采样接入测试、3 组锁定接线检查、52 单元链接通过；电流未标定时拒绝启动，未烧录 |
-| 分析热保护拒绝原因 | 编写 CAN 热状态回传与日志解析，检查三相累计预算、采样时效和故障，解释为何不能启动 | [热反馈离线验证](docs/thermal-can-validation.md)：30 项检查、53 单元链接通过；仅合成日志，未访问板子或烧录 |
+| 设计无传感器热保护 | 核查电流单位和资料来源，实现 MCU 三相热预算，分析异常采样、过载和未知热状态重启的故障结果 | [热预算软件验证](docs/sensorless-thermal-validation.md)与[后续板上诊断](docs/thermal-board-validation.md)：禁止运动副本已烧录；实机热阈值尚未验证 |
+| 接入 ADC 与热预算 | 编写校准范围、采样时刻和故障禁能检查，构建禁止运动的 SpeedLoop 副本并分析链接结果 | [接入离线验证](docs/thermal-feed-integration-validation.md)与[后续板上诊断](docs/thermal-board-validation.md)：真实采样通过，缺少电流标定时保持拒绝 |
+| 分析热保护拒绝原因 | 编写 CAN 热状态回传与日志解析，检查三相累计预算、采样时效和故障，解释为何不能启动 | [板上热诊断](docs/thermal-board-validation.md)：29 组真实 CAN 快照审计通过，热限值与初始状态未知 |
+| 接入实际速度 PI | 定位增益写入者和积分实现，编写成对提交、积分连续性与实际应用记录，检查原模型和完整目标链接 | [SpeedLoop PI 验证](docs/speedloop-pi-integration-validation.md)：30 项检查、2000 步对照、44 单元编译通过；CAN 动作及 Actor 待接入 |
 | 接入真实工程 | 核对 PI/NNSMC 与刹车配置，编写锁定板级适配层，完整编译工程副本，在 MCU 验证共享禁能逻辑 | [FOC / CAN 接入](docs/stm32g431-foc-can-integration.md)：45 单元链接成功，16 项软件测试、11 项板上 RAM 测试通过 |
 | 管理正式上线 | 接入真实观测与保护，构建/烧录目标固件，检查输入尺度、性能和实时预算 | 提供接入流程；本次尚未完成电机闭环与永久 Flash 部署 |
 
@@ -318,6 +321,8 @@ python -B skills/motor-td3-serial-tuning/scripts/thermal_can.py --log examples/t
 | `skills/motor-td3-serial-tuning/firmware/motor_td3_can*.c/.h` | MCU CAN 协议与控制周期接口，需实际板级 hooks |
 | `skills/motor-td3-serial-tuning/scripts/build_g431_locked_foc.py` | 对已审计私有 FOC 工程创建默认禁止运动副本并完整链接，不修改原目录 |
 | `skills/motor-td3-serial-tuning/scripts/build_speedloop_diagnostic.py` | GNU Arm 构建受审计 SpeedLoop 的禁止运动 CAN/软件 ADC 副本，验证链接中没有 PWM 启动或 FOC 执行入口 |
+| `skills/motor-td3-serial-tuning/firmware/motor_td3_speedloop_pi*.c/.h` | 真实速度 PI 的参数唯一所有者、边界提交、积分连续性与应用记录；当前尚未连接 CAN 动作 |
+| `skills/motor-td3-serial-tuning/scripts/build_speedloop_pi_integration.py` | 在私有 SpeedLoop 副本验证原生成 PI/模糊控制器并完整编译；相桥启动禁用，没有硬件入口 |
 | `skills/motor-td3-serial-tuning/scripts/speedloop_can_capture.py` | 核对完整镜像/禁能状态，发送一次 HELLO，限时采集诊断并在释放 CAN 前暂停；不启动、不下发增益、不训练 |
 | `skills/motor-td3-serial-tuning/scripts/g431_watchdog_pil.py` | GNU Arm 构建与 RAM IWDG 复位验证，清除旧证据、检查复位入口、恢复调试冻结并比较完整 Flash |
 | `skills/motor-td3-serial-tuning/firmware/motor_td3_health.c/.h` | 前台/时钟/ADC/有效心跳监督与喂狗许可；故障锁存，已接入禁止运动 SpeedLoop 诊断副本 |

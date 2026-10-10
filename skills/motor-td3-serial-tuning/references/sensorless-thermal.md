@@ -2,7 +2,7 @@
 
 ## 当前交付范围
 
-`firmware/motor_td3_thermal.c/.h` 已实现三相独立的电流热预算、累计堵转时间、累计输出使能时间、采样时序检查与故障锁存。后续增加 `motor_td3_thermal_feed.c/.h`，把经验证范围内的三相原始 ADC 转成相电流，检查连续序号/采样时刻，逐样本检测已采到的峰值，再形成完整均方窗口。主机使用合成校准数据和电流做测试；已在禁止运动的 SpeedLoop 诊断副本完成完整链接，尚未烧录、接入实际 FOC 电流采样或验证运动停机。不能用这些软件结果声明绕组/MOSFET 已受热保护。
+`firmware/motor_td3_thermal.c/.h` 已实现三相独立的电流热预算、累计堵转时间、累计输出使能时间、采样时序检查与故障锁存。后续增加 `motor_td3_thermal_feed.c/.h`，把经验证范围内的三相原始 ADC 转成相电流，检查连续序号/采样时刻，逐样本检测已采到的峰值，再形成完整均方窗口。主机使用合成校准数据和电流做测试；禁止运动的 SpeedLoop 诊断副本已烧录，并取得 29 组真实 CAN 热快照，报告电流未标定与热限值/初始状态未知。尚未接入实际 FOC 电流采样或验证运动停机。详见 [板上诊断](thermal-board-diagnostic.md)。不能声明绕组/MOSFET 已受热保护。
 
 `assets/thermal-profile.example.json` 是待填的工程记录模板，不是运行器支持的新配置。所有实机限值为 `null`，`validated` 与 `deployment_approved` 为 false。单独写入 true 不会产生验证证据。
 
