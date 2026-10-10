@@ -1,6 +1,6 @@
 # STM32G431 三相电流 ADC 零点观察
 
-2026-10-11，用户确认 24V 功率电源断开、USB/STLink 供电。Codex 在实际 STM32G431 的 SRAM 中运行独立 ADC 观察程序，采集现有三相电流通道的静态原始码。程序没有访问 CAN/串口，没有配置 TIM1 或 PWM，没有写入 Flash，也没有修改 DAC 过流门槛。
+2026-10-11，用户先确认 24V 功率电源断开、USB/STLink 供电。Codex 在实际 STM32G431 的 SRAM 中运行独立 ADC 观察程序，采集现有三相电流通道的静态原始码。随后用户确认接通 24V/3A、保持不按 USER3/RESET，Codex 在同一个 PWM 禁止的 SRAM 诊断中再次采样。两个阶段都没有访问 CAN/串口，没有恢复 Flash 应用，没有配置 TIM1 或 PWM，也没有修改 DAC 过流门槛。
 
 ## 实测结果
 
@@ -14,6 +14,16 @@
 | ADC 状态 | ADC1/ADC2 均无 overrun；单端校准完成，CALFACT 读回 61/62 |
 | 输出隔离 | 所有样本安全位为 1；TIM1 CR1/CCER/BDTR=0，GPIO 时钟关闭 |
 | 收尾 | 核心暂停，128KB Flash 逐字节未变 |
+
+## 24V 带电但 PWM 禁止的复测
+
+| 相别 | 断电均值 | 24V 接通均值 | 变化 | 24V 接通范围 | 24V 接通标准差 |
+|---|---:|---:|---:|---:|---:|
+| A | 2021.078 | 2021.359 | +0.281 码 | 2020–2023 | 0.670 码 |
+| B | 2028.781 | 2029.359 | +0.578 码 | 2027–2031 | 0.798 码 |
+| C | 2024.625 | 2024.469 | −0.156 码 | 2023–2026 | 0.865 码 |
+
+这说明在本次静态、PWM 禁止的条件下，接通 24V 没有造成明显的 ADC 零点跳变。它仍不是带电机电流或 PWM 噪声测试；电流增益、过流触发值和功率级关断时间仍未校准。
 
 原例程在启动时也会用 10 次注入采样得到 `IA_Offset/IB_Offset/IC_Offset`，再计算 `I=(ADC-Offset)*0.02197265625`。这次结果表明板上的静态 ADC 通道有稳定读数和很小的短时波动；它可以作为启动零点检查的证据。
 
@@ -35,6 +45,8 @@
 ```text
 python -B skills/motor-td3-serial-tuning/scripts/g431_current_zero.py build --arm-bin ARM_COMPILER_BIN --cmsis-root PRIVATE_FOC_ROOT/Drivers/CMSIS --output NEW_BUILD
 python -B skills/motor-td3-serial-tuning/scripts/g431_current_zero.py run --build NEW_BUILD --output NEW_RESULT --power-stage-disconnected --reset-and-halt-ack
+# 24V 已接通但 PWM 明确禁能时，改用：
+python -B skills/motor-td3-serial-tuning/scripts/g431_current_zero.py run --build NEW_BUILD --output POWERED_IDLE_RESULT --power-stage-connected --pwm-disabled-ack --reset-and-halt-ack
 ```
 
 流程只接受随 skill 提供的固定 SRAM 镜像；两个确认参数只记录用户已确认的断电和 SRAM 覆盖条件，不能替代物理断电。

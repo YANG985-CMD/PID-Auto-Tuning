@@ -49,7 +49,8 @@ class Contract(unittest.TestCase):
     def test_missing_confirmation_before_files_or_probe(self):
         with patch.object(diag.pil,'session',side_effect=AssertionError('Probe opened')):
             for power,ack in [(False,True),(True,False)]:
-                with self.assertRaises(ValueError):diag.run(SimpleNamespace(power_stage_disconnected=power,reset_and_halt_ack=ack))
+                with self.assertRaises(ValueError):diag.run(SimpleNamespace(power_stage_disconnected=power,power_stage_connected=False,pwm_disabled_ack=False,reset_and_halt_ack=ack))
+        with self.assertRaises(ValueError):diag.run(SimpleNamespace(power_stage_disconnected=False,power_stage_connected=True,pwm_disabled_ack=False,reset_and_halt_ack=True))
     def test_image_flash_entry_and_stack_layout_rejected(self):
         c,data,_,_=fixture()
         with self.assertRaises(ValueError):diag.validate(c,data[:-1]+b'x')
@@ -148,7 +149,7 @@ class Cleanup(unittest.TestCase):
         def safe(target):return dict(tim1_cr1=0,tim1_ccer=0,tim1_bdtr=int(target.initial_unsafe and target.resets==1),gpio_clocks=0)
         with patch.dict(sys.modules,modules),patch.object(diag.pil,'session',return_value=session),\
             patch.object(diag.pil,'identity',return_value={'mock':True}),patch.object(diag,'safe_registers',side_effect=safe):
-            r=diag.run(SimpleNamespace(build=str(build),output=str(OUTPUT/name),power_stage_disconnected=True,reset_and_halt_ack=True))
+            r=diag.run(SimpleNamespace(build=str(build),output=str(OUTPUT/name),power_stage_disconnected=True,power_stage_connected=False,pwm_disabled_ack=False,reset_and_halt_ack=True))
         self.assertTrue(r['core_left_halted']);self.assertFalse(r['original_application_resumed'])
         self.assertEqual(t.resets,2);self.assertNotIn(diag.pil.FLASH,t.writes)
         return r,t

@@ -127,14 +127,22 @@ def nominal_plan(zero,comp):
             'No DAC/current-limit/gain value is written by this calculation'])
 
 def run(args):
-    if not args.power_stage_disconnected or not args.reset_and_halt_ack:
-        raise ValueError('Requires physical motor-power disconnection and RAM-test acknowledgement')
+    disconnected=bool(getattr(args,'power_stage_disconnected',False))
+    connected=bool(getattr(args,'power_stage_connected',False))
+    if disconnected==connected or not getattr(args,'reset_and_halt_ack',False):
+        raise ValueError('Choose exactly one power state and acknowledge SRAM/reset operation')
+    if connected and not getattr(args,'pwm_disabled_ack',False):
+        raise ValueError('Powered-idle mode requires explicit PWM-disabled acknowledgement')
     src=Path(args.build).resolve();c=json.loads((src/'build-summary.json').read_text(encoding='utf-8'))
     data=(src/'current-zero.bin').read_bytes();validate(c,data)
     out=pil.fresh_dir(args.output)
     from pyocd.core.target import Target
     session=pil.session(out);target=None;before=None;supported=False
-    r=dict(schema_version=1,mode=MODE,verified=False,power_disconnected_confirmed_by_user=True,
+    r=dict(schema_version=1,mode=MODE,verified=False,
+        power_disconnected_confirmed_by_user=disconnected,
+        power_connected_confirmed_by_user=connected,
+        pwm_disabled_acknowledged=bool(getattr(args,'pwm_disabled_ack',False)),
+        sampling_supply_mode='powered-idle' if connected else 'unpowered-zero',
         original_application_resumed=False,current_gain_calibrated=False,current_threshold_calibrated=False,
         physical_output_shutoff_verified=False,production_adc_timing_verified=False,motor_control_approved=False,
         **{k:False for k in FALSE_FLAGS})
@@ -189,7 +197,11 @@ def main():
     p=argparse.ArgumentParser(description=__doc__);sub=p.add_subparsers(dest='mode',required=True)
     b=sub.add_parser('build');b.add_argument('--arm-bin',required=True);b.add_argument('--cmsis-root',required=True);b.add_argument('--output',required=True)
     x=sub.add_parser('run');x.add_argument('--build',required=True);x.add_argument('--output',required=True)
-    x.add_argument('--power-stage-disconnected',action='store_true');x.add_argument('--reset-and-halt-ack',action='store_true')
+    g=x.add_mutually_exclusive_group(required=True)
+    g.add_argument('--power-stage-disconnected',action='store_true')
+    g.add_argument('--power-stage-connected',action='store_true')
+    x.add_argument('--pwm-disabled-ack',action='store_true',help='Required with --power-stage-connected')
+    x.add_argument('--reset-and-halt-ack',action='store_true')
     n=sub.add_parser('plan');n.add_argument('--zero-result',required=True);n.add_argument('--comp-result',required=True);n.add_argument('--output',required=True)
     a=p.parse_args()
     if a.mode=='build':r=build(a)

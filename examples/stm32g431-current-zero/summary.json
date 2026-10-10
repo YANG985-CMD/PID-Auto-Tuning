@@ -10,6 +10,22 @@
     "usb_stlink_power": true
   },
   "verified": true,
+  "powered_idle_repeat": {
+    "verified": true,
+    "power_connected_confirmed_by_user": true,
+    "pwm_disabled_acknowledged": true,
+    "adc": {
+      "a": {"mean": 2021.359375, "min": 2020, "max": 2023, "stddev_population": 0.6700556763247365, "span": 3, "delta_from_unpowered_mean": 0.28125},
+      "b": {"mean": 2029.359375, "min": 2027, "max": 2031, "stddev_population": 0.7977935882012339, "span": 4, "delta_from_unpowered_mean": 0.578125},
+      "c": {"mean": 2024.46875, "min": 2023, "max": 2026, "stddev_population": 0.8654614015078893, "span": 3, "delta_from_unpowered_mean": -0.15625}
+    },
+    "tim1_cr1": 0,
+    "tim1_ccer": 0,
+    "tim1_bdtr": 0,
+    "gpio_clocks": 0,
+    "flash_unchanged": true,
+    "core_left_halted": true
+  },
   "checks": 7,
   "passed": 7,
   "samples_per_phase": 64,
