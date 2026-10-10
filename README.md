@@ -128,6 +128,12 @@ Codex 查阅板卡原理图与安全说明，经 STLink 核对芯片后，将已
 
 [板卡检查与实测报告](docs/stm32g431-validation.md) · [可复用 RAM 部署/PIL 流程](skills/motor-td3-serial-tuning/references/stm32-ram-pil.md) · [机器可读摘要](examples/stm32g431-pil/summary.json)
 
+### 原固件空载试转
+
+2026-10-10，Codex 在用户授权的 STM32G431 板上完成了一次受限空载试转。Codex 通过 STLink 读取 MCU SRAM 和 TIM1 寄存器，分析母线、Hall 状态、速度、三相电流和 PWM 状态，并在结束时执行复位暂停，确认三相 PWM 已关闭。观测到母线约 24.1 V、速度约 950–1050 rpm、Hall 六状态连续有效、相电流约在 ±1.1 A 内；试验没有烧录 Flash，也没有让 TD3 接管电机。
+
+详细记录见 [STM32G431 原固件空载试转记录](docs/stm32g431-spin-test.md)。这次结果说明 **Codex 可以读取并分析真实电机运行结果、判断停机条件并管理安全收尾**；TD3 实机训练仍需目标固件提供原子增益写入、应用回读、失联租约和独立保护，原有 UART3 协议不能直接用于 TD3 接管。
+
 ## 组成
 
 | 位置 | 内容 |
