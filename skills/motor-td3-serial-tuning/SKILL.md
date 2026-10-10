@@ -56,7 +56,7 @@ CAN 通信问题单独按 [stm32-can-diagnostics.md](references/stm32-can-diagno
 
 CAN 训练接入读 [can-runtime.md](references/can-runtime.md)。已有 PCAN 主机入口和可编译 C 端点，软件完整回合已验证；G431 原 FOC 工程的锁定接入副本已完整编译，具体按 [g431-locked-integration.md](references/g431-locked-integration.md) 操作。其能力为 0，禁止启动/增益应用；共享禁能函数与协议端点的真实 RAM 测试通过，完整 FOC 接入固件尚未烧录执行。缺失温度保留 NaN，不伪造训练观测。使用 `can-session-profile.example.json` 配置，不复制软件测试 peer 的验证标记到真实配置。
 
-检查温度及参数限制时，先核对应用实际采样通道、板卡原理图和具体示例版本。没有温度传感器时记录能力缺失，再设计测温或经验证的替代热保护；按 [sensorless-thermal.md](references/sensorless-thermal.md) 使用离线 MCU 热预算模块，当前运行器仍显式拒绝替代模式，协议与板级接入未完成。预算不是摄氏温度；STOP/新回合保留预算，未知启动热状态拒绝运行。模糊规则的可达增益集合、Iq 指令限幅和 DAC 码值不是已验证的实机安全域。
+检查温度及参数限制时，先核对应用实际采样通道、板卡原理图和具体示例版本。没有温度传感器时记录能力缺失，再设计测温或经验证的替代热保护；按 [sensorless-thermal.md](references/sensorless-thermal.md) 使用离线 MCU 热预算及 ADC 接入层。禁止运动的 SpeedLoop 热审计副本已完成链接检查，缺少校准记录时拒绝启动，尚未烧录；当前运行器仍显式拒绝替代模式，协议与实机运动接入未完成。预算不是摄氏温度；STOP/新回合保留预算，未知启动热状态拒绝运行。模糊规则的可达增益集合、Iq 指令限幅和 DAC 码值不是已验证的实机安全域。
 
 用户指定 `17.SpeedLoop` 时按 [speedloop-diagnostic.md](references/speedloop-diagnostic.md) 创建禁止运动的 GNU Arm 诊断副本，不复用 PID/NNSMC 的状态字段。该版本取消 TIM1/CH4 启动，使用约 100Hz 软件 ADC 诊断；不是 10kHz FOC 或训练遥测。原 CH4 触发依赖 MOE；调试器暂停也不会自动关闭 PWM。允许运动前应先禁能再确认停机，不能把 halt 当急停或把逐个 HAL Start 声称为原子输出使能。
 

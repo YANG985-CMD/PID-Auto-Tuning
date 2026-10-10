@@ -25,6 +25,10 @@ FILES = ('motor_td3_can.c','motor_td3_can.h','motor_td3_can_control.c','motor_td
          'motor_td3_speedloop_sample.c','motor_td3_speedloop_sample.h')
 WATCHDOG_FILES=('motor_td3_health.c','motor_td3_health.h',
                 'motor_td3_g431_watchdog.c','motor_td3_g431_watchdog.h')
+THERMAL_FILES=('motor_td3_thermal.c','motor_td3_thermal.h',
+               'motor_td3_thermal_feed.c','motor_td3_thermal_feed.h',
+               'motor_td3_speedloop_thermal.c','motor_td3_speedloop_thermal.h')
+THERMAL_ID='g431-speedloop-heat-audit-v1'
 
 
 def inventory(source):
@@ -40,7 +44,9 @@ def validate_source(source):
     return before
 
 
-def patch_copy(copy,watchdog=False):
+def patch_copy(copy,watchdog=False,thermal_audit=False):
+    if thermal_audit and not watchdog:
+        raise ValueError('Thermal audit requires the locked watchdog diagnostic build')
     main=copy/'Core/Src/main.c';text=main.read_text(encoding='utf-8')
     text=replace_once(text,'#include "FOC_Model.h"',
         '#include "FOC_Model.h"\n#include "motor_td3_g431_adapter.h"\n#include "motor_td3_speedloop_sample.h"')
@@ -88,6 +94,15 @@ def patch_copy(copy,watchdog=False):
             '  if(motor_td3_g431_wd_boot_check()) while(1) { motor_td3_g431_disable(); }\n  HAL_Init();')
         text=replace_once(text,'      motor_td3_speedloop_sample();',
             '      if(!motor_td3_g431_wd_skip_adc()) motor_td3_speedloop_sample();')
+    if thermal_audit:
+        text=replace_once(text,'#include "motor_td3_g431_watchdog.h"',
+            '#include "motor_td3_g431_watchdog.h"\n#include "motor_td3_speedloop_thermal.h"')
+        text=replace_once(text,'  motor_td3_g431_init();',
+            '  motor_td3_g431_init();\n  motor_td3_speedloop_thermal_init();')
+        text=replace_once(text,'    motor_td3_g431_poll();',
+            '    motor_td3_g431_poll();\n    motor_td3_speedloop_thermal_poll();')
+        text=replace_once(text,'if(!motor_td3_g431_wd_skip_adc()) motor_td3_speedloop_sample();',
+            'if(!motor_td3_g431_wd_skip_adc()) { motor_td3_speedloop_sample(); motor_td3_speedloop_thermal_sample(); }')
     main.write_text(text,encoding='utf-8',newline='\n')
     if re.search(r'HAL_TIM(?:Ex)?_(?:PWMN?|Base)_Start\s*\(',text) or 'FOC_Model_step();' in text:
         raise ValueError('Unexpected timer start or control step in diagnostic copy')
@@ -101,6 +116,11 @@ def patch_copy(copy,watchdog=False):
     it=copy/'Core/Src/stm32g4xx_it.c';text=it.read_text(encoding='utf-8')
     text=replace_once(text,'#include "FOC_Model.h"','#include "FOC_Model.h"\n#include "motor_td3_g431_adapter.h"')
     text=replace_once(text,'  HAL_IncTick();','  HAL_IncTick();\n  motor_td3_g431_tick_1ms();')
+    if thermal_audit:
+        text=replace_once(text,'#include "motor_td3_g431_adapter.h"',
+            '#include "motor_td3_g431_adapter.h"\n#include "motor_td3_speedloop_thermal.h"')
+        text=replace_once(text,'  motor_td3_g431_tick_1ms();',
+            '  motor_td3_g431_tick_1ms();\n  motor_td3_speedloop_thermal_tick_1ms();')
     text=replace_once(text,'\tHAL_FDCAN_GetRxMessage(&hfdcan1,FDCAN_RX_FIFO0,&RxHeader,RxData);','')
     for name in ('NMI_Handler','HardFault_Handler','MemManage_Handler','BusFault_Handler','UsageFault_Handler'):
         text=function(text,name,'  motor_td3_g431_disable();\n  while(1) {}')
@@ -198,6 +218,10 @@ SECTIONS {
 
 
 def build(args):
+    thermal_audit=getattr(args,'thermal_audit',False)
+    watchdog=getattr(args,'watchdog',False)
+    if thermal_audit and not watchdog:
+        raise ValueError('Thermal audit requires --watchdog; no motion build is supported')
     source=Path(args.source).resolve();out=Path(args.output).resolve();arm=Path(args.arm_bin).resolve()
     temp=Path(args.temp_root).resolve()
     if temp not in out.parents or source in out.parents or out in source.parents:
@@ -214,13 +238,18 @@ def build(args):
     out.mkdir(parents=True,exist_ok=True);copy=out/'private-copy';copy.mkdir()
     for folder in ('Core','Drivers','MATLAB','Middlewares/ST/ARM/DSP/Inc'):
         shutil.copytree(source/folder,copy/folder,ignore=shutil.ignore_patterns('*.o','*.d','*.axf','*.hex','*.bak'))
-    watchdog=getattr(args,'watchdog',False)
-    patch_copy(copy,watchdog)
+    patch_copy(copy,watchdog,thermal_audit)
     startup=out/'startup.S';startup.write_text(startup_from_vectors((source/sources[0]).read_text(encoding='utf-8')),encoding='ascii')
     linker=out/'diagnostic.ld';linker.write_text(LINKER,encoding='ascii')
     ours=copy/'codex-can';ours.mkdir()
-    files=FILES+(WATCHDOG_FILES if watchdog else ())
+    files=FILES+(WATCHDOG_FILES if watchdog else ())+(THERMAL_FILES if thermal_audit else ())
     for name in files: shutil.copy2(SKILL/'firmware'/name,ours/name)
+    if thermal_audit:
+        # Separate identity; old Flash/capture validators must reject this image.
+        adapter=ours/'motor_td3_g431_adapter.c';text=adapter.read_text(encoding='utf-8')
+        if text.count('g431-speedloop-wdog-v1')!=2:
+            raise ValueError('Watchdog identity anchors changed')
+        adapter.write_text(text.replace('g431-speedloop-wdog-v1',THERMAL_ID),encoding='utf-8',newline='\n')
     sources.extend(Path('codex-can')/name for name in files if name.endswith('.c'))
     includes=[copy/p for p in ('Core/Inc','Drivers/STM32G4xx_HAL_Driver/Inc',
         'Drivers/STM32G4xx_HAL_Driver/Inc/Legacy','Drivers/CMSIS/Device/ST/STM32G4xx/Include',
@@ -259,12 +288,17 @@ def build(args):
     forbidden={'HAL_TIM_PWM_Start','HAL_TIMEx_PWMN_Start','HAL_TIM_Base_Start','FOC_Model_step','FuzzyPID_Compute'}
     if forbidden.intersection(symbols):
         raise ValueError('Motion/control entry point survived diagnostic link: '+str(sorted(forbidden.intersection(symbols))))
+    if thermal_audit:
+        required={'motor_td3_speedloop_thermal_state','motor_td3_speedloop_thermal_init',
+                  'motor_td3_speedloop_thermal_poll','motor_td3_speedloop_thermal_sample',
+                  'motor_td3_speedloop_thermal_tick_1ms','motor_td3_thermal_feed_sample'}
+        if not required.issubset(symbols): raise ValueError('Thermal audit hooks missing from linked image')
     blob=(out/'speedloop-diagnostic.bin').read_bytes();sp,entry=struct.unpack('<II',blob[:8])
     if sp!=0x20008000 or not (entry&1 and 0x08000000<=entry<0x08020000) or len(blob)>0x20000:
         raise ValueError('Image vectors/size outside G431 128KB/32KB map')
     size=run([tool('size'),elf]).strip()
     if inventory(source)!=before: raise RuntimeError('Private source changed during build')
-    summary=dict(schema_version=1,mode=MODE,firmware_id='g431-speedloop-wdog-v1' if watchdog else 'g431-speedloop-diag-v1',
+    summary=dict(schema_version=1,mode=MODE,firmware_id=THERMAL_ID if thermal_audit else ('g431-speedloop-wdog-v1' if watchdog else 'g431-speedloop-diag-v1'),
         compiler=version,translation_units=len(sources),source_files_unchanged=True,source_files_checked=len(before),
         source_tree_sha256=SOURCE_TREE_SHA256,model_sha256=MODEL_SHA256,model_executed=False,
         hardware_executed=False,flash_programming=False,capabilities=0,motion_enable_implemented=False,
@@ -274,6 +308,9 @@ def build(args):
         bin_sha256=digest(out/'speedloop-diagnostic.bin'),hex_sha256=digest(out/'speedloop-diagnostic.hex'),
         initial_sp=sp,entry=entry,size_report=size,symbols=symbols,
         watchdog_integrated=watchdog,diagnostic_fault_injection=watchdog,
+        thermal_audit_integrated=thermal_audit,current_gain_calibrated=False,
+        thermal_protection_verified=False,thermal_deployment_approved=False,
+        thermal_expected_boot_fault='TD3_FEED_CALIBRATION' if thermal_audit else None,
         heartbeat='validated STOP, 200ms deadline; no start/gains' if watchdog else None,
         can_tx_completion='one outstanding request; Tx event; auto retransmission; 50ms deadline' if watchdog else None,
         integration_sha256={name:digest(ours/name) for name in files})
@@ -286,6 +323,7 @@ def main():
     for name in ('source','arm-bin','output'): p.add_argument('--'+name,required=True)
     p.add_argument('--temp-root',default=r'E:\simulink\_codex_tmp')
     p.add_argument('--watchdog',action='store_true',help='Integrate foreground health/IWDG; remains motion inhibited')
+    p.add_argument('--thermal-audit',action='store_true',help='Link unapproved thermal feed; requires --watchdog, calibration absent, no hardware execution')
     print(json.dumps(build(p.parse_args()),indent=2))
 
 

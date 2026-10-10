@@ -2,7 +2,7 @@
 
 ## 当前交付范围
 
-`firmware/motor_td3_thermal.c/.h` 已实现三相独立的电流热预算、累计堵转时间、累计输出使能时间、采样时序检查与故障锁存。主机使用合成电流做故障测试，Cortex-M4 仅编译对象文件；尚未接入运行中的 SpeedLoop、烧录或验证实际停机。不能用这些软件结果声明绕组/MOSFET 已受热保护。
+`firmware/motor_td3_thermal.c/.h` 已实现三相独立的电流热预算、累计堵转时间、累计输出使能时间、采样时序检查与故障锁存。后续增加 `motor_td3_thermal_feed.c/.h`，把经验证范围内的三相原始 ADC 转成相电流，检查连续序号/采样时刻，逐样本检测已采到的峰值，再形成完整均方窗口。主机使用合成校准数据和电流做测试；已在禁止运动的 SpeedLoop 诊断副本完成完整链接，尚未烧录、接入实际 FOC 电流采样或验证运动停机。不能用这些软件结果声明绕组/MOSFET 已受热保护。
 
 `assets/thermal-profile.example.json` 是待填的工程记录模板，不是运行器支持的新配置。所有实机限值为 `null`，`validated` 与 `deployment_approved` 为 false。单独写入 true 不会产生验证证据。
 
@@ -36,6 +36,19 @@ H_{p,k+1}=H_{p,k}+\max(0,\overline{i_p^2}-I_{p,\mathrm{cont,rms}}^2)\Delta t.
 
 热预算累计使用 double，采样平方和使用 float；禁止 `-ffast-math` 等改变 NaN/有限性语义的选项。G431 需测量平方采集及窗口评估的最坏执行时间、栈和并发访问，不能因为对象文件可编译就认定实时预算已通过。现有约 100 Hz 软件 ADC **禁止运动诊断**不能作为真实 FOC 的连续电流/RMS 采样验证。
 
+## ADC 接入层与 SpeedLoop 链接检查
+
+`motor_td3_thermal_feed` 的存储须零初始化，启动仅初始化一次，所有调用由一个保护任务串行拥有。重复初始化会拒绝且保留既有预算；STOP/重连不提供重置 API。
+
+- 校准记录包含每相零点、正增益和实测覆盖的 ADC 上下界。缺少记录、NaN、非正增益、零点不在覆盖区内，或仅有标称系数且 `calibrated=0` 时拒绝。12 位 ADC 的 0/4095 及校准范围之外的数据也拒绝，不外推保护量程。
+- 每个完整三相样本使用实际触发时间；期望间隔为 `window_us/window_samples`，间隔与序号必须连续。驱动器还须独立确认 ADC1/ADC2 转换均完成、无 overrun、PWM 采样时刻有效和时钟正确。软件序号本身不能证明硬件采样完整。
+- 校准后的采样峰值达到门槛就立即调用禁能，不等待窗口结束。它仍不能捕捉 ADC 两次采样间的短路尖峰。
+- 完整窗口保守合并任一采样间隔内的实际桥使能与最低绝对速度，提交既有热 guard。`check` 独立于新数据调用；迟到样本不能恢复。保护任务、CAN 和 ADC 之间的真实并发与执行时间仍须板级验证。
+
+`motor_td3_speedloop_thermal.c` 是**禁止运动的接线审计层**：只读校准、热限值、启动 seed 均未提供，初始化预期锁存 `TD3_FEED_CALIBRATION`，不会把原程序的标称安培或 100Hz 软件 ADC 当成已验证热输入。SysTick 仅增加 64 位时钟，热 guard 在前台运行；原有独立输出禁能与看门狗保留。当前故障状态只能在该模块/RAM 中检查，CAN v1 尚未传输热预算。
+
+离线构建使用 `build_speedloop_diagnostic.py --watchdog --thermal-audit`，身份为 `g431-speedloop-heat-audit-v1`。没有新的烧录入口；旧看门狗下载器按固定身份/哈希拒绝它。不能通过填写 true、零 seed、放宽阈值或更新旧下载白名单直接启用该版本。真实 FOC 接入还需要按实际 PWM 触发建立采样节拍、实际输出活动回读、热状态恢复及保护反馈。
+
 ## 两类热风险分别验收
 
 - **电机绕组：**相电流量程/增益、连续相 RMS 电流、过载幅值及允许时间、低速/堵转限制、初始热状态与环境边界。
@@ -49,7 +62,7 @@ V13.1 用户手册 PDF 第 13 页及测试手册第 6 页提供 24 V、1300 rpm�
 
 示例 `pmsm_motor_parameters.h` 中 `NOMINAL_CURRENT=2183` 是 int16 电流单位，注释说明依赖采样电阻、放大倍数和 MCU 电压；它不是 2183 A。电源 24 V/3 A 的限流也不能代替相电流额定值。当前三相零点已有记录，增益与实际过流安培门槛仍待标定。
 
-先完成这些证据，再将热模块接入禁止运动工程验证故障链路，最后安排有界基准试验。不要通过把缺失的温度填成常数、扩大阈值或反复复位绕过门槛。
+当前已完成缺失记录仍保持禁能的离线接线与链接检查。先取得电流与热限值证据，再在禁止运动工程验证实际故障链路，最后安排有界基准试验。不要通过把缺失的温度填成常数、扩大阈值或反复复位绕过门槛。
 
 ## 离线验证入口
 
@@ -58,3 +71,10 @@ python -B skills/motor-td3-serial-tuning/scripts/test_thermal_guard.py --output 
 ```
 
 可选 `--arm-compiler GNU_ARM_GCC` 仅增加 Cortex-M4 对象编译，不访问下载器。17 组测试覆盖未知热状态、无效配置、先平方后平均、采样无效锁存、三相分别过载、停机保留预算、额定均方负载、时间步一致性、无效窗口、采样峰值、重复/丢失序号、错误时窗、采样丢失、时钟倒退、累计堵转、累计带电时限和热状态恢复。
+
+```text
+python -B skills/motor-td3-serial-tuning/scripts/test_thermal_feed.py --output TASK_TEMP_FEED --compiler GCC
+python -B skills/motor-td3-serial-tuning/scripts/build_speedloop_diagnostic.py --watchdog --thermal-audit --source PRIVATE_SPEEDLOOP_ROOT --arm-bin GNU_ARM_BIN --output TASK_TEMP_BUILD
+```
+
+接入层新增 17 组故障测试、3 组实际锁定接线层的主机检查，另检查未选看门狗时在读取工程前拒绝构建。全部合成参数只用于主机测试，不进入 SpeedLoop 常量配置。

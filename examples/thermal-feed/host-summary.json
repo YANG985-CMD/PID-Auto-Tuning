@@ -1,0 +1,63 @@
+{
+  "feed": {
+    "schema_version": 1,
+    "test_groups": 17,
+    "passed": true,
+    "hardware_accessed": false,
+    "synthetic_parameters_only": true,
+    "current_gain_calibrated": false,
+    "thermal_protection_verified": false
+  },
+  "speedloop": {
+    "test_groups": 3,
+    "passed": true,
+    "hardware_accessed": false,
+    "calibration_absence_latched": true
+  },
+  "unlocked_build_rejected_before_source_access": true,
+  "schema_version": 1,
+  "passed": true,
+  "hardware_accessed": false,
+  "current_gain_calibrated": false,
+  "thermal_protection_verified": false,
+  "source_sha256": {
+    "motor_td3_thermal.c": "9cff71025c89acf598fb848e4be1fd4e0ae85d6f2ec97c668f5108a1ed2b3a12",
+    "motor_td3_thermal.h": "5734ad7cc991c5d295e4cc80cecd3bb0a652d53b7da5dd7c8c25a298e2573526",
+    "motor_td3_thermal_feed.c": "6a90143647ff7d4e297b186d981e0abd05230b38dea55f355a58c80a46f0b719",
+    "motor_td3_thermal_feed.h": "aec97a00ef99b4552d60604986f4aab10738da8859c1c6309c495b779e43a550",
+    "motor_td3_speedloop_thermal.c": "570db43ad9cc0ccaf5387e64ee91838594d081d54673451436679db04e698973",
+    "motor_td3_speedloop_thermal.h": "c30c51e0fe52e336fb2711706b6f31b13e562e26f59fddef0f98852949842052",
+    "tests/thermal_feed_host.c": "046dcc26d8a22fbf53166a8cfa602fccb8f8ecc31f82ce6b27235823f366753b",
+    "tests/speedloop_thermal_host.c": "a73d32b65ed63da89968d32c8ad2f08a3bc40ae1a049a67bb41918039e74ec26"
+  },
+  "regression": {
+    "thermal_guard": {
+      "schema_version": 1,
+      "test_groups": 17,
+      "passed": true,
+      "hardware_accessed": false,
+      "thermal_protection_verified": false,
+      "motion_authorized": false,
+      "synthetic_parameters_only": true,
+      "source_sha256": {
+        "motor_td3_thermal.c": "9cff71025c89acf598fb848e4be1fd4e0ae85d6f2ec97c668f5108a1ed2b3a12",
+        "motor_td3_thermal.h": "5734ad7cc991c5d295e4cc80cecd3bb0a652d53b7da5dd7c8c25a298e2573526",
+        "tests/thermal_host.c": "569ff81134ff480ce4989f2d5366ebd36095dc5803cdaea1eade0a365060bced"
+      },
+      "arm_object_compiled": false,
+      "linked_into_speedloop": false
+    },
+    "watchdog_adapter": {
+      "schema_version": 1,
+      "scope": "actual locked adapter with software HAL/CMSIS/model substitutes",
+      "tests": 15,
+      "watchdog_integration": true,
+      "failures": 0,
+      "errors": 0,
+      "passed": true,
+      "hardware_accessed": false,
+      "motor_output": false,
+      "profile": "g431-speedloop-wdog-v1"
+    }
+  }
+}
