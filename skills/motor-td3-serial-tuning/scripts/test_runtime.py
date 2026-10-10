@@ -149,6 +149,12 @@ class RuntimeTests(unittest.TestCase):
         bad = load_json(ROOT/'assets/session-profile.example.json')
         with self.assertRaises(SafetyError): validate_runtime(bad,True)
 
+    def test_current_saturation_threshold_is_bounded(self):
+        for value in (0, self.p['safety']['current_limit_a'] + .01, math.nan):
+            bad = copy.deepcopy(self.p)
+            bad['runtime']['current_saturation_a'] = value
+            with self.assertRaises(SafetyError): validate_runtime(bad)
+
     def test_overcurrent_nan_unknown_endpoint_not_learned(self):
         for value in (5.0,math.nan):
             device = MockDevice(self.p)

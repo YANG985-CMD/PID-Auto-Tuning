@@ -6,7 +6,7 @@
   "simulation_only": true,
   "schema_version": 1,
   "files_sha256": {
-    "motor_actor.c": "12bab06aa46280099c141a69b061c4633cf56b9756731759156eafd29ca0774b",
+    "motor_actor.c": "ff04120524dee5731cc8c5aeed0d157adc936976447e41019deda9e4a0a7b8ad",
     "motor_actor.h": "dc0cb2c5a2d9fb2235e40ef33d153136a2991cf83887f3c9f5bf428805d054f8"
   },
   "parameter_count": 482,
@@ -14,5 +14,5 @@
   "workspace_float_bytes": 168,
   "dynamic_allocation": false,
   "hardware_deployment_approved": false,
-  "source_sha256": "73b875eec4128606112921498ece69e3207a4fc5240af7d80b52c686d72b4264"
+  "source_sha256": "95811cca976e32a9131ab842b6646f4144605cc492cee08e667111418ef8b7c4"
 }

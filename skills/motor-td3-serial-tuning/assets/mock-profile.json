@@ -91,6 +91,7 @@
       3000
     ],
     "window_ms": 100,
+    "current_saturation_a": 3,
     "max_steps": 30,
     "speed_refs_rpm": [
       500,

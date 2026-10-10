@@ -91,6 +91,7 @@
       null
     ],
     "window_ms": null,
+    "current_saturation_a": null,
     "max_steps": null,
     "speed_refs_rpm": []
   }

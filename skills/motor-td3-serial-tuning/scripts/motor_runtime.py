@@ -85,6 +85,9 @@ def validate_runtime(p, live=False):
     refs = r.get('speed_refs_rpm', [])
     if not refs or not all(number(x) and abs(x) < s['speed_limit_rpm'] for x in refs):
         errors.append('Predefined speed reference plan is required')
+    saturation_limit = r.get('current_saturation_a', s['current_limit_a'])
+    if saturation_limit is not None and (not number(saturation_limit) or saturation_limit <= 0 or saturation_limit > s['current_limit_a']):
+        errors.append('runtime.current_saturation_a must be positive and no greater than the safety current limit')
     if c := p.get('controller'):
         for g in ('kp','ki'):
             if not c[g + '_min'] <= f32(c[g + '_baseline']) <= c[g + '_max']:
@@ -492,8 +495,20 @@ class Engine:
             end = frames[-1]
             gaps = [(b['t_us'] - a['t_us']) / 1000 for a, b in zip([ack] + frames[:-1], frames)]
             error_mse = sum(((f['speed_ref'] - f['speed']) / self.p['runtime']['state_scale'][2]) ** 2 for f in frames) / len(frames)
-            current_mse = sum((f['current'] / self.p['safety']['current_limit_a']) ** 2 for f in frames) / len(frames)
-            reward = -error_mse - .05 * current_mse - .001 * sum(a * a for a in action)
+            current_limit = self.p['safety']['current_limit_a']
+            current_mse = sum((f['current'] / current_limit) ** 2 for f in frames) / len(frames)
+            peak_current = max(abs(f['current']) for f in frames)
+            overshoot_rpm = max(0, max((f['speed'] - f['speed_ref']) * (1 if f['speed_ref'] >= 0 else -1) for f in frames))
+            saturation_limit = self.p['runtime'].get('current_saturation_a') or current_limit
+            saturation_fraction = sum(abs(f['current']) >= .99 * saturation_limit for f in frames) / len(frames)
+            peak_normalized = peak_current / current_limit
+            peak_excess = max(0.0, peak_normalized - .70)
+            overshoot_normalized = overshoot_rpm / self.p['runtime']['state_scale'][2]
+            # Tracking remains dominant, while the critic also sees peak
+            # current, overshoot and sustained saturation during exploration.
+            reward = (-error_mse - .05 * current_mse - .012 * peak_normalized ** 2
+                      - .025 * peak_excess ** 2 - .04 * saturation_fraction
+                      - .02 * overshoot_normalized ** 2 - .001 * sum(a * a for a in action))
             duration = (end['t_us'] - start['t_us']) / 1000
             self.episode_ms += duration
             self.session_seconds += duration / 1000
@@ -519,9 +534,9 @@ class Engine:
                        learner_eligible=True, safety_intervention=False,
                        stop_reason='episode_limit' if truncated else 'none',
                        metrics=dict(error_mse_normalized=error_mse, current_mse_normalized=current_mse,
-                                    peak_current_a=max(abs(f['current']) for f in frames),
-                                    overshoot_rpm=max(0, max((f['speed'] - f['speed_ref']) * (1 if f['speed_ref'] >= 0 else -1) for f in frames)),
-                                    saturation_fraction=sum(abs(f['current']) >= 2.99 for f in frames) / len(frames)))
+                                    peak_current_a=peak_current, peak_current_normalized=peak_normalized,
+                                    overshoot_rpm=overshoot_rpm, overshoot_normalized=overshoot_normalized,
+                                    saturation_fraction=saturation_fraction))
             errors = check_transition(row, self.p)
             if errors:
                 raise SafetyError('; '.join(errors))
