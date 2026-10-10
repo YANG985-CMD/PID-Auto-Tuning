@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-10",
+  "adapter": {
+    "name": "PCAN-USB",
+    "channel": "PCAN_USBBUS1",
+    "supports_fd": false,
+    "bitrate": 500000,
+    "listen_only_preset_verified": true,
+    "listen_only_post_initialize_verified": true,
+    "duration_s": 5.141,
+    "received_frames": 0,
+    "transmit_api_called": false,
+    "channel_released": true
+  },
+  "offline_fault_tests": {"passed": 9},
+  "board_audit": {
+    "original_firmware_hex_records_match": true,
+    "compared_flash_bytes": 33500,
+    "initial_state": "RUNNING",
+    "motor_state_before_reset": 255,
+    "tim1_ccer_before_reset": 5461,
+    "pwm_enabled_before_reset": true,
+    "state_after_cleanup": "HALTED",
+    "tim1_cr1_after_cleanup": 0,
+    "tim1_ccer_after_cleanup": 0,
+    "tim1_bdtr_after_cleanup": 0,
+    "resumed_by_codex": false,
+    "flash_written": false,
+    "power_disconnected_confirmed_by_user": true
+  },
+  "source_audit": {
+    "fdcan_initialized": true,
+    "classic_can": true,
+    "nominal_bitrate": 500000,
+    "tx_id": 27,
+    "tx_extended": true,
+    "tx_dlc": 8,
+    "tx_payload_updated_with_measurements": false,
+    "rx_td3_commands_implemented": false
+  },
+  "limitations": {
+    "physical_board_revision_confirmed": false,
+    "board_can_transceiver_logic_supply_verified": false,
+    "board_can_frames_verified": false,
+    "bidirectional_link_verified": false,
+    "td3_can_protocol_verified": false,
+    "motor_can_training_or_gain_application_performed": false
+  }
+}

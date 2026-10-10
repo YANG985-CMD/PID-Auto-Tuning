@@ -10,6 +10,8 @@ jobs:
           python-version: '3.12'
       - name: Config and causal experience checker
         run: python -B skills/motor-td3-serial-tuning/scripts/session_checks.py self-test
+      - name: CAN capture refuses active mode and unavailable channels
+        run: python -B scripts/test_can_monitor.py
       - name: Bridge faults and serial byte stream
         run: python -B skills/motor-td3-serial-tuning/scripts/test_runtime.py --output "${{ runner.temp }}/td3-runtime"
       - name: MCU C protocol and guard

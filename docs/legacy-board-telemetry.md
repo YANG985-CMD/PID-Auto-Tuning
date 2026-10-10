@@ -26,3 +26,5 @@ python -B scripts/legacy_hall_monitor.py --port COMx --duration 10 --output lega
 
 当前固件没有串口启动、停止或增益命令，电机由 USER3/PC13 按键控制。因此这条链路只能做 shadow 观测和离线分析，不能宣称已完成 TD3 实机训练。要进入受限实机训练，仍需在 MCU 内加入带 CRC、序号、应用回读、动作租约、失联停机和故障锁存的协议，并让三相 PWM 禁能由已验证的 MCU 停机函数实际执行。
 
+同一固件也初始化了经典 CAN，但现有 CAN TX 仅发送未更新的 8 字节零载荷，RX 仅收进缓冲区。它没有实现 TD3 控制协议；详见 [CAN 路径核对](stm32g4-can-path.md)。
+
