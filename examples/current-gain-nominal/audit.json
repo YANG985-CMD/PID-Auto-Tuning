@@ -1,0 +1,78 @@
+{
+  "schema_version": 1,
+  "audit_date": "2026-10-11",
+  "evidence_type": "schematic_and_source_audit_with_user_reported_voltage",
+  "target_project": "17.SpeedLoop/5.SpeedLoop/BLDC_Speedloop_code/STM32G4_FOC_template",
+  "schematic_connector": "H17",
+  "physical_component_values_measured": false,
+  "hardware_accessed_by_codex_this_audit": false,
+  "firmware_changed": false,
+  "device_write": false,
+  "current_gain_calibrated": false,
+  "current_threshold_calibrated": false,
+  "thermal_protection_verified": false,
+  "live_td3_approved": false,
+  "configuration": {
+    "adc_bits": 12,
+    "adc_step_count": 4096,
+    "adc_gain_compensation": 0,
+    "adc_injected_offset_enabled": false,
+    "opamp_mode": "OPAMP_STANDALONE_MODE",
+    "opamp_internal_output_enabled": false,
+    "shunt_nominal_ohm": 0.005,
+    "input_resistor_nominal_ohm": 1500,
+    "feedback_resistor_nominal_ohm": 11000,
+    "bias_top_resistor_nominal_ohm": 22000,
+    "bias_bottom_resistor_nominal_ohm": 22000,
+    "ideal_differential_gain": 7.333333333333333,
+    "nominal_assumed_vref_V": 3.3,
+    "nominal_calculated_A_per_count": 0.02197265625,
+    "source_coefficient_A_per_count": 0.02197265625,
+    "nominal_formula_matches_source": true
+  },
+  "phases": {
+    "A": {"shunt": "R42", "input_positive": "R58", "input_negative": "R59", "feedback": "R56", "bias": ["R52", "R53"], "opamp_output": "PA2", "adc": "ADC1", "channel": 3, "register": "JDR1"},
+    "B": {"shunt": "R43", "input_positive": "R60", "input_negative": "R61", "feedback": "R57", "bias": ["R54", "R55"], "opamp_output": "PA6", "adc": "ADC2", "channel": 3, "register": "JDR1"},
+    "C": {"shunt": "R44", "input_positive": "R65", "input_negative": "R66", "feedback": "R64", "bias": ["R62", "R63"], "opamp_output": "PB1", "adc": "ADC1", "channel": 12, "register": "JDR2"}
+  },
+  "user_voltage_observation": {
+    "source": "user_report",
+    "measurement_points": "silkscreen 3.3V to GND",
+    "voltage_V": 3.286,
+    "instrument": "multimeter",
+    "instrument_model": null,
+    "instrument_accuracy": null,
+    "user_confirmed_power_24V_disconnected": true,
+    "control_supply": "USB/STLink",
+    "mcu_vref_directly_measured": false
+  },
+  "conditional_estimate_only": {
+    "assumption": "VREF+ equals user reported header rail; all analogue parts ideal and nominal",
+    "assumed_vref_V": 3.286,
+    "A_per_count": 0.021879438920454547,
+    "source_coefficient_overreport_percent": 0.42604990870358517,
+    "total_error_bound_established": false,
+    "coefficient_application_approved": false
+  },
+  "alternate_example_comparison": {
+    "A_per_count": 0.0193359375,
+    "ratio_to_speedloop_nominal": 0.88,
+    "origin_confirmed": false,
+    "conditional_current_underreport_percent": 12.0,
+    "conditional_squared_current_underreport_percent": 22.56
+  },
+  "equipment": {
+    "supply": "fixed 24V",
+    "multimeter_available": true,
+    "scope": "homemade voltage-only; specifications unknown",
+    "controlled_current_source_confirmed": false,
+    "power_resistor_available": false,
+    "injection_fixture_confirmed": false
+  },
+  "source_sha256": {
+    "STM32G4开发板原理图.pdf": "faf115c2fdee5aa65608c80a2b5f9265ece2d0f8821d20aba5079de5f5d47a84",
+    "Core/Src/main.c": "8a86ff99701cdee540ea13335cd6db6c643f0350d2c144c17e2793d4d44ac0b1",
+    "Core/Src/opamp.c": "2124186662268bddc4844a53c7e1b9f995afa737773cccec088d32984938702f",
+    "Core/Src/adc.c": "551dd91cb9b432807f4fdee38393312b90390387bbf0509963aaff6836b6f4d3"
+  }
+}

@@ -215,7 +215,9 @@ Codex 同时给实际接入适配层补上 1ms Break 标志检测：24 项适配
 
 ### 已知电流校准仍待外部基准
 
-提供的不同示例使用了两个电流换算系数：PID 工程为 `0.02197265625 A/码`，另一个示例为 `0.0193359375 A/码`。因此下一步不能直接把 ADC 码或 DAC 3000 当作安培值。仓库新增了[已知电流校准流程](skills/motor-td3-serial-tuning/references/current-calibration.md)和离线拟合脚本；它只处理同步的参考电流/ADC 数据，永不写入 MCU。当前已知的 24V/3A 电源没有足够的电流测量基准，尚未进行真实增益校准。
+提供的不同示例使用了两个电流换算系数：SpeedLoop/PID 工程为 `0.02197265625 A/码`，另一个示例为 `0.0193359375 A/码`。Codex 已对照原理图查明前者的标称来源：**5 mΩ 分流电阻、11kΩ/1.5kΩ 外部运放增益、12 位 ADC 和假设 3.3V 参考电压**，计算结果与 SpeedLoop 代码一致。用户断开 24V 后测得电源排针 3.286V；这没有直接测量 MCU VREF+，也没有校准分流电阻或运放，不能据此自动更换系数。[比例推导与来源核对](docs/current-gain-nominal-audit.md) · [结构化记录](examples/current-gain-nominal/audit.json)
+
+真实增益校准仍待受控电流与独立参考。用户目前只有固定 24V 电源、万用表和自制电压示波器，没有确认的限流源及注入夹具；固定电源的 3A 标注不是实际电流读数。仓库提供[已知电流校准流程](skills/motor-td3-serial-tuning/references/current-calibration.md)和离线拟合脚本，只处理同步参考电流/ADC 数据，永不写入 MCU。当前保持原系数和未校准状态，不把 ADC 码或 DAC 3000 当成已验证的安培保护值，热预算与 TD3 实机训练仍待验证。
 
 示例工程的通道和注入触发已由 Codex 对照 H17 原理图核对，但示例的两个增益系数、串口发送频率和归档中的 Break 配置存在限制，详见[示例电流采样审计](docs/example-current-sampling-audit.md)。它可以作为待校准的 ADC 反馈输入，不能原样作为 TD3 实机遥测或过流基准。
 
