@@ -115,13 +115,24 @@ class EntryTests(unittest.TestCase):
             if value==hex_data: return d.HEX_SHA
             return actual(value)
         with patch.object(d,'sha',side_effect=fake_digest):
-            d.validate(manifest(),binary,hex_data)
+            # Synthetic image fixture only. The historical published manifest
+            # retains its old source hashes; shared CAN code may evolve. Do not
+            # relax the real entry's source check or change its fixed image IDs.
+            matched=manifest()
+            matched['integration_sha256']={n:actual((d.builder.SKILL/'firmware'/n).read_bytes())
+                for n in d.builder.FILES+d.builder.WATCHDOG_FILES+d.builder.THERMAL_FILES}
+            matched['integration_sha256']['motor_td3_g431_adapter.c']=actual(
+                d.builder.patch_thermal_adapter((d.builder.SKILL/'firmware/motor_td3_g431_adapter.c').read_text(encoding='utf-8')).encode('utf-8'))
+            d.validate(matched,binary,hex_data)
+            if manifest()['integration_sha256']!=matched['integration_sha256']:
+                with self.assertRaisesRegex(ValueError,'source fingerprint changed'):
+                    d.validate(manifest(),binary,hex_data)
             for key,value in (('firmware_id','other'),('capabilities',1),('thermal_state_layout',{}),
                               ('current_gain_calibrated',True),('motion_enable_implemented',True),
                               ('integration_sha256',{}),('model_sha256','wrong')):
-                m=manifest();m[key]=value
+                m=json.loads(json.dumps(matched));m[key]=value
                 with self.assertRaises(ValueError): d.validate(m,binary,hex_data)
-            m=manifest();m['symbols']['motor_td3_g431_debugger_boot_token']+=4
+            m=json.loads(json.dumps(matched));m['symbols']['motor_td3_g431_debugger_boot_token']+=4
             with self.assertRaises(ValueError): d.validate(m,binary,hex_data)
     def test_ram_rejection_requires_exact_missing_calibration_state(self):
         self.assertFalse(d.thermal_state(thermal_ram())['motion_approved'])
