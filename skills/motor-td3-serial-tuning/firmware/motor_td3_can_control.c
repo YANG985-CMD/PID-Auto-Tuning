@@ -47,7 +47,7 @@ static int actual(motor_td3_can_control *c,const motor_td3_guard *g) {
     motor_td3_telemetry t;
     return snapshot(c,&t)&&t.enabled==g->enabled&&(!g->enabled||(t.kp==g->kp&&t.ki==g->ki));
 }
-void motor_td3_can_control_tick(motor_td3_can_control *c,uint64_t now,int estop) {
+void motor_td3_can_control_tick_ready(motor_td3_can_control *c,uint64_t now,int estop,int gain_ready) {
     motor_td3_telemetry t; motor_td3_can_command cmd; motor_td3_guard next; unsigned i; int ok=0;
     if(!c) return;
     if(c->rx.active&&(now<c->rx.last_us||now-c->rx.started_us>=TD3_CAN_FRAGMENT_TIMEOUT_US)) c->rx_fault=1;
@@ -55,7 +55,8 @@ void motor_td3_can_control_tick(motor_td3_can_control *c,uint64_t now,int estop)
     if(!snapshot(c,&t)) { trip(c,TD3_CAN_BOARD_FAULT); return; }
     motor_td3_tick(&c->guard,now,t.current,t.speed,t.vbus,t.temperature_c,estop);
     if(c->guard.fault) c->hooks.disable(c->hooks.user);
-    if(c->queued) {
+    if(c->queued && (gain_ready || c->pending.command.type==TD3_HELLO ||
+                    c->pending.command.type==TD3_STOP || now>=c->pending.expires_us || c->guard.fault)) {
         cmd=c->pending; c->queued=0;
         if(cmd.command.type==TD3_HELLO) {
             if(c->owner||c->guard.enabled||strcmp(cmd.command.profile_id,c->profile)) trip(c,TD3_CAN_PROTOCOL_FAULT);
@@ -75,7 +76,10 @@ void motor_td3_can_control_tick(motor_td3_can_control *c,uint64_t now,int estop)
                     motor_td3_tick(&next,now,t.current,t.speed,t.vbus,t.temperature_c,estop);
                     ok=next.enabled&&!next.fault;
                 }
-                if(ok) ok=c->hooks.begin(c->hooks.user,cmd.command.speed_ref,next.kp,next.ki);
+                if(ok) {
+                    ok=c->hooks.begin(c->hooks.user,cmd.command.speed_ref,next.kp,next.ki);
+                    if(ok) next.t_apply_us=now;
+                }
             } else {
                 ok=motor_td3_apply(&next,now,cmd.command.command_seq,cmd.command.kp,cmd.command.ki,cmd.command.lease_ms*1000U);
                 if(ok) ok=c->hooks.apply(c->hooks.user,next.kp,next.ki);
@@ -85,6 +89,9 @@ void motor_td3_can_control_tick(motor_td3_can_control *c,uint64_t now,int estop)
         }
     }
     if(!actual(c,&c->guard)) trip(c,TD3_CAN_BOARD_FAULT);
+}
+void motor_td3_can_control_tick(motor_td3_can_control *c,uint64_t now,int estop) {
+    motor_td3_can_control_tick_ready(c,now,estop,1);
 }
 int motor_td3_can_make_hello(motor_td3_can_control *c,uint8_t out[TD3_CAN_MAX_PACKET]) {
     int n;

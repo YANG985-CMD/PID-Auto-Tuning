@@ -4,6 +4,8 @@
 extern FuzzyPID_t fuzzy_speed_pid;
 extern uint8_t Motor_state;
 motor_td3_speedloop_pi motor_td3_speedloop_pi_state;
+static motor_td3_speedloop_pi_service boundary_service;
+static void *service_user;
 #ifndef MOTOR_TD3_SPEEDLOOP_PI_HOST
 static uint32_t last_cycles,cycles_per_us;
 static uint64_t elapsed_cycles;
@@ -18,6 +20,7 @@ void motor_td3_speedloop_pi_stop(void) {
     if(!motor_td3_speedloop_pi_state.fault) motor_td3_speedloop_pi_state.fault=TD3_PI_OWNER;
 }
 void motor_td3_speedloop_pi_bind_init(void) {
+    boundary_service=0;service_user=0;
     /* Mathematical envelope of the existing fuzzy rule tables; not proof that
      * arbitrary TD3 trajectories within it are safe or stable. */
     const motor_td3_speedloop_pi_domain d={TD3_SPEEDLOOP_KP-TD3_SPEEDLOOP_KP*.6f,TD3_SPEEDLOOP_KP+TD3_SPEEDLOOP_KP*.6f,
@@ -40,19 +43,39 @@ void motor_td3_speedloop_pi_fast(float error) {
         spd_kpki.spd_kp=fuzzy_speed_pid.Kp;spd_kpki.spd_ki=fuzzy_speed_pid.Ki;
     }
 }
-int motor_td3_speedloop_pi_model_boundary(float error,int reset,float *integral) {
+uint64_t motor_td3_speedloop_pi_time_us(void) {
     uint64_t now_us;
 #ifdef MOTOR_TD3_SPEEDLOOP_PI_HOST
     now_us=motor_td3_speedloop_pi_host_time_us();
 #else
-    uint32_t cycles=DWT->CYCCNT,delta=cycles-last_cycles;last_cycles=cycles;
+    uint32_t mask=__get_PRIMASK(),cycles,delta;
+    if(!motor_td3_speedloop_pi_state.initialized) return 0;
+    __disable_irq();cycles=DWT->CYCCNT;delta=cycles-last_cycles;last_cycles=cycles;
     if(!cycles_per_us||elapsed_cycles>UINT64_MAX-delta) {
-        motor_td3_speedloop_pi_state.fault=TD3_PI_CLOCK;motor_td3_speedloop_pi_stop();return 0;
+        motor_td3_speedloop_pi_state.fault=TD3_PI_CLOCK;motor_td3_speedloop_pi_stop();
+        __set_PRIMASK(mask);return 0;
     }
     elapsed_cycles+=delta;now_us=elapsed_cycles/cycles_per_us;
+    __set_PRIMASK(mask);
 #endif
-    if(!motor_td3_speedloop_pi_boundary(&motor_td3_speedloop_pi_state,now_us,error,reset,
-                                      integral,&spd_kpki.spd_kp,&spd_kpki.spd_ki)) {
+    return now_us;
+}
+int motor_td3_speedloop_pi_set_service(motor_td3_speedloop_pi_service service,void *user) {
+    if(!service||boundary_service||!motor_td3_speedloop_pi_state.initialized||motor_td3_speedloop_pi_state.fault) return 0;
+    service_user=user;boundary_service=service;return 1;
+}
+int motor_td3_speedloop_pi_model_boundary(float error,int reset,float *integral) {
+#ifndef MOTOR_TD3_SPEEDLOOP_PI_HOST
+    uint32_t mask=__get_PRIMASK();__disable_irq();
+#endif
+    uint64_t now_us=motor_td3_speedloop_pi_time_us();
+    int ok=boundary_service?boundary_service(service_user,now_us,error,reset,integral):
+        motor_td3_speedloop_pi_boundary(&motor_td3_speedloop_pi_state,now_us,error,reset,
+                                      integral,&spd_kpki.spd_kp,&spd_kpki.spd_ki);
+#ifndef MOTOR_TD3_SPEEDLOOP_PI_HOST
+    __set_PRIMASK(mask);
+#endif
+    if(!ok) {
         motor_td3_speedloop_pi_stop();return 0;
     }
     return 1;

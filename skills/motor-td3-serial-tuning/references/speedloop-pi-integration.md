@@ -53,6 +53,14 @@ python -B skills/motor-td3-serial-tuning/scripts/build_speedloop_pi_integration.
 
 复核副本身份 `g431-speedloop-pi-review-v1`，保留实际 FOC 与 CH4 采样代码，移除相桥启动调用；USER3 仅停机。它不是之前约 100Hz 软件 ADC 诊断版本，也不是已批准运动镜像。此入口没有下载、复位、CAN 或串口功能；现有固定硬件入口继续拒绝不同镜像。
 
-当前 `queue()` 没有接到 CAN 命令解析或 Actor。下一步必须接入外层保护后的动作、完整实际应用反馈、真实控制任务的独立进展监督，以及停机/重新启动门控，再验证这份固件。本次构建不改变板上 Flash，也不把名义电流转换为实测校准标记。
+默认 PI 复核构建仍不启用 CAN。新增 `--can-pi` 把现有 CAN 端点和 G431 HAL 端口接到同一 PI 边界：RX 只排队，在 reset 就绪后由 `motor_td3_speedloop_can` 同步提交并核对实际增益；正式反馈使用边界应用时间。STOP 和期限检查不因 reset 延后。内部 PI 用 wire 序号，正式协议仍用动作 command_seq，二者不混用。
+
+该选项同时统一 DWT 时间轴、中断串行化与单一 CAN 命令所有者，复用已有 Rx 队列和单帧 Tx 事件检查。主机用现有 Python 编码器和用户真实模型跑通 10 项接入检查；19 项公共 CAN 回归通过。完整构建为 49 单元，身份 `g431-speedloop-pi-can-review-v1`，能力仍为 0、相桥启动移除，没有烧录或重测物理 CAN。缺失温度不会编码为训练遥测。
+
+锁定适配层仍关闭 MOE，连同 CH4 采样触发一起停止；当前是编译复核副本。运行固件的持续采样、启动门控、独立进展/停机保护、热能力和 Actor 仍待接入同一实现。既有物理 CAN 结果无需作为前置工作反复重测；新运行镜像须验证自己的实际行为。构建不改变板上 Flash，也不把名义电流转换为实测校准标记。
+
+```text
+python -B skills/motor-td3-serial-tuning/scripts/build_speedloop_pi_integration.py --can-pi --source PRIVATE_17_SPEEDLOOP_TEMPLATE --output TASK_TEMP_CAN_PI --compiler HOST_GCC --arm-bin ARM_GNU_BIN
+```
 
 Simulink 再生成可能覆盖模型补丁。构建器每次从指定原工程重新生成补丁副本，不在生成代码目录留下隐含修改。

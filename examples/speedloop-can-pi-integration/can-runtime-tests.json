@@ -1,0 +1,7 @@
+{
+  "tests": 19,
+  "passed": true,
+  "hardware_opened": false,
+  "physical_motor_control_performed": false,
+  "compiled_c_endpoint": true
+}

@@ -207,6 +207,28 @@ class CanTests(unittest.TestCase):
         deliver(dict(type='hello',profile_id='test-can-profile-v1'),now=4000)
         self.assertEqual(LIB.test_deadline(),deadline); self.assertFalse(LIB.test_enabled())
 
+    def test_reset_readiness_defers_gains_and_ack_time_is_boundary(self):
+        begin()
+        packet=wire.pack(dict(type='gains',command_seq=1,kp=.0034,ki=.00144,lease_ms=5000),NONCE,BOOT,2,300000)
+        for f in wire.fragment(packet,1): LIB.test_feed(f,8,3000)
+        LIB.test_tick_ready(3000,0)
+        self.assertEqual(LIB.test_applied(),0);self.assertTrue(LIB.test_enabled())
+        LIB.test_tick_ready(4000,1)
+        self.assertEqual(LIB.test_applied(),1)
+        self.assertEqual(wire.unpack(raw_output('test_telemetry'))[0]['t_apply_us'],4000)
+
+    def test_stop_is_processed_when_gain_boundary_is_not_ready(self):
+        begin();packet=wire.pack(dict(type='stop'),NONCE,BOOT,2)
+        for f in wire.fragment(packet,1):LIB.test_feed(f,8,3000)
+        LIB.test_tick_ready(3000,0);self.assertFalse(LIB.test_enabled());self.assertEqual(LIB.test_wireseq(),2)
+
+    def test_deferred_command_cannot_survive_its_expiry(self):
+        begin()
+        packet=wire.pack(dict(type='gains',command_seq=1,kp=.0034,ki=.00144,lease_ms=5000),NONCE,BOOT,2,3500)
+        for f in wire.fragment(packet,1):LIB.test_feed(f,8,3000)
+        LIB.test_tick_ready(3000,0);LIB.test_tick_ready(4000,0)
+        self.assertFalse(LIB.test_enabled());self.assertEqual(LIB.test_applied(),0);self.assertEqual(LIB.test_fault(),10)
+
     def test_reference_allowlist_and_queue_overflow(self):
         handshake()
         deliver(dict(type='begin',profile_id='test-can-profile-v1',speed_ref=999,lease_ms=5000),seq=1,now=2000)
@@ -337,6 +359,7 @@ def main():
     LIB.test_init.argtypes=[ct.c_uint64]
     LIB.test_feed.argtypes=[ct.c_char_p,ct.c_uint,ct.c_uint64]
     LIB.test_tick.argtypes=[ct.c_uint64]
+    LIB.test_tick_ready.argtypes=[ct.c_uint64,ct.c_int]
     for name in ('test_hello','test_telemetry'): getattr(LIB,name).argtypes=[ct.c_void_p]
     LIB.test_fragment.argtypes=[ct.c_char_p,ct.c_uint,ct.c_uint,ct.c_uint,ct.c_void_p]
     LIB.test_decode.argtypes=[ct.c_char_p,ct.c_uint]

@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "build_id": "g431-speedloop-pi-can-review-v1",
+  "passed": true,
+  "core_checks": {
+    "tests": 20,
+    "passed": true,
+    "schema_version": 1,
+    "scope": "host C gain owner and bumpless parameter changes",
+    "hardware_accessed": false,
+    "motion_approved": false
+  },
+  "actual_model_checks": {
+    "tests": 10,
+    "passed": true,
+    "scope": "actual generated SpeedLoop PI with synthetic observations",
+    "hardware_accessed": false,
+    "baseline_trace_rows": 2000,
+    "baseline_trace_identical": true,
+    "trace_observation_fields": 9
+  },
+  "translation_units": 49,
+  "compiler": "arm-none-eabi-gcc.exe (Arm GNU Toolchain 14.2.Rel1 (Build arm-14.52)) 14.2.1 20241119",
+  "binary_bytes": 48012,
+  "bin_sha256": "f095d10c3afc35195c1e4abfe108354355182fff828c17b43344f4bddb8b2992",
+  "hex_sha256": "8a67caef75a1ef6d193f024f85f1e71206df9b2f2bdfbbbac8a7a4ac83f7b232",
+  "model_input_sha256": "2e13cbff00ac51cd4510db7645a5ccf8855c5d15d468399f8f04e5516ca23e42",
+  "own_source_sha256": {
+    "motor_td3_speedloop_pi.c": "e3ca4b5790b253ce4f7936ea58b46bac5b32e4759084d248beb21c5b7e6bd13e",
+    "motor_td3_speedloop_pi.h": "2debc2979c1d82ce79d140d7a9aa4981739731129ed7e237c0d2b8b8481d2d5c",
+    "motor_td3_speedloop_pi_bind.c": "76342baa3326b40b546ff7f6bf9a09f0a58893081c5732ac9360ad2b6ab97b44",
+    "motor_td3_speedloop_pi_bind.h": "c22eeb7d10a79e8556bbcd7a1121428e149a4a65a5de0c0550eb93305624ace0",
+    "motor_td3_speedloop_can.c": "7eed7961de50cf33ad7cc963fcb05fbf9ed890fab0314e6df79fe12782190127",
+    "motor_td3_speedloop_can.h": "94eb6c95f8be7893363c3bc9086e971d413a5e1343402600356bf0b76e26fca8",
+    "motor_td3_can.c": "0654d76969e3004426311f6a7c4eefc4229b6f79ec39bf5abd2f4f57c5885251",
+    "motor_td3_can.h": "652b77a491a9005aba0fc70431a763475a0d9be8cf2ca2a1a19e2ee626e5b34d",
+    "motor_td3_can_control.c": "e96d01c70b29b85590dca665ad733448501b96d6636f23a07a204d84725aea66",
+    "motor_td3_can_control.h": "57e3706b7670403388f05d37ced6ca8781b39cafac25874f1b519514699b7291",
+    "motor_td3_guard.c": "048fd9703f33fb262ac2e1d09a40b6af89a9cca365534eaa147ed4188e866504",
+    "motor_td3_guard.h": "f7773c9d1f8898646b25329c0ca111ffe69e959c015c531bded412a7fa97d77d",
+    "motor_td3_protocol.h": "3d71de6e45ef549c2ff7283d7abfdd0929a3373a089f2f48e42867a03429bf32",
+    "motor_td3_g431_adapter.c": "2ff3fa6c04b530d762c0b1efcb7d370fbd20fe1073ee932c8e3e2fadfb8cb3d4",
+    "motor_td3_g431_adapter.h": "89fb20b88a4063febef086a8e015ca54bcf1d0103b9945fc89096a323ca26c21",
+    "motor_td3_g431_off.h": "80b422814f4508ba5e51dedeb78a9dc237723c1ffa72dbb4dfe654706102b162"
+  },
+  "image_sections_bytes": {
+    "text": 47908,
+    "data": 104,
+    "bss": 8224
+  },
+  "source_unchanged": true,
+  "reference_profile": {
+    "reference": "user-selected 17.SpeedLoop known-running source",
+    "base_period_s": 0.0001,
+    "speed_pi_period_s": 0.001,
+    "kp": 0.003389,
+    "ki": 0.00144,
+    "ki_semantics": "continuous integral gain; generated model applies 0.001s once",
+    "phase_current_nominal_a_per_count": 0.02197265625,
+    "dynamic_offset_samples": 10,
+    "iq_reference_clamp": [
+      -3,
+      3
+    ],
+    "comparator_dac_code": 3000,
+    "comparator_path": "COMP1 PB1 positive / DAC3_CH1 negative -> TIM1 Break high/filter2",
+    "independent_current_calibration": false,
+    "measured_trip_current_a": null,
+    "temperature_sensor_in_example": false,
+    "validated_thermal_limits": null,
+    "fuzzy_gain_envelope": {
+      "kp": [
+        0.0013556000000000002,
+        0.005422400000000001
+      ],
+      "ki": [
+        0.00072,
+        0.00216
+      ]
+    },
+    "fuzzy_envelope_is_verified_td3_safety_domain": false
+  },
+  "phase_start_calls_removed": true,
+  "hardware_accessed": false,
+  "flash_programmed": false,
+  "motion_approved": false,
+  "transport_gain_commands_connected": true,
+  "board_can_hal_connected": true,
+  "connected_can_model_checks": {
+    "schema_version": 1,
+    "tests": 10,
+    "passed": true,
+    "scope": "existing Python CAN protocol with actual generated SpeedLoop PI and software board hooks",
+    "hardware_accessed": false,
+    "physical_can_retested": false,
+    "motion_approved": false
+  },
+  "td3_actor_connected": false,
+  "remaining": "integrate verified motion enable, independent motion progress/stop protection and approved thermal policy; connect Actor"
+}

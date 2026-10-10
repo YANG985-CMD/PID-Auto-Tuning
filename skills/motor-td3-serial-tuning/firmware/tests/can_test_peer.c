@@ -25,6 +25,7 @@ int test_init(uint64_t boot) {
 }
 int test_feed(const uint8_t *f,unsigned dlc,uint64_t now) { return motor_td3_can_receive(&ctx,0x620,1,f,dlc,now); }
 void test_tick(uint64_t now) { physical.elapsed_ms=(float)(now-ctx.guard.started_us)/1000; motor_td3_can_control_tick(&ctx,now,0); }
+void test_tick_ready(uint64_t now,int ready) { motor_td3_can_control_tick_ready(&ctx,now,0,ready); }
 int test_hello(uint8_t *out) { return motor_td3_can_make_hello(&ctx,out); }
 int test_telemetry(uint8_t *out) { return motor_td3_can_make_telemetry(&ctx,out); }
 int test_fragment(const uint8_t *p,unsigned len,unsigned tag,unsigned idx,uint8_t *out) { return motor_td3_can_fragment(p,len,(uint8_t)tag,idx,out); }

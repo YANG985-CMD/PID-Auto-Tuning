@@ -7,6 +7,11 @@ void motor_td3_speedloop_pi_bind_init(void);
 void motor_td3_speedloop_pi_stop(void);
 void motor_td3_speedloop_pi_fast(float error);
 int motor_td3_speedloop_pi_model_boundary(float error,int reset,float *integral);
+typedef int (*motor_td3_speedloop_pi_service)(void *,uint64_t,float,int,float *);
+/* One endpoint service runs INSIDE the generated PI boundary. Install with IRQs
+ * serialized; init clears it. The service must execute the core boundary once. */
+int motor_td3_speedloop_pi_set_service(motor_td3_speedloop_pi_service,void *);
+uint64_t motor_td3_speedloop_pi_time_us(void);
 /* Queue from a future validated transport/guard. This is not a CAN command handler. */
 int motor_td3_speedloop_pi_queue(unsigned mode,uint32_t sequence,float kp,float ki,uint64_t deadline_us);
 #ifdef MOTOR_TD3_SPEEDLOOP_PI_HOST

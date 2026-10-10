@@ -38,6 +38,9 @@ int motor_td3_can_receive(motor_td3_can_control *,uint16_t id,int standard_data,
 /* Control task calls independently of CAN arrivals and host/trainer activity.
  * estop includes invalid Hall/current sensors and hardware fault inputs. */
 void motor_td3_can_control_tick(motor_td3_can_control *,uint64_t now_us,int estop);
+/* Same protocol/guard, called at the actual PI boundary. On reset, defer only
+ * BEGIN/GAINS; HELLO/STOP and expired-command rejection remain responsive. */
+void motor_td3_can_control_tick_ready(motor_td3_can_control *,uint64_t now_us,int estop,int gain_ready);
 int motor_td3_can_make_hello(motor_td3_can_control *,uint8_t out[TD3_CAN_MAX_PACKET]);
 int motor_td3_can_make_telemetry(motor_td3_can_control *,uint8_t out[TD3_CAN_MAX_PACKET]);
 #endif

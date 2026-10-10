@@ -60,7 +60,7 @@ CAN 训练接入读 [can-runtime.md](references/can-runtime.md)。已有 PCAN �
 
 用户指定 `17.SpeedLoop` 时按 [speedloop-diagnostic.md](references/speedloop-diagnostic.md) 创建禁止运动的 GNU Arm 诊断副本，不复用 PID/NNSMC 的状态字段。该版本取消 TIM1/CH4 启动，使用约 100Hz 软件 ADC 诊断；不是 10kHz FOC 或训练遥测。原 CH4 触发依赖 MOE；调试器暂停也不会自动关闭 PWM。允许运动前应先禁能再确认停机，不能把 halt 当急停或把逐个 HAL Start 声称为原子输出使能。
 
-用户选择已正常运行的 `17.SpeedLoop` 为工程基准时，按 [speedloop-pi-integration.md](references/speedloop-pi-integration.md) 使用其实际参数、名义电流换算和 COMP/Break 配置推进代码接入。已有 `motor_td3_speedloop_pi` 与绑定层：保留默认模糊模式，在真实 1ms PI 边界成对提交外部增益并保持积分输出连续，记录实际应用序号/时间。离线构建器验证原始模型、模糊控制器和完整 Cortex-M4 链接，不访问硬件；当前复核副本移除相桥启动，尚未接通 CAN 动作或 Actor。名义换算不标成实测校准，模糊规则范围不标成 TD3 安全域；原例程没有的热限值仍为未知。不要因缺少实测标定而反复阻塞这些独立的软件接入工作，也不要用软件结果解除实机门槛。
+用户选择已正常运行的 `17.SpeedLoop` 为工程基准时，按 [speedloop-pi-integration.md](references/speedloop-pi-integration.md) 使用其实际参数、名义电流换算和 COMP/Break 配置推进代码接入。已有 `motor_td3_speedloop_pi` 与绑定层：保留默认模糊模式，在真实 1ms PI 边界成对提交外部增益并保持积分输出连续，记录实际应用序号/时间。离线构建器的 `--can-pi` 已把现有 CAN 协议与 HAL 端口接到真实 PI 边界，10 项 CAN→原模型检查与 19 项 CAN 回归通过，49 单元目标编译完成；板级 hooks 的运动能力仍为 0，复核副本没有烧录或连接 Actor。已有物理 CAN 验证保留，不重复作为前置工作；后续集中实现同一运行固件的采样/启动、独立进展和停机保护。名义换算不标成实测校准，模糊规则范围不标成 TD3 安全域；原例程没有的热限值仍为未知。不要因缺少实测标定而反复阻塞这些独立的软件接入工作，也不要用软件结果解除实机门槛。
 
 SpeedLoop 已有 `scripts/speedloop_can_capture.py`：完整镜像/禁能状态核验后只发一次 HELLO，限时采集原始诊断；身份或顺序异常立即拒绝，不重试。结束先暂停已核验的禁止运动固件、确认输出关闭，再释放 PCAN，避免残留发送失去 ACK。它不启动、应用增益或生成训练经验。下载前必须在功率物理断开时 reset halt，确认 SysTick/外设复位，不能只接到已暂停的应用就擦写 Flash。
 
