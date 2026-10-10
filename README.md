@@ -92,6 +92,17 @@ MATLAB/GCC 不在 PATH 时增加 `--matlab MATLAB_EXECUTABLE --compiler GCC_EXEC
 
 这轮改进先选择了可验证的安全代价奖励。Codex 会同时分析 RMSE、峰值电流、饱和、过冲和故障，而不是只看一个训练分数；候选在任一项恶化时仍保持“待验证”状态。
 
+## 参考论文
+
+| 论文 | 对本项目的参考价值 |
+|---|---|
+| Fujimoto、van Hoof、Meger，*Addressing Function Approximation Error in Actor-Critic Methods*，[TD3 原论文](https://arxiv.org/abs/1802.09477) | 双 Critic、延迟 Actor 更新和目标策略平滑的算法基础。 |
+| Chowdhury、Lu，*A Novel Entropy-Maximizing TD3-based Reinforcement Learning for Automatic PID Tuning*，[论文](https://arxiv.org/abs/2210.02381) | 提出随机 Actor 暖启动再切换确定性 Actor，用于改善 PID 调参的探索效率。本项目实测后保留方向覆盖，因为全随机暖启动在当前局部 Kp/Ki mock 中效果更差。 |
+| Tufenkci 等，*A theoretical demonstration for reinforcement learning of PI control dynamics for optimal speed control of DC motors by using Twin Delay Deep Deterministic Policy Gradient Algorithm*，[论文](https://www.sciencedirect.com/science/article/pii/S0957417422022102) | 参考值滤波、PI 观测状态和随机负载扰动的电机速度控制环境设计。 |
+| Li 等，*Safe Reinforcement Learning Using Robust Action Governor*，[论文](https://arxiv.org/abs/2102.10643) | 强调把安全监督器放在策略外层；本项目的增益边界、步长限制、应用回读、租约和 MCU 独立停机按这一原则设计。 |
+
+论文只提供算法和实验设计参考，不能替代目标电机的参数辨识、保护验收或实机闭环测试。论文中的随机探索、扰动幅度和奖励权重不能直接复制到 STM32 板上。
+
 ### 为什么没有直接换 PPO
 
 PPO 和 TD3 的区别发生在训练阶段；部署到板子上时只保留 Actor，PPO 的 Critic、TD3 的双 Critic 和回放池都不放进 MCU。PPO 的均值 Actor 可以导出成类似的 C 推理网络，但 PPO 是 on-policy，通常需要更多新样本；在真实电机上采样昂贵且有风险。当前任务的连续 Kp/Ki 动作和离策略经验更适合先修正 TD3 的探索覆盖，再用相同工况、相同数据预算做 PPO 对照。只有 PPO 在未参与训练的负载、给定和保护边界上稳定优于 TD3，才考虑替换；不能因为“PPO 能部署”就认为它更安全。
