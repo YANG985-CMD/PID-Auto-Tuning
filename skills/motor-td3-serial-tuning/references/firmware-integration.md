@@ -5,6 +5,7 @@
 - `firmware/motor_td3_protocol.c/.h`：固定内存 JSON 命令解析、CRC32、hello 和遥测编码。
 - `firmware/motor_td3_guard.c/.h`：增益边界/步长、命令序号、租约、失联、试验时限、传感器/电流/转速/电压/温度、故障锁存。
 - 导出的 `motor_actor.c/.h`：仅本机推理，不含训练、Critic 和回放池。
+- `stm32_actor_pil.c/.S` 与 `scripts/stm32_actor_pil.py`：G431/G441 128KB 目标的计算专用 RAM PIL，比较 MATLAB 输出并读取 MCU 周期计数；不含电机控制接入。
 
 这些模块是可编译的 C99 参考实现。板级 UART、计时、PWM 禁能、传感器、无扰 PI 更新与工程构建接入点仍取决于目标工程，不能只复制文件就宣称独立保护生效。
 
@@ -70,3 +71,5 @@ if (!motor_actor_predict(raw_state, action, gains)) {
 先用 `actor_codegen.py` 进行主机 C 对齐；再纳入目标编译器，检查 stack/Flash/RAM 报告；随后 SIL/PIL 和板上执行周期测试；最后在已授权的受限电机试验中和已验证基准比较。MCU 是 Cortex-M4F 时使用单精度，确认 `tanhf` 链接和最坏执行时间，不在 FOC 中断里运行主机导出的训练代码。
 
 本仓库没有某块开发板的自动烧录配置。Codex 接入实际工程时须查明构建产物、下载器和板卡身份，再按用户已经授权的会话构建/烧录；无法获得板卡和保护验证信息时仍可完成导出、主机编译与接入补丁，但应报告尚未做过上板验证。
+
+本仓库提供的 [RAM PIL](stm32-ram-pil.md) 已在实际 STM32G431 上执行。它把 Actor 计算部署到 SRAM，在断开功率电源的条件下验证数值；原 Flash 保持不变，结束让核心暂停。永久部署仍须在目标工程中接入真实输入、保护与唯一增益写入者，完成实际周期测量及受限闭环验收。

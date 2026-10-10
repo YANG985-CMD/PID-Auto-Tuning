@@ -16,5 +16,8 @@ bridge-token.txt
 *.dll
 *.so
 *.o
+*.axf
+*.bin
+*.map
 .DS_Store
 Thumbs.db

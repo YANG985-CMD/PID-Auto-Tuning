@@ -27,6 +27,7 @@ description: "Build or run a Codex-managed motor serial-to-MATLAB TD3 workflow f
 | 用已有日志训练 | 先审计动作覆盖和时序；普通 TD3 的离策略能力不等于可靠的纯离线学习 |
 | 上板在线调参 | 通过下述实机门槛，运行限时会话；训练与采集解耦 |
 | 评估或部署 | 固定网络版本，关闭探索，按独立测试工况比较现有控制器 |
+| 在 G431/G441 上验证 Actor 计算 | 断开功率电源后，用 RAM PIL 比较 MCU 与 MATLAB；不应用增益、不写 Flash，结束保持暂停 |
 
 每次先确定“每个试验选择一组固定参数”还是“运行中多次调整参数”。后一种才是此 skill 默认的动态参数策略；不要把单步参数搜索的结果描述为已学会运行中的自适应控制。
 
@@ -42,6 +43,7 @@ description: "Build or run a Codex-managed motor serial-to-MATLAB TD3 workflow f
 6. 实机允许后，先用已验证基准完成有界试验，再在已验证局部参数范围内逐步探索。禁止沿用库的全范围随机动作默认值。限制单轮时间、动作次数和累计通电预算；不因训练分数较低自动放宽限制。
 7. 每次策略更新先形成候选检查点。当前实现每轮确认停机后做梯度更新；实机候选不会自动替换基准行为。通过 `--approved-policy` 明确选定已有候选后，使用 `matlab/evaluateCheckpoint.m` 评估，验证输入尺度和输出映射；恶化时回退到已验证控制器。严重故障先停机，禁止自动重启。
 8. 用未参与训练的工况比较固定 PI、现有模糊 PI 和 TD3。交付原始数据、实际生效参数、故障和拒绝记录、检查点、归一化配置、测试结果及尚未验证的部分。
+9. 用户授权试板或部署时，先核对板卡资料和芯片身份。按 [stm32-ram-pil.md](references/stm32-ram-pil.md) 可在 G431/G441 128KB 目标上运行计算专用 RAM PIL。它会复位、覆盖 SRAM、保留 Flash、保持核心暂停；必须先取得功率电源物理断开的确认。RAM 推理通过不表示策略可用于电机闭环，也不表示已烧录到 Flash。不要结束后自动恢复原应用或接通功率电源。
 
 ## 实机门槛
 
@@ -57,4 +59,5 @@ description: "Build or run a Codex-managed motor serial-to-MATLAB TD3 workflow f
 - Python 检查使用 `-B` 或 `PYTHONDONTWRITEBYTECODE=1`，避免在 skill 或用户工程里生成缓存。
 - `scripts/session_checks.py self-test` 在内存中验证缺失边界、NaN、时序错配、确认缺失、终止类型和回合串接等问题，无硬件副作用。
 - 本包包含持久桥接器、MATLAB TD3 训练/评估、Actor C 导出与主机数值检查、MCU 协议/保护参考模块和 mock 故障测试。实际板级接入按 [firmware-integration.md](references/firmware-integration.md) 完成；不能把 mock 或主机测试说成硬件保护/上板验证。
+- 分析结果时明确指出经验审计、训练更新、独立性能比较和目标计算验证各自的结论。即使权重更新和 PIL 通过，候选性能没有改善或保护未验证时，不发布为实机闭环策略；记录具体原因。
 - 使用 `scripts/test_runtime.py --output TASK_TEMP_DIR` 与 `scripts/test_firmware.py --output OTHER_TASK_TEMP_DIR --compiler GCC` 验证故障路径；输出不放用户源工程。实机配置不完整时继续这些独立工作。

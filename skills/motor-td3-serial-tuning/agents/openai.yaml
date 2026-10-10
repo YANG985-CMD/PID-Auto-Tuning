@@ -1,4 +1,4 @@
 interface:
   display_name: "电机串口 TD3 调参"
-  short_description: "把电机串口接入 MATLAB TD3，验证训练、保护和 Actor C 导出"
-  default_prompt: "使用 $motor-td3-serial-tuning 把我的电机串口接入 MATLAB TD3，先检查工程和保护、用 mock 验证训练与 Actor C 导出，再安排受限实机试验。"
+  short_description: "管理串口与 MATLAB TD3，分析训练结果，验证 Actor 的 MCU 部署"
+  default_prompt: "使用 $motor-td3-serial-tuning 把我的电机串口接入 MATLAB TD3，检查保护并用 mock 验证训练，分析独立评估结果；在板卡与断电条件确认后验证 Actor 的 MCU 部署，再安排受限闭环试验。"

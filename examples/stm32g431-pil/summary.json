@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "mode": "ram-only-computation-pil",
+  "flash_programming": false,
+  "motor_power_disconnected_by_user": true,
+  "motor_output": false,
+  "processor_in_loop_verified": true,
+  "motor_control_approved": false,
+  "identity": {
+    "cpuid": "0x410fc241",
+    "dbgmcu_idcode": "0x20036468",
+    "flash_kb": 128
+  },
+  "tim1_outputs_disabled": true,
+  "rcc_cfgr_after_reset": "0x5",
+  "vectors": 40,
+  "max_action_error": 1.862645149230957e-09,
+  "max_gain_error": 0.0,
+  "cycles_min": 11508,
+  "cycles_max": 11628,
+  "cycles_mean": 11559.525,
+  "stack_reserved_bytes": 1024,
+  "stack_high_water_observed_bytes": 456,
+  "stack_bottom_fence_intact": true,
+  "invalid_inputs_rejected": [
+    "NaN",
+    "Infinity",
+    "out-of-range-gain"
+  ],
+  "image_bytes": 12844,
+  "image_sha256": "0a2ae299afdc2cfd40886da8461c422a17328b9d3baf5c993586a1b43a19a1e5",
+  "policy_version": "candidate-006",
+  "simulation_only": true,
+  "timing_scope": "RAM, reset clock, interrupts masked; not production WCET",
+  "core_left_halted": true,
+  "flash_unchanged": true,
+  "date": "2026-10-10",
+  "evidence_scope": "Actual MCU arithmetic PIL; synthetic vectors, no motor control",
+  "nominal_core_clock_hz": 16000000
+}
