@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "mode": "speedloop-startup-offset-readback",
+  "date": "2026-10-11",
+  "target": "STM32G431 H17 board",
+  "source_baseline": "Folder 2 Program Model/17.SpeedLoop/5.SpeedLoop/BLDC_Speedloop_code/STM32G4_FOC_template",
+  "power_stage_disconnected_confirmed_by_user": true,
+  "usb_stlink_connected": true,
+  "reset_then_run_ms": 300,
+  "core_left_halted": true,
+  "flash_programming": false,
+  "sram_write": false,
+  "gains_written": false,
+  "motor_start_requested": false,
+  "motor_state": 0,
+  "adc_offset_complete": 1,
+  "offsets_adc_counts": {
+    "a": 2023,
+    "b": 2028,
+    "c": 2026
+  },
+  "reference_zero_adc_counts": {
+    "a": 2021.08,
+    "b": 2028.78,
+    "c": 2024.63
+  },
+  "offset_error_counts": {
+    "a": 1.92,
+    "b": -0.78,
+    "c": 1.37
+  },
+  "reference_tolerance_counts": 4.0,
+  "offsets_within_reference_tolerance": true,
+  "current_variables_a": {
+    "ia": 0.02197265625,
+    "ib": 0.02197265625,
+    "ic": 0.02197265625
+  },
+  "hall_speed_rpm_variable": 0.0,
+  "vbus_variable_v": 1.6338866949,
+  "tim1_registers": {
+    "cr1": "0x00000121",
+    "ccer": "0x00001000",
+    "bdtr": "0x0202b078",
+    "phase_ccer_mask": "0x00000555",
+    "phase_ccer_enabled": false,
+    "ch4_adc_trigger_enabled": true,
+    "moe_enabled": true
+  },
+  "interpretation": [
+    "The dynamic 10-sample startup offset path completed and is close to the three static reference means.",
+    "The measured current variables are not a gain calibration or an over-current threshold measurement.",
+    "Only TIM1 CH4 is enabled for ADC triggering; phase CH1/2/3 outputs are disabled.",
+    "BDTR.MOE remains set after the working image starts CH4. Keep the phase CCER gate and add an explicit MOE gate before production TD3 control."
+  ],
+  "limitations": [
+    "The readback used a standalone pyOCD commander because the bundled Python runtime did not contain pyOCD.",
+    "No USER3 start, CAN command, UART command, PWM phase output, gain write, or Flash write was performed.",
+    "The Vbus variable is an ADC-derived signal while the 24 V power stage was disconnected; it is not a powered-bus measurement."
+  ]
+}

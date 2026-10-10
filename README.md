@@ -219,7 +219,7 @@ Codex 同时给实际接入适配层补上 1ms Break 标志检测：24 项适配
 
 特别是 `10.TIM1_OPAMP_ADC_DAC.zip` 的归档程序会在初始化阶段自动开启六路互补 PWM，并使用固定占空比；在 24 V 已接通时不得原样烧录运行。Codex 已将这一启动风险、固定偏置误差和保护缺口写入审计记录。
 
-当前实机基准以用户确认可运行的 `Folder 2 Program Model/17.SpeedLoop` 为准：它启动时动态采集 10 次三相 ADC 零点，USER3 才开启三相 PWM，并保留 COMP1→TIM1 Break。A=2021.08、B=2028.78、C=2024.63 作为这份工程启动校零的参考值，不直接替代动态采样。
+当前实机基准以用户确认可运行的 `Folder 2 Program Model/17.SpeedLoop` 为准：它启动时动态采集 10 次三相 ADC 零点，USER3 才开启三相 PWM，并保留 COMP1→TIM1 Break。A=2021.08、B=2028.78、C=2024.63 作为这份工程启动校零的参考值，不直接替代动态采样。2026-10-11 在 24V 断开、USB/STLink 供电时复位回读到 A/B/C=`2023/2028/2026`，校零完成且在 4 码容差内；TIM1 CCER 只有 CH4，CH1/2/3 相位通道关闭，但 BDTR.MOE 仍为 1，正式接入前应显式把 MOE 纳入启动门控。详见 [SpeedLoop 校零回读](docs/speedloop-offset-readback.md) 和 [机器可读记录](examples/stm32g431-speedloop-offset/summary.json)。
 
 ## 组成
 
@@ -236,6 +236,7 @@ Codex 同时给实际接入适配层补上 1ms Break 标志检测：24 项适配
 | `scripts/can_monitor.py` | PCAN 静默监听、驱动模式回读和原始帧记录；不发送 CAN 控制帧 |
 | `scripts/stm32_can_loopback.py` / `scripts/stm32_can_echo.py` | CAN 专用 SRAM 诊断；分别验证内部回环和有界 PCAN 双向收发，保持 PWM 禁能 |
 | `scripts/g431_current_zero.py` | 断开功率电源时观察三相 ADC 零点；不写偏置/门槛，不批准电流保护或 TD3 动作 |
+| `scripts/read_speedloop_ram.py` | 只读回读已运行 SpeedLoop 镜像的启动校零标志、A/B/C 偏置和电流状态；默认离线，硬件模式必须显式确认断开功率电源 |
 | `scripts/fit_current_calibration.py` | 对外部已知电流与 ADC 原始码做离线拟合；不接硬件、不写参数 |
 | `skills/motor-td3-serial-tuning/scripts/can_transport.py` | TD3 经典 CAN 二进制协议与 PCAN 单一所有者；与 `motor_runtime.py --transport can` 配合 |
 | `skills/motor-td3-serial-tuning/firmware/motor_td3_can*.c/.h` | MCU CAN 协议与控制周期接口，需实际板级 hooks |
