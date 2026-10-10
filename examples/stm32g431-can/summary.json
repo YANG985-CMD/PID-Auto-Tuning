@@ -13,14 +13,27 @@
     "transmit_api_called": false,
     "channel_released": true
   },
-  "offline_fault_tests": {"passed": 9},
+  "offline_fault_tests": {
+    "passed": 9
+  },
   "physical_inspection": {
     "kit_board_layout_matches_wiring_illustration": true,
     "board_can_h_l_silkscreen_confirmed": true,
     "shared_debug_uart_can_header_pins": 8,
-    "adjacent_silkscreen": ["PB11", "PB10", "SWDIO", "SWCLK", "3.3V", "GND"],
+    "adjacent_silkscreen": [
+      "PB11",
+      "PB10",
+      "SWDIO",
+      "SWCLK",
+      "3.3V",
+      "GND"
+    ],
     "usb_can_module_visible_brand": "Euler",
-    "usb_can_module_visible_labels": ["USBCAN", "PCAN", "120R"],
+    "usb_can_module_visible_labels": [
+      "USBCAN",
+      "PCAN",
+      "120R"
+    ],
     "private_photos_published": false,
     "wire_end_to_end_continuity_verified": false,
     "can_5v_measurement_obtained": false,
@@ -67,5 +80,30 @@
     "bidirectional_link_verified": false,
     "td3_can_protocol_verified": false,
     "motor_can_training_or_gain_application_performed": false
+  },
+  "record_scope": "Earlier listen-only capture and source/physical audit; limitations in this record refer to that stage",
+  "followup_diagnostics": {
+    "date": "2026-10-10",
+    "internal_loopback_verified": true,
+    "internal_frames": 64,
+    "bidirectional_link_verified": true,
+    "host_matching_replies": 16,
+    "external_summary": "../stm32g431-can-echo/summary.json",
+    "internal_summary": "../stm32g431-can-loopback/summary.json",
+    "td3_can_protocol_verified": false,
+    "power_disconnected_confirmed_after_test": true
+  },
+  "post_power_off_read_only_audit": {
+    "state": "HALTED",
+    "registers": {
+      "tim1_cr1": 0,
+      "tim1_ccer": 0,
+      "tim1_bdtr": 0,
+      "gpio_clocks": 0
+    },
+    "reset": false,
+    "resumed": false,
+    "memory_written": false,
+    "power_disconnected_confirmed_by_user": true
   }
 }

@@ -12,6 +12,10 @@ jobs:
         run: python -B skills/motor-td3-serial-tuning/scripts/session_checks.py self-test
       - name: CAN capture refuses active mode and unavailable channels
         run: python -B scripts/test_can_monitor.py
+      - name: CAN SRAM loopback contract and failure cleanup without hardware
+        run: python -B scripts/test_can_loopback.py --output "${{ runner.temp }}/td3-can-loopback"
+      - name: CAN active echo requires ready guest and bounded diagnostic frames
+        run: python -B scripts/test_can_echo.py --output "${{ runner.temp }}/td3-can-echo"
       - name: Bridge faults and serial byte stream
         run: python -B skills/motor-td3-serial-tuning/scripts/test_runtime.py --output "${{ runner.temp }}/td3-runtime"
       - name: MCU C protocol and guard

@@ -12,6 +12,7 @@
 | 审计训练数据 | 检查实际生效的参数、动作序号、时间和下一状态能否对应 | [780 条经验审计](examples/mock-validation/experience-audit.json) |
 | **分析训练好坏** | 比较固定 PI 与固定 TD3 的误差、超调、电流、饱和和故障；解释候选是否值得使用 | [独立评估](examples/mock-validation/evaluation-summary.json)：改进 TD3 在 mock 工况优于 PI，但仍未批准电机闭环部署 |
 | **部署到单片机** | 导出 Actor C、目标编译、核对芯片、加载到 MCU RAM、读取并分析推理结果 | [G431 板上验证](docs/stm32g431-validation.md)：40 组通过，Kp/Ki 与 MATLAB 一致 |
+| 诊断实际通信 | 对照示例与原理图，构建 CAN 专用 RAM 程序，分析控制器状态、回包与 PWM 禁能状态 | [CAN 板上验证](docs/stm32g431-can-diagnostics.md)：64 组内部回环、16 组电脑与板端双向收发通过 |
 | 管理正式上线 | 接入真实观测与保护，构建/烧录目标固件，检查输入尺度、性能和实时预算 | 提供接入流程；本次尚未完成电机闭环与永久 Flash 部署 |
 
 例如，Codex 的本次分析结论是：**原始训练的误差没有改善，原因是探索没有覆盖高增益区域；加入有界方向性覆盖、增加训练更新并把峰值电流/过冲/饱和写入奖励后，mock 三个工况的平均误差下降约 2.78%。网络可以上板计算，是否适合接管真实电机仍需单独验证。**
@@ -136,6 +137,22 @@ Codex 查阅板卡原理图与安全说明，经 STLink 核对芯片后，将已
 
 随后在断开 24 V、只保留 USB/STLink 的条件下检查了原固件 USER3/PC13 停机路径。默认状态和 TIM1 功率输出均为关闭，但测试窗口没有观测到按键切换；因此 USER3 尚未被认定为可靠的唯一急停路径。详见 [USER3 停机路径检查](docs/legacy-button-safety-check.md)。
 
+### CAN 板上实测
+
+2026-10-10，Codex 对照套件 CAN 示例、实物接口和原理图，编写并在 STM32G431 SRAM 中运行了独立 CAN 诊断程序：
+
+| 检查 | 实测结果 |
+|---|---|
+| 控制器内部回环 | 64/64 通过，含 32 个标准帧、32 个扩展帧，覆盖 0～8 字节载荷 |
+| 电脑 ↔ 板端实际收发 | 500 kbit/s 经典 CAN，16/16 请求与回包逐字节一致 |
+| 功率输出 | 电机保持接线；CAN 专用程序未启用 TIM1，PWM 寄存器检查均为零 |
+| 收尾 | 核心暂停、Flash 全部 128KB 未变、适配器释放；用户随后断开 24V |
+| 无硬件故障检查 | 内部回环入口 12 项、外部收发入口 9 项通过 |
+
+**这次验证了实际 CAN 双向链路。** Codex 还定位并修正了诊断代码对标准帧 ID 的掩码错误，分析出不同示例的载荷用途；此前的零帧监听记录不能单独判定接线故障。外部测试使用专用 RAM 程序、固定诊断 ID 和报文，没有让原 FOC 固件或 TD3 策略控制电机。
+
+[实测与原因分析](docs/stm32g431-can-diagnostics.md) · [可复用 CAN 诊断流程](skills/motor-td3-serial-tuning/references/stm32-can-diagnostics.md) · [内部回环摘要](examples/stm32g431-can-loopback/summary.json) · [双向收发摘要](examples/stm32g431-can-echo/summary.json)
+
 ## 组成
 
 | 位置 | 内容 |
@@ -149,6 +166,7 @@ Codex 查阅板卡原理图与安全说明，经 STLink 核对芯片后，将已
 | `scripts/stm32_actor_pil.py` | G431/G441 目标编译、RAM 部署、MCU 推理/周期/栈验证 |
 | `scripts/legacy_hall_monitor.py` | 当前 STM32G4 原固件的只读 24 字节 Hall 遥测解析；不发送启动或增益命令 |
 | `scripts/can_monitor.py` | PCAN 静默监听、驱动模式回读和原始帧记录；不发送 CAN 控制帧 |
+| `scripts/stm32_can_loopback.py` / `scripts/stm32_can_echo.py` | CAN 专用 SRAM 诊断；分别验证内部回环和有界 PCAN 双向收发，保持 PWM 禁能 |
 | `firmware/` | CRC 协议、参数保护、租约/失联/故障锁存 C 模块 |
 | `scripts/session_checks.py` | 配置与经验审计 |
 | `assets/` | 未配置的实机模板、仅用于模拟的配置 |
@@ -178,7 +196,7 @@ Codex 可在目标条件齐全的已授权会话中完成导出、工程接入�
 
 当前板上原固件的只读串口布局见 [legacy-board-telemetry.md](docs/legacy-board-telemetry.md)。它只适合 shadow 观测，缺少 TD3 所需的动作应用确认和独立停机协议。
 
-CAN 是另一条可接入 MATLAB 的通信路径。对应原固件的工程已包含 500 kbit/s 经典 CAN，发送扩展 ID `0x1B`、8 字节占位帧；尚未实现 TD3 增益应用确认或通信保护。本项目提供 [PCAN 静默监听器](scripts/can_monitor.py)：初始化前设置并核验 Listen-Only，初始化后回读，并拒绝被其他程序占用的通道。Codex 已结合实物近照和套件资料确认板端 H/L 排针布局及配套欧拉 USBCAN / PCAN 模块，并查出应核实的板端 5V 供电路径；当前尚未验证板端 CAN 收发。详见 [CAN 接入与验证状态](docs/stm32g4-can-path.md)。
+CAN 是另一条可接入 MATLAB 的通信路径。对应原固件的工程已包含 500 kbit/s 经典 CAN，发送扩展 ID `0x1B`、8 字节占位帧；尚未实现 TD3 增益应用确认或通信保护。本项目提供 [PCAN 静默监听器](scripts/can_monitor.py) 和 [CAN 专用诊断](docs/stm32g431-can-diagnostics.md)。电脑与板端的 16 组双向收发已通过，但 `motor_runtime.py` 目前仍仅支持 mock/serial，尚无 CAN 训练入口。详见 [CAN 接入与验证状态](docs/stm32g4-can-path.md)。
 
 ## 独立测试
 

@@ -1,6 +1,6 @@
 ---
 name: motor-td3-serial-tuning
-description: "Build or run a Codex-managed motor serial-to-MATLAB TD3 workflow for bounded speed-loop PI gain schedules. Use for mock end-to-end training, confirmed serial experiences, supervised hardware collection, fixed-policy evaluation, small Actor C export, and independent firmware protections."
+description: "Build or run a Codex-managed motor serial-to-MATLAB TD3 workflow for bounded speed-loop PI gain schedules. Use for training, experience audits, fixed-policy evaluation, Actor C export/RAM PIL, and STM32G431 CAN communication diagnostics."
 ---
 
 # Motor TD3 Serial Tuning
@@ -28,6 +28,7 @@ description: "Build or run a Codex-managed motor serial-to-MATLAB TD3 workflow f
 | 上板在线调参 | 通过下述实机门槛，运行限时会话；训练与采集解耦 |
 | 评估或部署 | 固定网络版本，关闭探索，按独立测试工况比较现有控制器 |
 | 在 G431/G441 上验证 Actor 计算 | 断开功率电源后，用 RAM PIL 比较 MCU 与 MATLAB；不应用增益、不写 Flash，结束保持暂停 |
+| 诊断 G431 的 CAN 链路 | 按 [stm32-can-diagnostics.md](references/stm32-can-diagnostics.md) 选择内部回环或有界 PCAN 收发；运行专用 SRAM 程序并检查 PWM 禁能 |
 
 每次先确定“每个试验选择一组固定参数”还是“运行中多次调整参数”。后一种才是此 skill 默认的动态参数策略；不要把单步参数搜索的结果描述为已学会运行中的自适应控制。
 
@@ -44,6 +45,8 @@ description: "Build or run a Codex-managed motor serial-to-MATLAB TD3 workflow f
 7. 每次策略更新先形成候选检查点。当前实现每轮确认停机后做梯度更新；实机候选不会自动替换基准行为。通过 `--approved-policy` 明确选定已有候选后，使用 `matlab/evaluateCheckpoint.m` 评估，验证输入尺度和输出映射；恶化时回退到已验证控制器。严重故障先停机，禁止自动重启。
 8. 用未参与训练的工况比较固定 PI、现有模糊 PI 和 TD3。交付原始数据、实际生效参数、故障和拒绝记录、检查点、归一化配置、测试结果及尚未验证的部分。
 9. 用户授权试板或部署时，先核对板卡资料和芯片身份。按 [stm32-ram-pil.md](references/stm32-ram-pil.md) 可在 G431/G441 128KB 目标上运行计算专用 RAM PIL。它会复位、覆盖 SRAM、保留 Flash、保持核心暂停；必须先取得功率电源物理断开的确认。RAM 推理通过不表示策略可用于电机闭环，也不表示已烧录到 Flash。不要结束后自动恢复原应用或接通功率电源。
+
+CAN 通信问题单独按 [stm32-can-diagnostics.md](references/stm32-can-diagnostics.md) 处理：先辨别示例载荷与当前固件，不用含电机启停的示例代替通信诊断。专用外部收发诊断允许在明确授权、板端供电已确认、功率输出禁能的条件下运行；每次发送前核对 SRAM 就绪状态及 PWM/引脚状态。CAN 回包通过只验证通信，不解除实机训练门槛。
 
 ## 实机门槛
 
