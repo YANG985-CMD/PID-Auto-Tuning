@@ -44,7 +44,8 @@ extern TIM_TypeDef test_tim;extern RCC_TypeDef test_rcc;extern GPIO_TypeDef test
 #define TIM_SR_SBIF 8192U
 static inline uint32_t __get_PRIMASK(void) { return 0; }
 static inline void __disable_irq(void) {}
-static inline void __set_PRIMASK(uint32_t p) { (void)p; }
+extern void test_unlock_hook(void);
+static inline void __set_PRIMASK(uint32_t p) { (void)p;test_unlock_hook(); }
 static inline void __DMB(void) {}
 static inline void __DSB(void) {}
 typedef int HAL_StatusTypeDef;
@@ -117,6 +118,22 @@ class Integration(unittest.TestCase):
             if LIB.test_sent(i,f)==0x621: packet=r.feed(f.raw,0) or packet
         self.assertEqual(wire.unpack(packet)[0]['capabilities'],[])
         self.assertEqual(LIB.test_guard_fault(),12)
+    def test_systick_hello_acceptance_cannot_send_raw_before_reply(self):
+        LIB.test_boot(BOOT)
+        request=wire.pack({'type':'hello','profile_id':PROFILE},7)
+        for f in wire.fragment(request,1): LIB.test_feed(f,0)
+        LIB.test_poll()  # Queued, but not yet accepted by SysTick.
+        # clock read, main_seen update, then HELLO check unlock: interrupt there.
+        LIB.test_arm_unlock_tick(3);LIB.test_poll()
+        for _ in range(50): LIB.test_poll()
+        r=wire.Reassembler();packet=None;saw_raw=False
+        for i in range(LIB.test_count()):
+            f=ct.create_string_buffer(8);identifier=LIB.test_sent(i,f)
+            if identifier==0x621:
+                self.assertFalse(saw_raw);packet=r.feed(f.raw,0) or packet
+            else:
+                self.assertIsNotNone(packet);saw_raw=True
+        self.assertIsNotNone(packet);self.assertTrue(saw_raw)
     def test_diagnostic_hall_order_matches_legacy_pb8_pb7_pb6(self):
         # Original capture mapping: PB8 is bit0, PB7 bit1, PB6 bit2.
         for code,pins in ((1,0x100),(2,0x80),(3,0x180),(4,0x40),(5,0x140),(6,0xc0)):

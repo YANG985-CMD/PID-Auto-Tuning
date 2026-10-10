@@ -58,6 +58,8 @@ CAN 训练接入读 [can-runtime.md](references/can-runtime.md)。已有 PCAN �
 
 用户指定 `17.SpeedLoop` 时按 [speedloop-diagnostic.md](references/speedloop-diagnostic.md) 创建禁止运动的 GNU Arm 诊断副本，不复用 PID/NNSMC 的状态字段。该版本取消 TIM1/CH4 启动，使用约 100Hz 软件 ADC 诊断；不是 10kHz FOC 或训练遥测。原 CH4 触发依赖 MOE；调试器暂停也不会自动关闭 PWM。允许运动前应先禁能再确认停机，不能把 halt 当急停或把逐个 HAL Start 声称为原子输出使能。
 
+SpeedLoop 已有 `scripts/speedloop_can_capture.py`：完整镜像/禁能状态核验后只发一次 HELLO，限时采集原始诊断；身份或顺序异常立即拒绝，不重试。结束先暂停已核验的禁止运动固件、确认输出关闭，再释放 PCAN，避免残留发送失去 ACK。它不启动、应用增益或生成训练经验。下载前必须在功率物理断开时 reset halt，确认 SysTick/外设复位，不能只接到已暂停的应用就擦写 Flash。
+
 ## 实机门槛
 
 实机训练或策略下发前，必须有该设备的：已验证基准；带来源的参数/电流/转速/电压/温度和持续时间限制；实际参数回读及应用序号；固件独立过流保护与失联保护；经过验证的停止动作和急停；有期限的动作租约；可追溯的协议版本、固件版本和实验日志。

@@ -1,0 +1,148 @@
+{
+  "schema_version": 1,
+  "date_local": "2026-10-11",
+  "mode": "speedloop-can-motion-inhibited-hardware-validation",
+  "hardware_executed": true,
+  "flash_programming": true,
+  "actor_executed": false,
+  "foc_executed": false,
+  "motor_start_requested": false,
+  "gains_applied": false,
+  "td3_experiences": 0,
+  "temperature_available": false,
+  "source_files_unchanged": true,
+  "source_files_checked": 1064,
+  "image_bytes": 32832,
+  "bin_sha256": "90195b9a9e1d06400592e8aac5f31b167eab0fad095ad54ddb361d0f849022a6",
+  "hex_sha256": "82a398587c3705de6595d561501d52bc04fbf3e82a4b0d0513e78d5bb3595ea4",
+  "flash_download_and_final_full_compare": true,
+  "translation_units": 47,
+  "hello": {
+    "type": "hello",
+    "protocol_id": "motor-td3-can-v1",
+    "firmware_id": "g431-speedloop-diag-v1",
+    "profile_id": "g431-speedloop-diag-v1",
+    "capabilities": []
+  },
+  "bitrate": 500000,
+  "normal_mode_verified": true,
+  "hello_requests": 1,
+  "tx_frames": 15,
+  "duration_s": 3.0,
+  "frame_counts": {
+    "0x621": 21,
+    "0x622": 30,
+    "0x623": 30,
+    "0x624": 30,
+    "0x625": 30
+  },
+  "complete_cycles": 30,
+  "partial_cycle_at_end": false,
+  "ranges": {
+    "guard_fault": [
+      12,
+      12
+    ],
+    "hall_code": [
+      3,
+      3
+    ],
+    "adc_age_ms": [
+      1,
+      2
+    ],
+    "stored_kp": [
+      0.0033889999613165855,
+      0.0033889999613165855
+    ],
+    "stored_ki": [
+      0.0014400000218302011,
+      0.0014400000218302011
+    ],
+    "nominal_vbus_v": [
+      24.06840705871582,
+      24.340721130371094
+    ],
+    "nominal_current_a": [
+      0.02197265625,
+      0.06591796875
+    ],
+    "hall_speed_rpm": [
+      0.0,
+      0.0
+    ],
+    "pi_integral_output": [
+      0.0,
+      0.0
+    ]
+  },
+  "max_status_gap_s": 0.10899999993853271,
+  "atomic_diagnostic_snapshot": false,
+  "current_gain_calibrated": false,
+  "independent_protection_accepted": false,
+  "core_halted_before_adapter_release": true,
+  "adapter_released": true,
+  "final_capture_state": {
+    "core": "Halted",
+    "tim1_cr1": "0x00000120",
+    "tim1_ccer": "0x00000000",
+    "tim1_bdtr": "0x02023078",
+    "moe": false,
+    "cen": false,
+    "motor_state": 0,
+    "irq_fault": 0,
+    "fdcan_ecr": "0x00000000",
+    "fdcan_psr": "0x00000708"
+  },
+  "final_power_off_state": {
+    "power_disconnected_confirmed_by_user": true,
+    "core": "Halted",
+    "moe": false,
+    "cen": false,
+    "ccer": 0,
+    "motor_state": 0,
+    "irq_fault": 0,
+    "endpoint_ready": 0,
+    "debugger_boot_token": 0,
+    "adc_completed": 30,
+    "adc_errors": 0
+  },
+  "software_checks": {
+    "speedloop_adapter_and_contract": 26,
+    "legacy_adapter_and_contract": 26,
+    "hello_only_capture": 9
+  },
+  "earlier_attempts": [
+    {
+      "attempt": 1,
+      "image_bytes": 32796,
+      "capture_verified": true,
+      "complete_cycles": 30,
+      "complete_cleanup_verified": false,
+      "irq_fault_after_adapter_release": 1,
+      "fdcan_ecr": "0x00090048",
+      "fdcan_psr": "0x0000070B",
+      "correction": "Halt verified motion-inhibited core and read state before adapter release; remove halfword peripheral writes"
+    },
+    {
+      "attempt": 2,
+      "image_bytes": 32796,
+      "capture_verified": false,
+      "error": "Diagnostic received before verified HELLO",
+      "cleanup_verified": true,
+      "irq_fault": 0,
+      "correction": "Snapshot diagnostic TX permission with HELLO check in one critical section"
+    }
+  ],
+  "flash_update_recovery": {
+    "first_attempt_failed": true,
+    "ip_sr": 3,
+    "pc": "0xFFFFFFFE",
+    "cfsr": "0x00000001",
+    "hfsr": "0x40000000",
+    "systick_ctrl_before_reset": "0x00010007",
+    "systick_ctrl_after_reset": "0x00000000",
+    "reset_halt_before_retry": true,
+    "retry_succeeded": true
+  }
+}

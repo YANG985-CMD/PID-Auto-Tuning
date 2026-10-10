@@ -2,9 +2,9 @@
 
 把电机串口数据送进 MATLAB 训练 TD3，输出有界的速度环 Kp、Ki，经串口应用确认后形成学习经验；Codex 管理实验和分析结果，最终导出仅用于推理的 Actor C 代码。
 
-现已增加经典 CAN 的应用层与 `--transport can` 入口：沿用 MATLAB 的状态/动作接口，加入会话、时效、分帧校验和实际参数回读。**CAN 物理链路已实测；G431 FOC 的默认禁止运动接入版本已完整编译，11 项共享禁能/协议检查在真实 MCU RAM 中通过。完整接入固件尚未烧录运行，实机训练保护仍待验证。**
+现已增加经典 CAN 的应用层与 `--transport can` 入口：沿用 MATLAB 的状态/动作接口，加入会话、时效、分帧校验和实际参数回读。**CAN 物理链路已实测；用户 SpeedLoop 的禁止运动诊断固件已烧录，真实握手与 3 秒连续遥测通过。早期 PID/NNSMC 接入版完成编译和 RAM 检查，尚未完整上板运行；实机训练保护仍待验证。**
 
-**Codex 可以管理 TD3 训练、分析训练结果，并将 Actor 部署到单片机执行。** 本项目已跑通真实 MATLAB TD3 训练与独立评估，并在实际 **STM32G431** 上完成 Actor 的 **RAM 部署及推理验证（PIL）**：40 组测试通过，原 Flash 内容保持不变。电机闭环训练和永久 Flash 部署仍待验证。
+**Codex 可以管理 TD3 训练、分析训练结果，并将 Actor 部署到单片机执行。** 本项目已跑通真实 MATLAB TD3 训练与独立评估，并在实际 **STM32G431** 上完成 Actor 的 **RAM 部署及推理验证（PIL）**：40 组测试通过，原 Flash 内容保持不变。电机闭环训练和 TD3 Actor 的永久 Flash 部署仍待验证。
 
 ## Codex 在这里做什么
 
@@ -231,7 +231,11 @@ MOE 门控的私有副本改动建议见 [SpeedLoop MOE 检查](docs/speedloop-m
 
 为继续接入真实数据，新增专用于用户 `17.SpeedLoop` 的 **禁止运动 CAN 诊断构建器**：原工程保持不变，移除全部 PWM 启动/FOC 执行入口，约 100Hz 软件触发 ADC，完整序列完成后才发布采样，超时与无效值锁存故障。它解决了“关闭 MOE 后 CH4 电流采样也停止”的接入问题；能力位仍为 0，不能用于实机 TD3 动作。[构建、身份和验证步骤](skills/motor-td3-serial-tuning/references/speedloop-diagnostic.md)
 
-**该诊断固件已实际写入 Flash 并运行验证。** 47 个编译单元、32796B 镜像全量回读匹配；PWM 全禁能时采样计数从30增至60，错误为0。前台停在 RAM 循环、不执行 ADC/CAN 时，SysTick 仍关闭输出并锁存超时；PC13 软件中断停机也通过。最后断电复位清理，MOE/CCER/CEN均关闭、核心暂停。实体按键急停、独立硬件看门狗、该版本外部CAN和TD3闭环仍待验收。[本次上板报告](docs/speedloop-can-diagnostic-validation.md) · [结构化证据](examples/stm32g431-speedloop-diagnostic/summary.json)
+**该诊断固件已实际写入 Flash 并运行验证。** 首版 47 个编译单元、32796B 镜像全量回读匹配；PWM 全禁能时采样计数从30增至60，错误为0。前台停在 RAM 循环、不执行 ADC/CAN 时，SysTick 仍关闭输出并锁存超时；PC13 软件中断停机也通过。[断电验证](docs/speedloop-can-diagnostic-validation.md) · [结构化证据](examples/stm32g431-speedloop-diagnostic/summary.json)
+
+随后 Codex 在真实 24V/3A 条件下接通 CAN，发现并修正握手首帧竞态、调整为先暂停禁止运动固件再释放适配器，并重新烧录 **32832B** 镜像。最终 **3 秒握手与 30 组连续诊断通过**：母线标称 24.068～24.341V、ADC 年龄 1～2ms、速度 0；收尾 CAN 错误计数和 IRQ 故障为 0，PWM 全禁能。用户断电后再次全量回读一致、清除会话并保持核心暂停。[真实 CAN 采集、原因分析与修正](docs/speedloop-can-live-validation.md) · [结构化证据](examples/stm32g431-speedloop-can/summary.json)
+
+这是 Codex 管理真实采集、定位故障、修改固件、编译烧录并分析结果的证据。四个诊断帧不含动作应用序号/时间且不是原子快照，温度和电流标定仍缺失，**没有形成 TD3 训练经验，也没有运行网络增益**。实体急停、独立看门狗、完整保护及电机闭环仍待验收。
 
 **Codex 的作用贯穿数据检查、TD3 结果比较、Actor 导出、工程接入、编译烧录和上板核验。** 当前已验证 Actor 的 MCU RAM 推理；本次 SpeedLoop 诊断固件承担真实采样/保护接口验证。训练策略通过独立性能和设备保护验收后，才可用于电机增益调度。
 
@@ -256,6 +260,7 @@ MOE 门控的私有副本改动建议见 [SpeedLoop MOE 检查](docs/speedloop-m
 | `skills/motor-td3-serial-tuning/firmware/motor_td3_can*.c/.h` | MCU CAN 协议与控制周期接口，需实际板级 hooks |
 | `skills/motor-td3-serial-tuning/scripts/build_g431_locked_foc.py` | 对已审计私有 FOC 工程创建默认禁止运动副本并完整链接，不修改原目录 |
 | `skills/motor-td3-serial-tuning/scripts/build_speedloop_diagnostic.py` | GNU Arm 构建受审计 SpeedLoop 的禁止运动 CAN/软件 ADC 副本，验证链接中没有 PWM 启动或 FOC 执行入口 |
+| `skills/motor-td3-serial-tuning/scripts/speedloop_can_capture.py` | 核对完整镜像/禁能状态，发送一次 HELLO，限时采集诊断并在释放 CAN 前暂停；不启动、不下发增益、不训练 |
 | `skills/motor-td3-serial-tuning/scripts/g431_locked_pil.py` | 在真实 MCU SRAM 验证共享禁能函数和锁定端点；不是完整 FOC 固件的运行 |
 | `firmware/` | CRC 协议、参数保护、租约/失联/故障锁存 C 模块 |
 | `scripts/session_checks.py` | 配置与经验审计 |
@@ -286,7 +291,7 @@ Codex 可在目标条件齐全的已授权会话中完成导出、工程接入�
 
 早期原例程的只读串口布局见 [legacy-board-telemetry.md](docs/legacy-board-telemetry.md)。它只适合 shadow 观测，缺少 TD3 所需的动作应用确认和独立停机协议；最新 SpeedLoop 诊断版停用了这条 UART DMA 输出。
 
-CAN 是另一条可接入 MATLAB 的通信路径。原例程发送 500 kbit/s 经典 CAN 扩展 ID `0x1B` 的8字节占位帧。本项目提供 [PCAN 静默监听器](scripts/can_monitor.py)、[CAN 专用诊断](docs/stm32g431-can-diagnostics.md)、[CAN 训练入口](skills/motor-td3-serial-tuning/references/can-runtime.md) 和 [早期 PID/NNSMC 接入版本](docs/stm32g431-foc-can-integration.md)。独立诊断的16组双向收发已通过；最新 [SpeedLoop 诊断固件](docs/speedloop-can-diagnostic-validation.md) 已完整烧录并验证 ADC/停机路径，该版本的外部 CAN 握手仍待测试。
+CAN 是另一条可接入 MATLAB 的通信路径。原例程发送 500 kbit/s 经典 CAN 扩展 ID `0x1B` 的8字节占位帧。本项目提供 [PCAN 静默监听器](scripts/can_monitor.py)、[CAN 专用诊断](docs/stm32g431-can-diagnostics.md)、[CAN 训练入口](skills/motor-td3-serial-tuning/references/can-runtime.md) 和 [早期 PID/NNSMC 接入版本](docs/stm32g431-foc-can-integration.md)。独立诊断的16组双向收发已通过；最新 [SpeedLoop 固件](docs/speedloop-can-live-validation.md) 已烧录并通过真实握手、30组连续诊断及退出状态核验，仍保持禁止运动。
 
 ## 独立测试
 

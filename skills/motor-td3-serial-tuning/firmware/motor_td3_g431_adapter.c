@@ -136,7 +136,7 @@ static int send_frame(uint32_t id,const uint8_t data[8]) {
     return 1;
 }
 void motor_td3_g431_poll(void) {
-    unsigned budget=RX_CAPACITY; uint32_t p;uint8_t frame[8];uint64_t n=clock_us();
+    unsigned budget=RX_CAPACITY; int diag_ready=0; uint32_t p;uint8_t frame[8];uint64_t n=clock_us();
     p=lock();main_seen_us=n;
     if(!endpoint_ready && motor_td3_g431_debugger_boot_token) {
         const motor_td3_can_hooks h={0,disable_hook,reject_begin,reject_apply,actual_snapshot};
@@ -155,7 +155,10 @@ void motor_td3_g431_poll(void) {
     }
     if(!endpoint_ready) return;
     if(!tx_length) {
-        int len; p=lock();len=motor_td3_can_make_hello(&endpoint,tx_packet);unlock(p);
+        int len; p=lock();len=motor_td3_can_make_hello(&endpoint,tx_packet);
+        /* SysTick can accept HELLO immediately after unlock. Snapshot permission
+         * here so owner cannot become true between the HELLO check and raw TX. */
+        diag_ready=endpoint.owner && !endpoint.hello_pending;unlock(p);
         if(len>0) { tx_length=(uint32_t)len;tx_index=0;tx_started_us=n;++tx_transfer; }
     }
     if(tx_length) {
@@ -165,7 +168,7 @@ void motor_td3_g431_poll(void) {
         }
         return;
     }
-    if(endpoint.owner && n>=diag_due_us) {
+    if(diag_ready && n>=diag_due_us) {
         motor_td3_telemetry t;
         uint8_t hall=(uint8_t)(((GPIOB->IDR>>8)&1U)|((GPIOB->IDR>>6)&2U)|((GPIOB->IDR>>4)&4U));
         actual_snapshot(0,&t);

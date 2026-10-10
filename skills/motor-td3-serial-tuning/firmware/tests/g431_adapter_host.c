@@ -12,6 +12,11 @@ float Ia,Ib,Ic,Vbus,HallSpeed,HallThetaAdd;
 static FDCAN_RxHeaderTypeDef rxh;
 static uint8_t rxd[8],sent[256][8];
 static uint32_t sent_id[256],sent_count,available,freelevel,send_error;
+static unsigned unlock_tick_countdown;
+void test_unlock_hook(void) {
+    if(unlock_tick_countdown && --unlock_tick_countdown==0) motor_td3_g431_tick_1ms();
+}
+void test_arm_unlock_tick(unsigned count) { unlock_tick_countdown=count; }
 static FDCAN_FilterTypeDef filter;
 static uint32_t global_filter[4];
 HAL_StatusTypeDef HAL_FDCAN_ConfigFilter(FDCAN_HandleTypeDef *h,FDCAN_FilterTypeDef *f) { (void)h;filter=*f;return HAL_OK; }
@@ -39,6 +44,7 @@ void test_reset(void) {
     now_us=main_seen_us=adc_seen_us=tx_started_us=diag_due_us=0;
     tx_length=tx_index=diag_index=tx_transfer=endpoint_ready=0;
     motor_td3_g431_debugger_boot_token=0;sent_count=available=send_error=0;freelevel=3;
+    unlock_tick_countdown=0;
     test_rcc.APB2ENR=RCC_APB2ENR_TIM1EN;motor_td3_g431_init();
 }
 void test_boot(uint64_t boot) { motor_td3_g431_debugger_boot_token=boot;motor_td3_g431_poll(); }

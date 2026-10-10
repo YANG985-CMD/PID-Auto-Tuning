@@ -45,4 +45,44 @@ GNU 启动代码从受审计的 Keil 向量表提取中断顺序，初始化 `.d
 4. 有界 CAN 外部诊断需板端收发器 5V 供电和本次功率状态确认。软件 ADC 静态诊断通过不会自动授权功率或运动。
 5. 结束清除 MOE/相位 CCER、停止 TIM1、保持暂停，并记录最终状态。
 
+下载前先执行 **reset halt** 并确认 SysTick CTRL=0、TIM1 输出关闭，再加载 Flash 算法；
+仅连接到已经暂停的应用仍可能保留启用的 SysTick/NVIC，不能作为下载前复位的替代。
+算法异常时保持功率断开，记录 CFSR/HFSR、复位暂停后重试；完整 Flash 比较通过后才运行。
+
+## 有界主机采集
+
+`scripts/speedloop_can_capture.py` 只发送一次 HELLO（15 个标准 `0x620` 分片），
+验证响应身份、nonce、准备好的 boot 身份及空能力位，再读取原始 `0x622..0x625`。
+它不发送 BEGIN/GAINS/STOP，不复位、不恢复核心、不写内存。
+打开适配器后，发送前以不暂停核心的调试连接核对完整 Flash SHA256、
+endpoint 就绪、boot token 已消费、无故障及 MOE/CCER/CEN 关闭。
+当前入口绑定本次受审计二进制；重新构建的不同镜像必须先审计，不能只改清单冒充。
+已修复的握手顺序版本为 32832B，二进制 SHA256：
+`90195b9a9e1d06400592e8aac5f31b167eab0fad095ad54ddb361d0f849022a6`。
+适配层在同一临界区取握手发送结果和诊断权限快照，防止 SysTick 在两者之间接受 HELLO、
+导致首个原始诊断先于身份回复。采集器继续拒绝这种顺序，不忽略未验证数据。
+
+```text
+python -B scripts/speedloop_can_capture.py --manifest PRIVATE_BUILD_MANIFEST --pyocd PYOCD_EXECUTABLE --uid PROBE_UID --boot PREPARED_BOOT_HEX --duration 3 --output E:/simulink/_codex_tmp/TASK/capture --allow-live --board-power-confirmed
+```
+
+执行前必须根据本次用户确认准备供电；两个命令行标志不能替代确认。
+先在 24V 物理断开时初始化、暂停、写唯一 token，短暂运行消费 token，再暂停；
+确认板端收发器供电后只恢复该禁止运动程序。此入口不替用户完成这些操作。
+PCAN 用正常模式提供 ACK，独占 500kbit/s 通道；不是静默监听。
+采集 1～5 秒，拒绝身份/分片/顺序错误、非有限值、ADC 年龄超过 30ms、
+输出使能、IRQ 故障及超过 500ms 的诊断中断，不重试或自动重新启动。
+
+结束或采集异常时，针对已完整核验的禁止运动镜像，**先暂停核心并回读禁能状态，再释放 PCAN**。
+它在诊断期间从未启动 TIM1，所以暂停可停止其前台 CAN 发送；这不能推广为运行电机的停机操作。
+先释放 PCAN 会让仍在发送的板端失去 ACK，产生通信故障。
+目标清理不通过时仍释放适配器并报告失败，不自动清故障。
+该入口不写外设寄存器；如需单独禁能检查，应使用经过核验的 32 位 TIM1 寄存器访问，
+不能假设调试器的半字写入保留其他位。
+
+输出为私有原始帧、调试回读及诊断摘要，不能送入训练器构造状态/动作/奖励。
+四个诊断帧来自不同快照，没有设备应用时间/动作序号，不承诺原子一致。
+Kp/Ki 是存储值，当前没有运行 PI/FOC；电压、电流采用原标称比例。
+软件检查：`python -B scripts/test_speedloop_can_capture.py`，不连接硬件。
+
 此版本用于把真实板端诊断接到 Codex 日志分析，未部署 TD3 Actor，未验收功率输出的过流关断延迟。
