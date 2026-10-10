@@ -221,6 +221,8 @@ Codex 同时给实际接入适配层补上 1ms Break 标志检测：24 项适配
 
 当前实机基准以用户确认可运行的 `Folder 2 Program Model/17.SpeedLoop` 为准：它启动时动态采集 10 次三相 ADC 零点，USER3 才开启三相 PWM，并保留 COMP1→TIM1 Break。A=2021.08、B=2028.78、C=2024.63 作为这份工程启动校零的参考值，不直接替代动态采样。2026-10-11 在 24V 断开、USB/STLink 供电时复位回读到 A/B/C=`2023/2028/2026`，校零完成且在 4 码容差内；TIM1 CCER 只有 CH4，CH1/2/3 相位通道关闭，但 BDTR.MOE 仍为 1，正式接入前应显式把 MOE 纳入启动门控。详见 [SpeedLoop 校零回读](docs/speedloop-offset-readback.md) 和 [机器可读记录](examples/stm32g431-speedloop-offset/summary.json)。
 
+MOE 门控的私有副本改动建议见 [SpeedLoop MOE 检查](docs/speedloop-moe-gate-review.md)。在该门控、过流标定和独立停机路径完成前，TD3 仍保持 shadow/离线模式。
+
 ## 组成
 
 | 位置 | 内容 |
