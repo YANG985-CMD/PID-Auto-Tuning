@@ -1,105 +1,102 @@
-# Motor TD3 Serial Tuning
+# Motor TD3 Serial → MATLAB → MCU
 
-面向电机速度环 PI 调参的 Codex skill。将串口数据采集、TD3 训练流程设计、参数应用确认与独立保护整理成可复用的工作规程。
+把电机串口数据送进 MATLAB 训练 TD3，输出有界的速度环 Kp、Ki，经串口应用确认后形成学习经验；Codex 管理实验和分析结果，最终导出仅用于推理的 Actor C 代码。
 
-**当前版本提供 skill、配置模板和经验数据审计工具。具体的 TD3 训练器、串口适配器和 MCU 保护实现，需要针对目标工程生成与验证。仓库不包含已训练模型，也不会默认连接或启动电机。**
+**现在包含可运行程序。已用模拟设备跑通真实 MATLAB TD3 训练、独立评估和 C 推理一致性检查；尚未连接实际电机或烧录开发板。**
 
-## 工作结构
-
-```text
-电机与 MCU 控制器
-    ⇅ 串口遥测、参数命令与应用确认
-本地串口监督器
-    ├── 持续采集与独立安全检查
-    ├── 有效经验 → TD3 训练程序 → 候选参数策略
-    └── 经验证的策略 → 有界参数下发
-
-Codex：配置程序、管理实验、分析结果。
-MCU：执行电机闭环控制和独立故障保护。
-```
-
-TD3 的学习数据必须包含当前状态、实际生效参数、参数应用后的响应、奖励和终止原因。不能把未下发的网络预测与实际电机响应拼成训练经验。
-
-## 包含内容
-
-- 速度环 `Kp、Ki` 动态调参的工作流程。
-- 采集、旁路预测、在线训练与固定策略评估的边界。
-- 串口单一所有者、原子参数更新、应用回读与设备时间对齐要求。
-- 参数范围、变化限制、动作有效期、独立失联保护和故障锁存设计。
-- 会话配置模板与 JSONL 经验数据检查器。
-- MCU 工程接入检查清单。
-
-## 安装到 Codex
-
-可以向 Codex 发送：
+## 工作链路
 
 ```text
-请从 https://github.com/YANG985-CMD/motor-td3-serial-tuning
-安装 skills/motor-td3-serial-tuning 目录中的 skill。
+MCU：FOC + 速度 PI + 独立保护
+           ⇅ 串口 CRC 帧、原子增益命令、实际应用反馈
+Python：持续采集、安全监控、动作租约、单一端口所有者
+           ⇅ 认证的本机 TCP
+MATLAB：Actor 推理 → 有界试验 → 确认停机 → TD3 更新
+           ↓
+固定策略评估 → Actor JSON → C99 推理 → 目标工程接入/PIL
+
+Codex：配置、启动、读取日志摘要、比较训练结果、管理部署。
 ```
 
-也可以将 `skills/motor-td3-serial-tuning` 目录复制到自己的 Codex skills 目录。
+聊天响应不会承担实时电机控制。梯度更新在每轮停机后进行；同一轮内网络仍能多次调整参数。新训练的实机候选不会自动接管电机。
 
-## 使用示例
+## 一条命令复现
+
+需要 Python 3.12、MATLAB Reinforcement Learning/Deep Learning Toolbox 和 GCC；本机链路已在 MATLAB R2024b 验证，使用 Instrument Control Toolbox 的 TCP 接口。串口模式另需 pyserial。Mock 不需要电机、串口或 Python 深度学习库。
+
+从仓库根目录运行，`OUTPUT` 替换为项目规定的独立临时目录：
 
 ```text
-使用 $motor-td3-serial-tuning 检查我的电机串口协议，
-建立速度环 PI 的 TD3 训练流程，先完成离线验证和保护设计。
+python -B skills/motor-td3-serial-tuning/scripts/run_mock.py --output OUTPUT --rounds 6
 ```
 
-提供工程目录、协议说明、参数单位、经过验证的基准与限制，可帮助 Codex 建立具体实现。安装 skill 或生成代码不表示已授权实机运动。
+MATLAB/GCC 不在 PATH 时增加 `--matlab MATLAB_EXECUTABLE --compiler GCC_EXECUTABLE`。使用新的空输出目录。
 
-## 离线检查
+入口会启动模拟桥接器，调用真正的 MATLAB TD3，保存检查点，执行无探索的固定 PI/TD3 对比，导出 Actor C 文件并编译对齐 MATLAB 参考值。查看 `OUTPUT/run-summary.json`。
 
-检查器只需要 Python 标准库。以下命令从仓库根目录运行；本版本已在 Python 3.12 上验证。
+## 验证结果
 
-```bash
+仓库保存了 [模拟验证摘要与模型](examples/mock-validation)。它们可用于复现与检查代码，禁止直接上实机。
+
+| 检查 | 结果 |
+|---|---|
+| MATLAB TD3 训练 | 6 轮，180 条经确认经验，Actor 权重变化 L2 ≈ 0.0882 |
+| 训练和评估经验审计 | 360 条，时序/参数/回合链审计通过 |
+| Python 桥接测试 | 13 项故障/通信测试通过 |
+| MCU C 主机测试 | 19 项协议/保护检查通过 |
+| MATLAB/C 推理对齐 | 40 组输入通过，NaN 被拒绝 |
+| 独立工况平均归一化 RMSE | 固定 PI 0.171695；短训 TD3 0.171713 |
+
+**这次短训网络没有优于固定 PI。** 结果验证了学习与导出链路，不能据此认定网络调参效果更好、实际电机稳定或已经通过部署验收。
+
+GitHub Actions 自动运行不需要 MATLAB 的桥接、MCU 主机和已发布 Actor 数值检查。MATLAB 全链路需在有工具箱许可的本机运行。
+
+## 组成
+
+| 位置 | 内容 |
+|---|---|
+| `skills/motor-td3-serial-tuning/SKILL.md` | Codex 工作规程与触发说明 |
+| `scripts/motor_runtime.py` | 持久串口监督器、mock、认证 TCP、因果经验 |
+| `matlab/trainMotorTD3.m` | 小型 Actor、双 Critic、真实 TD3 更新 |
+| `matlab/evaluateCheckpoint.m` | 已选定检查点的固定策略评估 |
+| `matlab/exportMotorActor.m` | Actor 权重、尺度和参考输出 |
+| `scripts/actor_codegen.py` | 无动态内存 C99 导出与主机编译检查 |
+| `firmware/` | CRC 协议、参数保护、租约/失联/故障锁存 C 模块 |
+| `scripts/session_checks.py` | 配置与经验审计 |
+| `assets/` | 未配置的实机模板、仅用于模拟的配置 |
+
+[运行方法、输入输出与实机入口](skills/motor-td3-serial-tuning/references/matlab-runtime.md) · [STM32 接入说明](skills/motor-td3-serial-tuning/references/firmware-integration.md)
+
+## 安装为 Codex skill
+
+将 `skills/motor-td3-serial-tuning` 整个目录复制到 Codex skills 目录，或让 Codex 安装该仓库中的这个目录。
+
+```text
+使用 $motor-td3-serial-tuning，把我的电机串口接入 MATLAB TD3，
+先检查工程和保护，用 mock 验证链路，再安排受限实机试验。
+```
+
+Skill 安装不会启动电机。真实串口运行需要完整设备配置和已有用户运动授权，明确选择 `--transport serial --allow-live`。旧的 P3/P4 单参数写入协议没有应用确认和租约，不能直接用于这个训练器。
+
+## 实机和部署
+
+实机前需接入目标固件的原子参数写入、实际反馈、独立过流/急停、失联/动作租约和停机路径，填好基准/增益步长、电流、转速、电压、温度、持续时间及来源证据。Mock 配置会被实机入口拒绝。
+
+Actor 是 `10 → 16 → 16 → 2` 的小网络，仅权重约 1.9 KB。部署保留 FOC/PI，把网络作为慢速增益调度器。主机 C 对齐后仍需目标编译、执行时间/内存检查与 SIL/PIL；板级 HAL 和下载器须按实际工程接入。本仓库没有通用的自动烧录配置。
+
+原始遥测、令牌、私有工程和训练检查点不上传公开仓库。
+
+## 独立测试
+
+```text
 python -B skills/motor-td3-serial-tuning/scripts/session_checks.py self-test
-
-python -B skills/motor-td3-serial-tuning/scripts/session_checks.py check-profile \
-  skills/motor-td3-serial-tuning/assets/session-profile.example.json
+python -B skills/motor-td3-serial-tuning/scripts/test_runtime.py --output TEST_OUTPUT
+python -B skills/motor-td3-serial-tuning/scripts/test_firmware.py --output C_TEST_OUTPUT --compiler gcc
 ```
 
-模板为 `plan` 模式，边界和保护验证项尚未配置。检查器的 `--live` 参数只检查配置完整性，不连接硬件；直接对模板使用该参数会拒绝实机配置并返回非零状态。
+## 依据
 
-```bash
-python -B skills/motor-td3-serial-tuning/scripts/session_checks.py check-profile \
-  skills/motor-td3-serial-tuning/assets/session-profile.example.json --live
-
-python -B skills/motor-td3-serial-tuning/scripts/session_checks.py audit-transitions \
-  experiment.jsonl --profile session-profile.json
-```
-
-JSONL 格式见 [串口与安全规范](skills/motor-td3-serial-tuning/references/serial-and-safety.md)。
-
-## 实机使用前
-
-- 参数和电流、转速、电压、温度限制必须来自目标设备的验证。
-- 主机参数校验与 MCU 独立保护同时存在。
-- 训练进程不能阻塞故障监控；主机停止响应时 MCU 仍能执行经过验证的停止行为。
-- 实机探索在已验证的局部范围内进行，并限制试验时间及动作次数。
-- 普通 TD3 的经验回放不保证从覆盖不足的固定日志学出可靠策略。
-- 参数限幅与奖励惩罚不能证明闭环稳定。离线自检通过不等于硬件保护通过验证。
-
-示例中的 PI 初值仅用于演示配置和检查器，不是适用于其他电机的推荐参数。
-
-## 目录
-
-```text
-skills/motor-td3-serial-tuning/
-├── SKILL.md
-├── agents/openai.yaml
-├── assets/session-profile.example.json
-├── references/
-│   ├── architecture-and-training.md
-│   ├── project-map.md
-│   └── serial-and-safety.md
-└── scripts/session_checks.py
-```
-
-## 设计参考
-
-- [AI Parameter Tuning](https://github.com/YANG985-CMD/AI-Parameter-Tuning)：串口调参与安全契约的基础思路。
-- [TD3 原论文](https://arxiv.org/abs/1802.09477)：算法定义。
-- [Stable-Baselines3 TD3](https://stable-baselines3.readthedocs.io/en/master/modules/td3.html)：本地训练实现参考。
-- [Conservative Q-Learning](https://arxiv.org/abs/2006.04779)：固定日志学习中的分布偏移问题。
+- [AI Parameter Tuning](https://github.com/YANG985-CMD/AI-Parameter-Tuning)：原有串口调参思路。
+- [TD3 论文](https://arxiv.org/abs/1802.09477)：算法依据。
+- [MathWorks TD3 Agent](https://www.mathworks.com/help/reinforcement-learning/ref/rl.agent.rltd3agent.html) 和 [trainFromData](https://www.mathworks.com/help/reinforcement-learning/ref/trainfromdata.html)：实际训练接口。
+- [MathWorks 已部署策略的学习](https://www.mathworks.com/help/reinforcement-learning/ug/fine-tune-deployed-policy.html)：通信与学习解耦参考。

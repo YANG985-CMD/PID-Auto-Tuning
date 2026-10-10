@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "simulation_only": true,
+  "matlab_release": "2024b",
+  "rounds": 6,
+  "replay_experiences": 180,
+  "actor_weight_change_l2": 0.088219255728383073,
+  "episode_rewards": [
+    -0.340508552822073,
+    -0.90202494431382285,
+    -1.8704937964897446,
+    -0.40613282727096467,
+    -0.81533439184603329,
+    -1.6815436080906285
+  ],
+  "policy_version": "candidate-006",
+  "gradient_updates_while_motor_stopped": true,
+  "live_candidate_auto_applied": false
+}

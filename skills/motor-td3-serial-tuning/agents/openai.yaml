@@ -1,4 +1,4 @@
 interface:
   display_name: "电机串口 TD3 调参"
-  short_description: "通过串口采集电机经验，构建本地 TD3 训练与独立保护流程"
-  default_prompt: "使用 $motor-td3-serial-tuning 检查我的电机串口协议，建立速度环 PI 的 TD3 训练流程，先完成离线验证和保护设计。"
+  short_description: "把电机串口接入 MATLAB TD3，验证训练、保护和 Actor C 导出"
+  default_prompt: "使用 $motor-td3-serial-tuning 把我的电机串口接入 MATLAB TD3，先检查工程和保护、用 mock 验证训练与 Actor C 导出，再安排受限实机试验。"

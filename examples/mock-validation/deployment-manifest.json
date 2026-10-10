@@ -1,0 +1,18 @@
+{
+  "policy_version": "candidate-006",
+  "profile_id": "mock-speed-pi-v1",
+  "normalization_id": "mock-physical-scales-v1",
+  "action_mapping_id": "asymmetric-local-step-f32-v1",
+  "simulation_only": true,
+  "schema_version": 1,
+  "files_sha256": {
+    "motor_actor.c": "860ed28acf7d9ba06e25bcb6f609af2a815ac3efb9f92f94106a5410f1dd2ce9",
+    "motor_actor.h": "dc0cb2c5a2d9fb2235e40ef33d153136a2991cf83887f3c9f5bf428805d054f8"
+  },
+  "parameter_count": 482,
+  "weight_bytes": 1928,
+  "workspace_float_bytes": 168,
+  "dynamic_allocation": false,
+  "hardware_deployment_approved": false,
+  "source_sha256": "fe7de20ea5aeebf599151b66abe51f32f00d978007c91861ae12b73778d9c7a0"
+}

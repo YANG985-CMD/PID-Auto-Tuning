@@ -1,6 +1,6 @@
 ---
 name: motor-td3-serial-tuning
-description: "Build or run a Codex-managed TD3 workflow that uses motor serial telemetry to learn bounded speed-loop PI gain schedules. Use for serial experience collection, local TD3 training, shadow evaluation, supervised hardware fine-tuning, and independent firmware protections."
+description: "Build or run a Codex-managed motor serial-to-MATLAB TD3 workflow for bounded speed-loop PI gain schedules. Use for mock end-to-end training, confirmed serial experiences, supervised hardware collection, fixed-policy evaluation, small Actor C export, and independent firmware protections."
 ---
 
 # Motor TD3 Serial Tuning
@@ -30,15 +30,17 @@ description: "Build or run a Codex-managed TD3 workflow that uses motor serial t
 
 每次先确定“每个试验选择一组固定参数”还是“运行中多次调整参数”。后一种才是此 skill 默认的动态参数策略；不要把单步参数搜索的结果描述为已学会运行中的自适应控制。
 
+本包运行器目前支持 mock、`train-live` 和 `evaluate`；只读采集/旁路预测是工作模式建议，执行前需补相应入口，不要声称已有命令。
+
 ## 工作流程
 
 1. 检查工程说明和相关源文件，定位参数写入点、PI 积分实现、速度/电流任务周期、串口协议和独立停机机制。按需读 [project-map.md](references/project-map.md) 建立目标工程的接入点映射。
 2. 从 [session-profile.example.json](assets/session-profile.example.json) 建立会话配置。示例里的 `null` 表示必须从工程或用户取得的信息，禁止直接用于实机。参数初值是源代码默认值，未被认定为当前设备的安全基准。
-3. 按 [architecture-and-training.md](references/architecture-and-training.md) 定义状态、动作、奖励、数据时序和本地训练程序。选成熟 TD3 实现；不要让聊天模型代替反向传播。需要实现项目程序时，将串口监督器、设备适配器、训练器和日志分别做成可检查模块。
+3. 运行本包程序时读 [matlab-runtime.md](references/matlab-runtime.md)：使用 `scripts/run_mock.py --output TASK_TEMP_DIR` 复现桥接、真实 MATLAB TD3 更新、评估和 C 导出；实机使用 `scripts/motor_runtime.py` 与 `matlab/trainMotorTD3.m`。按 [architecture-and-training.md](references/architecture-and-training.md) 检查状态、动作、奖励与时序。不要让聊天模型代替反向传播。
 4. 按 [serial-and-safety.md](references/serial-and-safety.md) 检查固件、协议和保护。先完成 mock、错误注入和只读检查。使用 `scripts/session_checks.py check-profile CONFIG --live` 检查配置完整性；脚本通过只表示配置齐全，不能替代设备验证或本次授权。
 5. 使用 `scripts/session_checks.py audit-transitions LOG --profile CONFIG` 检查实际用于学习的 JSONL 数据。脚本不打开串口、不下发命令、也不训练网络；详细格式在安全参考中。
 6. 实机允许后，先用已验证基准完成有界试验，再在已验证局部参数范围内逐步探索。禁止沿用库的全范围随机动作默认值。限制单轮时间、动作次数和累计通电预算；不因训练分数较低自动放宽限制。
-7. 每次策略更新先形成候选检查点。将训练器与用于执行的策略副本分开，版本切换时验证输入尺度和输出映射；恶化时回退到已验证控制器。严重故障先停机，禁止自动重启。
+7. 每次策略更新先形成候选检查点。当前实现每轮确认停机后做梯度更新；实机候选不会自动替换基准行为。通过 `--approved-policy` 明确选定已有候选后，使用 `matlab/evaluateCheckpoint.m` 评估，验证输入尺度和输出映射；恶化时回退到已验证控制器。严重故障先停机，禁止自动重启。
 8. 用未参与训练的工况比较固定 PI、现有模糊 PI 和 TD3。交付原始数据、实际生效参数、故障和拒绝记录、检查点、归一化配置、测试结果及尚未验证的部分。
 
 ## 实机门槛
@@ -54,4 +56,5 @@ description: "Build or run a Codex-managed TD3 workflow that uses motor serial t
 - 遵循用户或项目指定的临时目录规范；未指定时使用系统临时目录下的独立任务目录，避免在源文件目录生成临时日志、试验检查点或测试输出。用户要求保留的正式数据和最终模型放在指定交付位置。
 - Python 检查使用 `-B` 或 `PYTHONDONTWRITEBYTECODE=1`，避免在 skill 或用户工程里生成缓存。
 - `scripts/session_checks.py self-test` 在内存中验证缺失边界、NaN、时序错配、确认缺失、终止类型和回合串接等问题，无硬件副作用。
-- 此包提供工作规程、配置模板和审计器。实际 TD3 训练器与串口设备适配器需针对目标工程生成并验证，不能把包安装成功说成训练完成或固件保护已经生效。
+- 本包包含持久桥接器、MATLAB TD3 训练/评估、Actor C 导出与主机数值检查、MCU 协议/保护参考模块和 mock 故障测试。实际板级接入按 [firmware-integration.md](references/firmware-integration.md) 完成；不能把 mock 或主机测试说成硬件保护/上板验证。
+- 使用 `scripts/test_runtime.py --output TASK_TEMP_DIR` 与 `scripts/test_firmware.py --output OTHER_TASK_TEMP_DIR --compiler GCC` 验证故障路径；输出不放用户源工程。实机配置不完整时继续这些独立工作。

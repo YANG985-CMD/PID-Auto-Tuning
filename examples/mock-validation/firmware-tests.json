@@ -1,0 +1,28 @@
+{
+  "passed": true,
+  "host_compiled": true,
+  "tests": [
+    "atomic-applied-feedback",
+    "sequence-and-fault-latch",
+    "nan",
+    "inf",
+    "gain-range",
+    "gain-step",
+    "overcurrent",
+    "overspeed",
+    "bus",
+    "temperature",
+    "sensor-nan",
+    "estop",
+    "lease",
+    "clock-reset",
+    "independent-link-timeout",
+    "independent-trial-limit",
+    "python-commands-decoded-by-c",
+    "malformed-duplicate-crc-nan-command-rejection",
+    "c-telemetry-crc-and-float32-readback"
+  ],
+  "test_count": 19,
+  "hardware_access": false,
+  "independent_hardware_protection_verified": false
+}

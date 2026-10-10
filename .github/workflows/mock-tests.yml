@@ -1,0 +1,18 @@
+name: Mock and MCU host checks
+on: [push, pull_request]
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Config and causal experience checker
+        run: python -B skills/motor-td3-serial-tuning/scripts/session_checks.py self-test
+      - name: Bridge faults and serial byte stream
+        run: python -B skills/motor-td3-serial-tuning/scripts/test_runtime.py --output "${{ runner.temp }}/td3-runtime"
+      - name: MCU C protocol and guard
+        run: python -B skills/motor-td3-serial-tuning/scripts/test_firmware.py --output "${{ runner.temp }}/td3-firmware" --compiler gcc
+      - name: Published mock Actor MATLAB reference parity
+        run: python -B skills/motor-td3-serial-tuning/scripts/actor_codegen.py --model examples/mock-validation/actor.json --output "${{ runner.temp }}/td3-actor" --reference examples/mock-validation/matlab-reference.json --compiler gcc

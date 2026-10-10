@@ -10,5 +10,11 @@ venv/
 *.jsonl
 checkpoints/
 runs/
+bridge-token.txt
+*.mat
+*.exe
+*.dll
+*.so
+*.o
 .DS_Store
 Thumbs.db

@@ -6,7 +6,7 @@
     "port": null,
     "baudrate": null,
     "firmware_id": null,
-    "protocol_id": null,
+    "protocol_id": "motor-td3-json-crc-v1",
     "protocol_verified": false,
     "applied_parameter_feedback_verified": false,
     "atomic_gain_update_verified": false,
@@ -57,12 +57,41 @@
   "training": {
     "algorithm": "TD3",
     "task": "adaptive-gains",
-    "framework": "stable-baselines3",
-    "state_fields": ["speed_ref", "speed", "speed_error", "error_history", "integral_output", "current", "vbus", "kp", "ki", "elapsed_ms"],
+    "framework": "MATLAB Reinforcement Learning Toolbox",
+    "state_fields": [
+      "speed_ref",
+      "speed",
+      "speed_error",
+      "error_history",
+      "integral_output",
+      "current",
+      "vbus",
+      "kp",
+      "ki",
+      "elapsed_ms"
+    ],
     "state_units_verified": false,
     "normalization_id": null,
     "action_mapping_id": null,
     "fixed_policy_evaluation_verified": false,
     "fault_penalty": null
+  },
+  "simulation_only": false,
+  "runtime": {
+    "state_scale": [
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null
+    ],
+    "window_ms": null,
+    "max_steps": null,
+    "speed_refs_rpm": []
   }
 }

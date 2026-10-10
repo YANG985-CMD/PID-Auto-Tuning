@@ -1,0 +1,101 @@
+{
+  "schema_version": 1,
+  "profile_id": "mock-speed-pi-v1",
+  "mode": "evaluate",
+  "device": {
+    "port": "MOCK_ONLY",
+    "baudrate": 230400,
+    "firmware_id": "mock-plant-v1",
+    "protocol_id": "motor-td3-json-crc-v1",
+    "protocol_verified": true,
+    "applied_parameter_feedback_verified": true,
+    "atomic_gain_update_verified": true,
+    "single_parameter_owner_verified": true
+  },
+  "controller": {
+    "loop": "speed-pi",
+    "kp_baseline": 0.0033889999613165855,
+    "ki_baseline": 0.0014400000218302011,
+    "baseline_verified": true,
+    "baseline_evidence": "SIMULATION ONLY: reproducible mock reset",
+    "ki_convention": "continuous-gain",
+    "bumpless_update_verified": true,
+    "kp_min": 0.0024999999441206455,
+    "kp_max": 0.00430000014603138,
+    "ki_min": 0.0007999999797903001,
+    "ki_max": 0.002199999988079071,
+    "max_kp_step": 8e-05,
+    "max_ki_step": 8e-05
+  },
+  "safety": {
+    "current_limit_a": 4,
+    "speed_limit_rpm": 1800,
+    "vbus_min_v": 20,
+    "vbus_max_v": 28,
+    "thermal_protection": "measured",
+    "temperature_limit_c": 75,
+    "max_trial_seconds": 4,
+    "max_session_seconds": 1800,
+    "max_commands_per_trial": 30,
+    "max_frame_gap_ms": 10,
+    "max_apply_latency_ms": 300,
+    "decision_window_min_ms": 100,
+    "decision_window_max_ms": 105,
+    "action_lease_ms": 5000,
+    "firmware_link_timeout_ms": 5000,
+    "learner_progress_timeout_ms": 4000,
+    "limit_evidence": "SIMULATION ONLY: artificial plant limits",
+    "thermal_evidence": "SIMULATION ONLY: mock 30 C",
+    "safe_stop_verified": true,
+    "independent_overcurrent_verified": true,
+    "firmware_link_loss_verified": true,
+    "emergency_stop_verified": true,
+    "action_lease_verified": true,
+    "host_stall_verified": true,
+    "protection_evidence": "SIMULATION ONLY: software lease model"
+  },
+  "training": {
+    "algorithm": "TD3",
+    "task": "adaptive-gains",
+    "framework": "MATLAB Reinforcement Learning Toolbox",
+    "state_fields": [
+      "speed_ref",
+      "speed",
+      "speed_error",
+      "error_history",
+      "integral_output",
+      "current",
+      "vbus",
+      "kp",
+      "ki",
+      "elapsed_ms"
+    ],
+    "state_units_verified": true,
+    "normalization_id": "mock-physical-scales-v1",
+    "action_mapping_id": "asymmetric-local-step-f32-v1",
+    "fixed_policy_evaluation_verified": true,
+    "fault_penalty": 100
+  },
+  "simulation_only": true,
+  "runtime": {
+    "state_scale": [
+      1000,
+      1000,
+      1000,
+      1000,
+      3,
+      4,
+      24,
+      0.003389,
+      0.00144,
+      3000
+    ],
+    "window_ms": 100,
+    "max_steps": 30,
+    "speed_refs_rpm": [
+      500,
+      800,
+      1100
+    ]
+  }
+}

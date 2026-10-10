@@ -1,0 +1,10 @@
+{
+  "records": 360,
+  "eligible": 360,
+  "excluded": 0,
+  "errors": [],
+  "warnings": [
+    "Complete configuration is not proof of protection, stability, or run authorization"
+  ],
+  "trainable": true
+}
