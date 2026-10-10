@@ -14,6 +14,19 @@
     "channel_released": true
   },
   "offline_fault_tests": {"passed": 9},
+  "physical_inspection": {
+    "kit_board_layout_matches_wiring_illustration": true,
+    "board_can_h_l_silkscreen_confirmed": true,
+    "shared_debug_uart_can_header_pins": 8,
+    "adjacent_silkscreen": ["PB11", "PB10", "SWDIO", "SWCLK", "3.3V", "GND"],
+    "usb_can_module_visible_brand": "Euler",
+    "usb_can_module_visible_labels": ["USBCAN", "PCAN", "120R"],
+    "private_photos_published": false,
+    "wire_end_to_end_continuity_verified": false,
+    "can_5v_measurement_obtained": false,
+    "supply_path_in_matching_layout_schematic": "VDC -> 12V -> 5V -> 3.3V",
+    "exact_pcb_revision_and_transceiver_part_confirmed": false
+  },
   "board_audit": {
     "original_firmware_hex_records_match": true,
     "compared_flash_bytes": 33500,
@@ -28,6 +41,14 @@
     "resumed_by_codex": false,
     "flash_written": false,
     "power_disconnected_confirmed_by_user": true
+  },
+  "followup_read_only_audit": {
+    "state": "HALTED",
+    "tim1_cr1": 0,
+    "tim1_ccer": 0,
+    "tim1_bdtr": 0,
+    "mcu_resumed": false,
+    "flash_written": false
   },
   "source_audit": {
     "fdcan_initialized": true,

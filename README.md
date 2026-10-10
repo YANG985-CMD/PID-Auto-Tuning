@@ -178,7 +178,7 @@ Codex 可在目标条件齐全的已授权会话中完成导出、工程接入�
 
 当前板上原固件的只读串口布局见 [legacy-board-telemetry.md](docs/legacy-board-telemetry.md)。它只适合 shadow 观测，缺少 TD3 所需的动作应用确认和独立停机协议。
 
-CAN 是另一条可接入 MATLAB 的通信路径。对应原固件的工程已包含 500 kbit/s 经典 CAN，发送扩展 ID `0x1B`、8 字节占位帧；尚未实现 TD3 增益应用确认或通信保护。本项目提供 [PCAN 静默监听器](scripts/can_monitor.py)：初始化前设置并核验 Listen-Only，初始化后回读，并拒绝被其他程序占用的通道。板卡资料包含接口不同的两版原理图，接线须先核对板卡丝印；详见 [CAN 接入与验证状态](docs/stm32g4-can-path.md)。
+CAN 是另一条可接入 MATLAB 的通信路径。对应原固件的工程已包含 500 kbit/s 经典 CAN，发送扩展 ID `0x1B`、8 字节占位帧；尚未实现 TD3 增益应用确认或通信保护。本项目提供 [PCAN 静默监听器](scripts/can_monitor.py)：初始化前设置并核验 Listen-Only，初始化后回读，并拒绝被其他程序占用的通道。Codex 已结合实物近照和套件资料确认板端 H/L 排针布局及配套欧拉 USBCAN / PCAN 模块，并查出应核实的板端 5V 供电路径；当前尚未验证板端 CAN 收发。详见 [CAN 接入与验证状态](docs/stm32g4-can-path.md)。
 
 ## 独立测试
 
