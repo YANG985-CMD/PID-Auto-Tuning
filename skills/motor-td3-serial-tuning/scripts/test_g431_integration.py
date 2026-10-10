@@ -21,7 +21,7 @@ STUB=r'''
 #ifndef TD3_HOST_STUB
 #define TD3_HOST_STUB
 #include <stdint.h>
-typedef struct { volatile uint32_t BDTR,CCER; } TIM_TypeDef;
+typedef struct { volatile uint32_t BDTR,CCER,SR; } TIM_TypeDef;
 typedef struct { volatile uint32_t APB2ENR; } RCC_TypeDef;
 typedef struct { volatile uint32_t IDR; } GPIO_TypeDef;
 extern TIM_TypeDef test_tim;extern RCC_TypeDef test_rcc;extern GPIO_TypeDef test_gpio;
@@ -37,6 +37,9 @@ extern TIM_TypeDef test_tim;extern RCC_TypeDef test_rcc;extern GPIO_TypeDef test
 #define TIM_CCER_CC3E 256U
 #define TIM_CCER_CC3NE 1024U
 #define TIM_CCER_CC4E 4096U
+#define TIM_SR_BIF 128U
+#define TIM_SR_B2IF 256U
+#define TIM_SR_SBIF 8192U
 static inline uint32_t __get_PRIMASK(void) { return 0; }
 static inline void __disable_irq(void) {}
 static inline void __set_PRIMASK(uint32_t p) { (void)p; }
@@ -142,6 +145,21 @@ class Integration(unittest.TestCase):
     def test_stop_keeps_inhibit(self):
         hello();deliver({'type':'stop'},1)
         self.assertTrue(LIB.test_off());self.assertEqual(LIB.test_guard_fault(),12)
+    def test_break_without_callback_latches_and_stops(self):
+        # Hardware flag read by the actual adapter; no COMP/TIM IRQ callback.
+        for flag in (128,256,8192):
+            LIB.test_reset();LIB.test_software_outputs_on();LIB.test_break_flags(flag)
+            LIB.test_ticks(1)
+            self.assertTrue(LIB.test_fault());self.assertTrue(LIB.test_off())
+    def test_break_recovery_and_commands_do_not_clear_fault(self):
+        hello();LIB.test_break_flags(128);LIB.test_ticks(1)
+        LIB.test_break_flags(0);LIB.test_poll();LIB.test_ticks(1)
+        deliver({'type':'stop'},1)
+        deliver({'type':'begin','profile_id':'g431-foc-locked-v1','speed_ref':1000,'lease_ms':100},2,100000)
+        self.assertTrue(LIB.test_fault());self.assertTrue(LIB.test_off())
+    def test_clock_off_does_not_turn_stale_flags_into_fault(self):
+        LIB.test_timer_clock(0);LIB.test_break_flags(128);LIB.test_ticks(1)
+        self.assertFalse(LIB.test_fault())
     def test_patch_refuses_unknown_or_repeated_anchors(self):
         with self.assertRaises(ValueError): builder.replace_once('changed source','known','new')
         with self.assertRaises(ValueError): builder.replace_once('known known','known','new')
@@ -191,7 +209,7 @@ def main():
     suite=unittest.TestSuite([unittest.defaultTestLoader.loadTestsFromTestCase(t) for t in (Integration,PILContract)])
     r=unittest.TextTestRunner(verbosity=2).run(suite)
     summary={'schema_version':1,'scope':'actual locked adapter with software HAL/CMSIS/model substitutes',
-        'tests':r.testsRun,'adapter_tests':16,'pil_contract_tests':5,'failures':len(r.failures),'errors':len(r.errors),'passed':r.wasSuccessful(),
+        'tests':r.testsRun,'adapter_tests':19,'pil_contract_tests':5,'failures':len(r.failures),'errors':len(r.errors),'passed':r.wasSuccessful(),
         'hardware_accessed':False,'motor_output':False}
     (out/'summary.json').write_text(json.dumps(summary,indent=2)+'\n',encoding='utf-8')
     if not r.wasSuccessful(): raise SystemExit(1)

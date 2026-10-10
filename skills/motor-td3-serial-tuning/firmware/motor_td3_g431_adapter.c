@@ -72,6 +72,7 @@ void motor_td3_g431_init(void) {
 }
 void motor_td3_g431_tick_1ms(void) {
     now_us+=1000U;
+    if(motor_td3_g431_break_seen()) motor_td3_g431_fault_irq();
     motor_td3_g431_disable(); /* Independent of CAN, ADC and foreground polling. */
     if(initialized && now_us-main_seen_us>=MAIN_DEADLINE_US) irq_fault=1;
     if(endpoint_ready) {

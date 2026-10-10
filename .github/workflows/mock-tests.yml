@@ -22,6 +22,8 @@ jobs:
         run: python -B skills/motor-td3-serial-tuning/scripts/test_can_runtime.py --output "${{ runner.temp }}/td3-can-runtime" --compiler gcc
       - name: G431 locked adapter filters, disable paths and missing sensor rejection
         run: python -B skills/motor-td3-serial-tuning/scripts/test_g431_integration.py --output "${{ runner.temp }}/td3-g431-adapter" --compiler gcc
+      - name: COMP Break diagnostic rejects unsafe traces and always cleans up
+        run: python -B skills/motor-td3-serial-tuning/scripts/test_g431_comp_break.py --output "${{ runner.temp }}/td3-g431-comp-break"
       - name: MCU C protocol and guard
         run: python -B skills/motor-td3-serial-tuning/scripts/test_firmware.py --output "${{ runner.temp }}/td3-firmware" --compiler gcc
       - name: RAM PIL refuses unsafe or mismatched requests without hardware

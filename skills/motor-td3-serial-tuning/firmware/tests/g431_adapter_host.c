@@ -69,3 +69,5 @@ int test_telemetry(void) { uint8_t out[192];return motor_td3_can_make_telemetry(
 void test_freelevel(unsigned count) { freelevel=count; }
 void test_tx_error(void) { send_error=1; }
 void test_can_error(void) { HAL_FDCAN_ErrorStatusCallback(&hfdcan1,FDCAN_IT_BUS_OFF); }
+void test_break_flags(unsigned flags) { test_tim.SR=flags; }
+void test_timer_clock(unsigned on) { test_rcc.APB2ENR=on?RCC_APB2ENR_TIM1EN:0; }

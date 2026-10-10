@@ -21,7 +21,7 @@ python -B scripts/test_g431_integration.py --compiler gcc --output NEW_TASK_TEMP
 
 boot token 由断电后的调试会话一次性提供，本版本不实现生产启动身份。诊断标准 ID：620 请求、621 分片握手；622 schema/fault/flags/Hall/ADC年龄，623 实际 Kp/Ki，624 母线/最大绝对相电流，625 Hall转速/积分输出。诊断数据不是训练经验。
 
-SysTick 每 1ms 禁能；主循环 5ms 无进度锁存。硬件 COMP1/TIM1 刹车配置保留，实际阈值仍待验证。SysTick 不能证明全局关中断或 MCU 卡死时也可停机，需独立硬件看门狗/刹车验收。
+SysTick 每 1ms 禁能，并读取 TIM1 的 BIF/B2IF/SBIF，将硬件 Break 证据锁存到适配层故障，即使相应 IRQ callback 未启用也能发现；不会自动清标志或故障。主循环 5ms 无进度锁存。硬件 COMP1/TIM1 刹车配置保留，实际电流门槛仍待验证。SysTick 不能证明全局关中断或 MCU 卡死时也可停机，需独立硬件看门狗/刹车验收。
 
 ## 断电 RAM 验证
 
@@ -37,3 +37,5 @@ python -B scripts/g431_locked_pil.py run --build NEW_TASK_TEMP_PIL_BUILD --outpu
 测试执行共享禁能函数、锁定协议端点和实际 SysTick。它没有执行完整 HAL/FOC 接入固件；观测和参数是测试夹具，不声称已经验证真实增益切换、过流阈值或 TD3 实机训练。
 
 2026-10-10：完整构建 45 单元成功；板级软件 16/16、RAM 入口校验 5/5；真实 MCU 测试 11/11，55 次 SysTick、71 次禁能调用，栈观测 872 字节，Flash 未变。能力保持 0，真实训练门槛未解除。
+
+2026-10-11：新增硬件 Break 标志轮询，实际适配层软件测试增至 19/19，加上 RAM 入口 5/5，共 24/24；完整 45 单元重建成功（ROM 44,768 B、RAM 8,176 B），仍未运行完整 FOC 固件。独立 SRAM 的 [COMP1/Break 信号测试](g431-comp-break.md) 8/8 通过；不把该独立程序的故障锁存当成完整适配层的板上执行证据。

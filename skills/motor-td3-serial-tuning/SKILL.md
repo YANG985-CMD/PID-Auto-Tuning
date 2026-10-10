@@ -29,6 +29,7 @@ description: "Build or run a Codex-managed motor serial/CAN-to-MATLAB TD3 workfl
 | 评估或部署 | 固定网络版本，关闭探索，按独立测试工况比较现有控制器 |
 | 在 G431/G441 上验证 Actor 计算 | 断开功率电源后，用 RAM PIL 比较 MCU 与 MATLAB；不应用增益、不写 Flash，结束保持暂停 |
 | 诊断 G431 的 CAN 链路 | 按 [stm32-can-diagnostics.md](references/stm32-can-diagnostics.md) 选择内部回环或有界 PCAN 收发；运行专用 SRAM 程序并检查 PWM 禁能 |
+| 验证 G431 比较器到 Break 的信号路径 | 按 [g431-comp-break.md](references/g431-comp-break.md) 在功率电源物理断开时运行 SRAM DAC 阈值诊断；它不校准电流，也不测量功率输出关闭延迟 |
 | 把 CAN 数据接入 TD3 | 按 [can-runtime.md](references/can-runtime.md) 接入 C 协议和板级 hooks，通过现有实机门槛后使用 `--transport can` |
 
 每次先确定“每个试验选择一组固定参数”还是“运行中多次调整参数”。后一种才是此 skill 默认的动态参数策略；不要把单步参数搜索的结果描述为已学会运行中的自适应控制。
@@ -50,6 +51,8 @@ description: "Build or run a Codex-managed motor serial/CAN-to-MATLAB TD3 workfl
 CAN 通信问题单独按 [stm32-can-diagnostics.md](references/stm32-can-diagnostics.md) 处理：先辨别示例载荷与当前固件，不用含电机启停的示例代替通信诊断。专用外部收发诊断允许在明确授权、板端供电已确认、功率输出禁能的条件下运行；每次发送前核对 SRAM 就绪状态及 PWM/引脚状态。CAN 回包通过只验证通信，不解除实机训练门槛。
 
 CAN 训练接入读 [can-runtime.md](references/can-runtime.md)。已有 PCAN 主机入口和可编译 C 端点，软件完整回合已验证；G431 原 FOC 工程的锁定接入副本已完整编译，具体按 [g431-locked-integration.md](references/g431-locked-integration.md) 操作。其能力为 0，禁止启动/增益应用；共享禁能函数与协议端点的真实 RAM 测试通过，完整 FOC 接入固件尚未烧录执行。缺失温度保留 NaN，不伪造训练观测。使用 `can-session-profile.example.json` 配置，不复制软件测试 peer 的验证标记到真实配置。
+
+检查温度及参数限制时，先核对应用实际采样通道、板卡原理图和具体示例版本。没有温度传感器时记录能力缺失，再设计测温或经验证的替代热保护；当前运行器尚不支持替代模式。模糊规则的可达增益集合、Iq 指令限幅和 DAC 码值不是已验证的实机安全域。
 
 ## 实机门槛
 

@@ -1,0 +1,211 @@
+{
+  "schema_version": 1,
+  "mode": "g431-comp1-break-sram-diagnostic",
+  "verified": true,
+  "power_disconnected_confirmed_by_user": true,
+  "original_application_resumed": false,
+  "current_threshold_calibrated": false,
+  "moe_clear_from_one_verified": false,
+  "physical_output_shutoff_verified": false,
+  "shutoff_latency_verified": false,
+  "external_can": false,
+  "motor_output": false,
+  "flash_programming": false,
+  "moe_enabled": false,
+  "phase_pins_configured": false,
+  "full_foc_executed": false,
+  "identity": {
+    "cpuid": "0x410fc241",
+    "dbgmcu_idcode": "0x20036468",
+    "flash_kb": 128
+  },
+  "mailbox": {
+    "magic": 1128419889,
+    "schema": 1,
+    "state": 2,
+    "error": 0,
+    "cases": 8,
+    "passed": 8,
+    "fault_latched": 1,
+    "unsafe_samples": 0,
+    "samples": 17,
+    "cycles": 371467,
+    "transition_low": 2033,
+    "transition_high": 2034,
+    "recovery_sr": 0,
+    "recovery_latch": 1,
+    "comp_config": 321,
+    "dac_mode": 3,
+    "tim_route": 2,
+    "tim_break_config": 143480,
+    "gpioa_phase_mode": 4128768,
+    "gpiob_phase_mode": 4227858432,
+    "tim_cr1": 0,
+    "tim_ccer": 0,
+    "tim_bdtr": 0,
+    "gpio_clocks": 0
+  },
+  "trace": [
+    {
+      "dac": 4095,
+      "comp_csr": 321,
+      "tim_sr": 0,
+      "safe": 1
+    },
+    {
+      "dac": 3000,
+      "comp_csr": 321,
+      "tim_sr": 0,
+      "safe": 1
+    },
+    {
+      "dac": 0,
+      "comp_csr": 1073742145,
+      "tim_sr": 128,
+      "safe": 1
+    },
+    {
+      "dac": 4095,
+      "comp_csr": 321,
+      "tim_sr": 128,
+      "safe": 1
+    },
+    {
+      "dac": 2047,
+      "comp_csr": 321,
+      "tim_sr": 0,
+      "safe": 1
+    },
+    {
+      "dac": 1023,
+      "comp_csr": 1073742145,
+      "tim_sr": 128,
+      "safe": 1
+    },
+    {
+      "dac": 1535,
+      "comp_csr": 1073742145,
+      "tim_sr": 128,
+      "safe": 1
+    },
+    {
+      "dac": 1791,
+      "comp_csr": 1073742145,
+      "tim_sr": 128,
+      "safe": 1
+    },
+    {
+      "dac": 1919,
+      "comp_csr": 1073742145,
+      "tim_sr": 128,
+      "safe": 1
+    },
+    {
+      "dac": 1983,
+      "comp_csr": 1073742145,
+      "tim_sr": 128,
+      "safe": 1
+    },
+    {
+      "dac": 2015,
+      "comp_csr": 1073742145,
+      "tim_sr": 128,
+      "safe": 1
+    },
+    {
+      "dac": 2031,
+      "comp_csr": 1073742145,
+      "tim_sr": 128,
+      "safe": 1
+    },
+    {
+      "dac": 2039,
+      "comp_csr": 321,
+      "tim_sr": 128,
+      "safe": 1
+    },
+    {
+      "dac": 2035,
+      "comp_csr": 321,
+      "tim_sr": 128,
+      "safe": 1
+    },
+    {
+      "dac": 2033,
+      "comp_csr": 1073742145,
+      "tim_sr": 128,
+      "safe": 1
+    },
+    {
+      "dac": 2034,
+      "comp_csr": 321,
+      "tim_sr": 128,
+      "safe": 1
+    },
+    {
+      "dac": 4095,
+      "comp_csr": 321,
+      "tim_sr": 128,
+      "safe": 1
+    }
+  ],
+  "stack_observed_bytes": 40,
+  "stack_bottom_fence_intact": true,
+  "image_bytes": 4448,
+  "image_sha256": "e2efeeed8c84e1485f2fec39e92bc028887faeb09c288f49595d2cf2381e820a",
+  "source_sha256": {
+    "stm32_g431_comp_break.c": "8e5a2f18f6fd3893ca7ed207c988698ac850d1d29a14b572774ba4b1084e603f",
+    "stm32_g431_comp_break.S": "0396be530c26d18a540c5a726882b0e2513d3f1a45c485b9aba3d6c5c70814c6",
+    "motor_td3_g431_off.h": "80b422814f4508ba5e51dedeb78a9dc237723c1ffa72dbb4dfe654706102b162"
+  },
+  "core_left_halted": true,
+  "final_registers": {
+    "tim1_cr1": 0,
+    "tim1_ccer": 0,
+    "tim1_bdtr": 0,
+    "gpio_clocks": 0
+  },
+  "flash_unchanged": true,
+  "date": "2026-10-11",
+  "scope": "Dedicated stationary-input COMP1-to-TIM1-BIF diagnostic; not current calibration or full FOC execution",
+  "software_validation": {
+    "actual_adapter": {
+      "schema_version": 1,
+      "scope": "actual locked adapter with software HAL/CMSIS/model substitutes",
+      "tests": 24,
+      "adapter_tests": 19,
+      "pil_contract_tests": 5,
+      "failures": 0,
+      "errors": 0,
+      "passed": true,
+      "hardware_accessed": false,
+      "motor_output": false
+    },
+    "diagnostic_contract_and_cleanup": {
+      "schema_version": 1,
+      "tests": 14,
+      "passed": true,
+      "failures": 0,
+      "errors": 0,
+      "hardware_accessed": false
+    }
+  },
+  "full_foc_build": {
+    "translation_units": 45,
+    "linked": true,
+    "rom_bytes": 44768,
+    "ram_bytes": 8176,
+    "stack_reserved_bytes": 4096,
+    "hardware_executed": false,
+    "source_files_unchanged": true
+  },
+  "initial_precondition_failure": {
+    "verified": false,
+    "guest_error": 131072,
+    "samples": 0,
+    "cause": "Initial diagnostic expected HSI SWS=0 instead of CMSIS RCC_CFGR_SWS_HSI=4; corrected before peripheral testing",
+    "core_left_halted": true,
+    "flash_unchanged": true,
+    "motor_output": false
+  }
+}
