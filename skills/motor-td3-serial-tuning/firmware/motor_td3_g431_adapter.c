@@ -1,7 +1,7 @@
-/* Integration adapter for the audited G431 PID-speed example. LOCKED BUILD.
+/* Integration adapter for audited G431 examples. LOCKED BUILD.
  * No start/PWM-enable/gain-write operation exists in this translation unit.
  * Raw diagnostic IDs 622..625 are never TD3 training telemetry (621).
- * Source FOC includes an NNSMC overlay; its code and gains are preserved. */
+ * Default source: PID/NNSMC. SPEEDLOOP diagnostic: fuzzy PI, no FOC step. */
 #include "motor_td3_g431_adapter.h"
 #include "motor_td3_g431_off.h"
 #include "motor_td3_can_control.h"
@@ -15,6 +15,13 @@
 #define MAIN_DEADLINE_US 5000U
 #define TX_DEADLINE_US 50000U
 #define DIAG_PERIOD_US 100000U
+#ifdef MOTOR_TD3_SPEEDLOOP_DIAGNOSTIC
+#define LOCKED_FIRMWARE "g431-speedloop-diag-v1"
+#define LOCKED_PROFILE "g431-speedloop-diag-v1"
+#else
+#define LOCKED_FIRMWARE "g431-foc-can-locked-v1"
+#define LOCKED_PROFILE "g431-foc-locked-v1"
+#endif
 extern uint8_t Motor_state,ADC_offset;
 extern float Ia,Ib,Ic,Vbus,HallSpeed,HallThetaAdd;
 volatile uint64_t motor_td3_g431_debugger_boot_token;
@@ -50,7 +57,11 @@ static int actual_snapshot(void *u,motor_td3_telemetry *t) {
     t->speed_ref=(float)rtU.SpeedRef; t->speed=HallSpeed;
     /* Existing PREV_U already contains Ki*error (or anti-windup zero).
      * These are raw observations, not normalized training state. */
+#ifdef MOTOR_TD3_SPEEDLOOP_DIAGNOSTIC
+    t->error_history=NAN; /* SpeedLoop has no equivalent previous-error field. */
+#else
     t->error_history=rtDW.NNSMC_SpeedErrPrev;
+#endif
     t->integral_output=rtDW.Integrator_DSTATE_h;
     t->current=fmaxf(fabsf(Ia),fmaxf(fabsf(Ib),fabsf(Ic)));
     t->vbus=Vbus;
@@ -130,7 +141,7 @@ void motor_td3_g431_poll(void) {
     if(!endpoint_ready && motor_td3_g431_debugger_boot_token) {
         const motor_td3_can_hooks h={0,disable_hook,reject_begin,reject_apply,actual_snapshot};
         endpoint_ready=motor_td3_can_control_init_locked(&endpoint,&h,motor_td3_g431_debugger_boot_token,
-            "g431-foc-can-locked-v1","g431-foc-locked-v1");
+            LOCKED_FIRMWARE,LOCKED_PROFILE);
         motor_td3_g431_debugger_boot_token=0; /* Consumed, no rearm path. */
     }
     unlock(p);
@@ -155,7 +166,8 @@ void motor_td3_g431_poll(void) {
         return;
     }
     if(endpoint.owner && n>=diag_due_us) {
-        motor_td3_telemetry t; uint8_t hall=(uint8_t)((GPIOB->IDR>>6)&7U);
+        motor_td3_telemetry t;
+        uint8_t hall=(uint8_t)(((GPIOB->IDR>>8)&1U)|((GPIOB->IDR>>6)&2U)|((GPIOB->IDR>>4)&4U));
         actual_snapshot(0,&t);
         if(diag_index==0) {
             uint16_t flags=(uint16_t)((ADC_offset?1:0)|((hall>0&&hall<7)?2:0)|(t.enabled?4:0)|

@@ -166,7 +166,7 @@ Codex 在链路验证后新增 `motor-td3-can-v1` 与 MCU 控制任务接口：�
 | 完整桥接回合 | 经编译 C 软件端点形成 3 条可审计经验，实际参数、序号和设备时间一致 |
 | 原串口/C 接口 | 14 项串口测试和 19 项既有 C 协议/保护测试通过 |
 | MCU 编译 | 3 个新增/复用模块通过 Cortex-M4F Arm Compiler 对象编译，警告按错误处理 |
-| 实际 FOC 工程接入 | 默认禁止运动的副本已完成 FDCAN、计时、PI/PWM 观测和停机接入并完整链接；热保护方案、生产 boot 身份和实际增益切换仍待完成，尚未烧录运行 |
+| 早期 PID/NNSMC 工程接入 | 禁止运动副本已完整链接，未执行完整固件；用户指定的 SpeedLoop 诊断版已烧录验证，见下文 |
 
 故障发生后，主机锁住学习和动作，仍读取有效的故障遥测以确认实际禁能；无法确认动作或终点的数据不会进入训练。本地原速度环还有 NNSMC 补偿，实机基准须按实际控制结构建立，不能把软件端点数据当成电机效果。
 
@@ -223,9 +223,17 @@ Codex 同时给实际接入适配层补上 1ms Break 标志检测：24 项适配
 
 MOE 门控的私有副本改动建议见 [SpeedLoop MOE 检查](docs/speedloop-moe-gate-review.md)。在该门控、过流标定和独立停机路径完成前，TD3 仍保持 shadow/离线模式。
 
-### Codex 实际烧录的安全基线
+### Codex 实际烧录与试转复核
 
 2026-10-11，Codex 在 24 V 断开的条件下编译并通过 ST-Link 烧录了一个带 MOE/相位 CCER 门控的 SpeedLoop 副本。Codex 完成了镜像生成、Flash 全量回读比较、ADC 零点运行检查和 TIM1 安全状态分析；烧录后核心保持暂停，未启动电机，也没有把 TD3 增益写入板子。该版本保留 CH4 的 ADC 采样触发，同时明确关闭 CH1/2/3 及互补相位通道，因此 `ADC_offset` 可以完成而 `Motor_state` 仍为 0。完整记录见 [SpeedLoop 门控镜像烧录验证](docs/speedloop-moe-gated-flash-validation.md)。
+
+随后用户按 USER3 的空载试转取得约 **1026 rpm** 的一个快照。Codex 复核后发现：暂停 CPU 不保证 PWM 停止，逐个 HAL Start 也不能保证原子启动。已更正文档，并在用户断开 24V 后复位清理到 `Motor_state=0、MOE=0、CCER=0、CEN=0`。单个快照不能验证峰值电流、超调或 TD3 效果。[试转证据与停机缺口](docs/speedloop-trial-and-stop-review.md)
+
+为继续接入真实数据，新增专用于用户 `17.SpeedLoop` 的 **禁止运动 CAN 诊断构建器**：原工程保持不变，移除全部 PWM 启动/FOC 执行入口，约 100Hz 软件触发 ADC，完整序列完成后才发布采样，超时与无效值锁存故障。它解决了“关闭 MOE 后 CH4 电流采样也停止”的接入问题；能力位仍为 0，不能用于实机 TD3 动作。[构建、身份和验证步骤](skills/motor-td3-serial-tuning/references/speedloop-diagnostic.md)
+
+**该诊断固件已实际写入 Flash 并运行验证。** 47 个编译单元、32796B 镜像全量回读匹配；PWM 全禁能时采样计数从30增至60，错误为0。前台停在 RAM 循环、不执行 ADC/CAN 时，SysTick 仍关闭输出并锁存超时；PC13 软件中断停机也通过。最后断电复位清理，MOE/CCER/CEN均关闭、核心暂停。实体按键急停、独立硬件看门狗、该版本外部CAN和TD3闭环仍待验收。[本次上板报告](docs/speedloop-can-diagnostic-validation.md) · [结构化证据](examples/stm32g431-speedloop-diagnostic/summary.json)
+
+**Codex 的作用贯穿数据检查、TD3 结果比较、Actor 导出、工程接入、编译烧录和上板核验。** 当前已验证 Actor 的 MCU RAM 推理；本次 SpeedLoop 诊断固件承担真实采样/保护接口验证。训练策略通过独立性能和设备保护验收后，才可用于电机增益调度。
 
 ## 组成
 
@@ -247,6 +255,7 @@ MOE 门控的私有副本改动建议见 [SpeedLoop MOE 检查](docs/speedloop-m
 | `skills/motor-td3-serial-tuning/scripts/can_transport.py` | TD3 经典 CAN 二进制协议与 PCAN 单一所有者；与 `motor_runtime.py --transport can` 配合 |
 | `skills/motor-td3-serial-tuning/firmware/motor_td3_can*.c/.h` | MCU CAN 协议与控制周期接口，需实际板级 hooks |
 | `skills/motor-td3-serial-tuning/scripts/build_g431_locked_foc.py` | 对已审计私有 FOC 工程创建默认禁止运动副本并完整链接，不修改原目录 |
+| `skills/motor-td3-serial-tuning/scripts/build_speedloop_diagnostic.py` | GNU Arm 构建受审计 SpeedLoop 的禁止运动 CAN/软件 ADC 副本，验证链接中没有 PWM 启动或 FOC 执行入口 |
 | `skills/motor-td3-serial-tuning/scripts/g431_locked_pil.py` | 在真实 MCU SRAM 验证共享禁能函数和锁定端点；不是完整 FOC 固件的运行 |
 | `firmware/` | CRC 协议、参数保护、租约/失联/故障锁存 C 模块 |
 | `scripts/session_checks.py` | 配置与经验审计 |
@@ -271,13 +280,13 @@ Skill 安装不会启动电机。真实串口运行需要完整设备配置和�
 
 Actor 是 `10 → 16 → 16 → 2` 的小网络，仅权重约 1.9 KB。部署保留 FOC/PI，把网络作为慢速增益调度器。本仓库提供 G431/G441 的计算专用 RAM 部署入口，已在实际 G431 上验证；永久部署的板级 HAL、观测输入、独立保护和下载配置须按实际工程接入。
 
-Codex 可在目标条件齐全的已授权会话中完成导出、工程接入、编译、烧录和结果分析。本次完成的是 **RAM 中运行 Actor**；尚未把它烧录成常驻电机控制固件。原固件与电机保护没有被替换。
+Codex 可在目标条件齐全的已授权会话中完成导出、工程接入、编译、烧录和结果分析。Actor 已完成 **RAM 中运行**，尚未成为常驻电机控制策略。另已烧录 SpeedLoop 副本；原工程文件保持不变，板上 Flash 的具体版本以最新烧录记录为准。
 
 原始遥测、令牌、私有工程和训练检查点不上传公开仓库。
 
-当前板上原固件的只读串口布局见 [legacy-board-telemetry.md](docs/legacy-board-telemetry.md)。它只适合 shadow 观测，缺少 TD3 所需的动作应用确认和独立停机协议。
+早期原例程的只读串口布局见 [legacy-board-telemetry.md](docs/legacy-board-telemetry.md)。它只适合 shadow 观测，缺少 TD3 所需的动作应用确认和独立停机协议；最新 SpeedLoop 诊断版停用了这条 UART DMA 输出。
 
-CAN 是另一条可接入 MATLAB 的通信路径。板上原 Flash 固件包含 500 kbit/s 经典 CAN，发送扩展 ID `0x1B`、8 字节占位帧，仍没有 TD3 应用确认或通信保护。本项目提供 [PCAN 静默监听器](scripts/can_monitor.py)、[CAN 专用诊断](docs/stm32g431-can-diagnostics.md)、[CAN 训练入口](skills/motor-td3-serial-tuning/references/can-runtime.md) 和 [禁止运动的 FOC 接入版本](docs/stm32g431-foc-can-integration.md)。电脑与板端的 16 组双向收发已通过；新接入版本完整编译、共享禁能/端点 RAM 测试通过，完整固件尚未烧录运行。详见 [CAN 验证状态](docs/stm32g4-can-path.md)。
+CAN 是另一条可接入 MATLAB 的通信路径。原例程发送 500 kbit/s 经典 CAN 扩展 ID `0x1B` 的8字节占位帧。本项目提供 [PCAN 静默监听器](scripts/can_monitor.py)、[CAN 专用诊断](docs/stm32g431-can-diagnostics.md)、[CAN 训练入口](skills/motor-td3-serial-tuning/references/can-runtime.md) 和 [早期 PID/NNSMC 接入版本](docs/stm32g431-foc-can-integration.md)。独立诊断的16组双向收发已通过；最新 [SpeedLoop 诊断固件](docs/speedloop-can-diagnostic-validation.md) 已完整烧录并验证 ADC/停机路径，该版本的外部 CAN 握手仍待测试。
 
 ## 独立测试
 

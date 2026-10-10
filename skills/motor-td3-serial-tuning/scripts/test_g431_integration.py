@@ -2,6 +2,7 @@
 import argparse
 import ctypes as ct
 import json
+import os
 import subprocess
 import unittest
 import copy
@@ -16,6 +17,7 @@ import g431_locked_pil as locked_pil
 SKILL=Path(__file__).resolve().parents[1]
 LIB=None
 BOOT=0x1234567812345678
+PROFILE='g431-foc-locked-v1'
 
 STUB=r'''
 #ifndef TD3_HOST_STUB
@@ -82,7 +84,11 @@ uint32_t HAL_FDCAN_GetTxFifoFreeLevel(FDCAN_HandleTypeDef *);
 HAL_StatusTypeDef HAL_FDCAN_AddMessageToTxFifoQ(FDCAN_HandleTypeDef *,FDCAN_TxHeaderTypeDef *,uint8_t *);
 /* Minimum private model interface, handwritten from the audited mapping. */
 typedef struct { float Motor_OnOff;double SpeedRef; } ExtU;
+#ifdef MOTOR_TD3_SPEEDLOOP_DIAGNOSTIC
+typedef struct { float Integrator_DSTATE_h; } DW;
+#else
 typedef struct { float NNSMC_SpeedErrPrev,Integrator_DSTATE_h; } DW;
+#endif
 typedef struct { float spd_ki,spd_kp; } spd_kpki_type;
 extern ExtU rtU;extern DW rtDW;extern spd_kpki_type spd_kpki;
 #endif
@@ -96,13 +102,13 @@ def deliver(obj,seq=0,expires=0):
 
 def hello():
     LIB.test_boot(BOOT)
-    deliver({'type':'hello','profile_id':'g431-foc-locked-v1'})
+    deliver({'type':'hello','profile_id':PROFILE})
 
 class Integration(unittest.TestCase):
     def setUp(self): LIB.test_reset()
     def test_filter(self): self.assertTrue(LIB.test_filter_ok())
     def test_no_boot_identity_means_no_handshake(self):
-        deliver({'type':'hello','profile_id':'g431-foc-locked-v1'})
+        deliver({'type':'hello','profile_id':PROFILE})
         self.assertEqual(LIB.test_count(),0)
     def test_hello_advertises_zero_capabilities(self):
         hello();r=wire.Reassembler();packet=None
@@ -111,9 +117,19 @@ class Integration(unittest.TestCase):
             if LIB.test_sent(i,f)==0x621: packet=r.feed(f.raw,0) or packet
         self.assertEqual(wire.unpack(packet)[0]['capabilities'],[])
         self.assertEqual(LIB.test_guard_fault(),12)
+    def test_diagnostic_hall_order_matches_legacy_pb8_pb7_pb6(self):
+        # Original capture mapping: PB8 is bit0, PB7 bit1, PB6 bit2.
+        for code,pins in ((1,0x100),(2,0x80),(3,0x180),(4,0x40),(5,0x140),(6,0xc0)):
+            LIB.test_reset();LIB.test_hall_pins(pins);hello()
+            status=None
+            for i in range(LIB.test_count()):
+                f=ct.create_string_buffer(8)
+                if LIB.test_sent(i,f)==0x622: status=f.raw
+            self.assertIsNotNone(status)
+            self.assertEqual(status[4],code)
     def test_begin_and_gains_never_enable_or_change_pi(self):
         hello();kp,ki=LIB.test_kp(),LIB.test_ki()
-        deliver({'type':'begin','profile_id':'g431-foc-locked-v1','speed_ref':1000,'lease_ms':100},1,100000)
+        deliver({'type':'begin','profile_id':PROFILE,'speed_ref':1000,'lease_ms':100},1,100000)
         deliver({'type':'gains','command_seq':1,'kp':.1,'ki':.1,'lease_ms':100},2,100000)
         self.assertTrue(LIB.test_off());self.assertEqual((LIB.test_kp(),LIB.test_ki()),(kp,ki))
     def test_actual_disable_preserves_adc_trigger_channel(self):
@@ -141,7 +157,7 @@ class Integration(unittest.TestCase):
         LIB.test_software_outputs_on();LIB.test_can_error();self.assertTrue(LIB.test_off())
     def test_tx_failure_stops(self):
         LIB.test_boot(BOOT);LIB.test_tx_error()
-        deliver({'type':'hello','profile_id':'g431-foc-locked-v1'});self.assertTrue(LIB.test_fault())
+        deliver({'type':'hello','profile_id':PROFILE});self.assertTrue(LIB.test_fault())
     def test_stop_keeps_inhibit(self):
         hello();deliver({'type':'stop'},1)
         self.assertTrue(LIB.test_off());self.assertEqual(LIB.test_guard_fault(),12)
@@ -155,7 +171,7 @@ class Integration(unittest.TestCase):
         hello();LIB.test_break_flags(128);LIB.test_ticks(1)
         LIB.test_break_flags(0);LIB.test_poll();LIB.test_ticks(1)
         deliver({'type':'stop'},1)
-        deliver({'type':'begin','profile_id':'g431-foc-locked-v1','speed_ref':1000,'lease_ms':100},2,100000)
+        deliver({'type':'begin','profile_id':PROFILE,'speed_ref':1000,'lease_ms':100},2,100000)
         self.assertTrue(LIB.test_fault());self.assertTrue(LIB.test_off())
     def test_clock_off_does_not_turn_stale_flags_into_fault(self):
         LIB.test_timer_clock(0);LIB.test_break_flags(128);LIB.test_ticks(1)
@@ -192,16 +208,20 @@ class PILContract(unittest.TestCase):
         with self.assertRaises(ValueError): locked_pil.validate(c,self.data)
 
 def main():
-    global LIB
+    global LIB,PROFILE
     p=argparse.ArgumentParser(description=__doc__);p.add_argument('--output',required=True);p.add_argument('--compiler',default='gcc')
+    p.add_argument('--speedloop',action='store_true',help='Compile against SpeedLoop state fields and diagnostic identity')
     a=p.parse_args();out=Path(a.output).resolve();out.mkdir(parents=True,exist_ok=True)
+    if a.speedloop: PROFILE='g431-speedloop-diag-v1'
     if any(out.iterdir()): raise ValueError('Use a fresh task directory')
     for name in ('stm32g431xx.h','main.h','fdcan.h','FOC_Model.h'): (out/name).write_text(STUB,encoding='ascii')
     lib=out/'adapter.dll' if __import__('os').name=='nt' else out/'adapter.so'
     fw=SKILL/'firmware'
-    result=subprocess.run([a.compiler,'-shared','-fPIC','-std=c99','-O2','-Wall','-Wextra','-Werror',
+    variant=['-DMOTOR_TD3_SPEEDLOOP_DIAGNOSTIC'] if a.speedloop else []
+    environment=os.environ.copy();environment.update(TEMP=str(out),TMP=str(out),TMPDIR=str(out))
+    result=subprocess.run([a.compiler,'-shared','-fPIC','-std=c99','-O2','-pipe','-Wall','-Wextra','-Werror',*variant,
         '-I',str(out),'-I',str(fw),str(fw/'tests/g431_adapter_host.c'),str(fw/'motor_td3_can.c'),
-        str(fw/'motor_td3_can_control.c'),str(fw/'motor_td3_guard.c'),'-lm','-o',str(lib)],capture_output=True,text=True)
+        str(fw/'motor_td3_can_control.c'),str(fw/'motor_td3_guard.c'),'-lm','-o',str(lib)],env=environment,capture_output=True,text=True)
     (out/'build.log').write_text(result.stdout+result.stderr,encoding='utf-8')
     if result.returncode: raise RuntimeError('Host adapter compilation failed; inspect build.log')
     LIB=ct.CDLL(str(lib));LIB.test_boot.argtypes=[ct.c_uint64]
@@ -209,8 +229,9 @@ def main():
     suite=unittest.TestSuite([unittest.defaultTestLoader.loadTestsFromTestCase(t) for t in (Integration,PILContract)])
     r=unittest.TextTestRunner(verbosity=2).run(suite)
     summary={'schema_version':1,'scope':'actual locked adapter with software HAL/CMSIS/model substitutes',
-        'tests':r.testsRun,'adapter_tests':19,'pil_contract_tests':5,'failures':len(r.failures),'errors':len(r.errors),'passed':r.wasSuccessful(),
-        'hardware_accessed':False,'motor_output':False}
+        'tests':r.testsRun,'adapter_tests':unittest.defaultTestLoader.loadTestsFromTestCase(Integration).countTestCases(),
+        'pil_contract_tests':5,'failures':len(r.failures),'errors':len(r.errors),'passed':r.wasSuccessful(),
+        'hardware_accessed':False,'motor_output':False,'profile':PROFILE}
     (out/'summary.json').write_text(json.dumps(summary,indent=2)+'\n',encoding='utf-8')
     if not r.wasSuccessful(): raise SystemExit(1)
 

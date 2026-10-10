@@ -71,3 +71,4 @@ void test_tx_error(void) { send_error=1; }
 void test_can_error(void) { HAL_FDCAN_ErrorStatusCallback(&hfdcan1,FDCAN_IT_BUS_OFF); }
 void test_break_flags(unsigned flags) { test_tim.SR=flags; }
 void test_timer_clock(unsigned on) { test_rcc.APB2ENR=on?RCC_APB2ENR_TIM1EN:0; }
+void test_hall_pins(unsigned idr) { test_gpio.IDR=idr; }

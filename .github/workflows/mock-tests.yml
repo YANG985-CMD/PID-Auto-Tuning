@@ -22,6 +22,10 @@ jobs:
         run: python -B skills/motor-td3-serial-tuning/scripts/test_can_runtime.py --output "${{ runner.temp }}/td3-can-runtime" --compiler gcc
       - name: G431 locked adapter filters, disable paths and missing sensor rejection
         run: python -B skills/motor-td3-serial-tuning/scripts/test_g431_integration.py --output "${{ runner.temp }}/td3-g431-adapter" --compiler gcc
+      - name: SpeedLoop diagnostic state mapping and rejected motion commands
+        run: python -B skills/motor-td3-serial-tuning/scripts/test_g431_integration.py --speedloop --output "${{ runner.temp }}/td3-speedloop-adapter" --compiler gcc
+      - name: Diagnostic software ADC sampling rejects incomplete and invalid conversions
+        run: python -B skills/motor-td3-serial-tuning/scripts/test_speedloop_sample.py --output "${{ runner.temp }}/td3-speedloop-sampler" --compiler gcc
       - name: COMP Break diagnostic rejects unsafe traces and always cleans up
         run: python -B skills/motor-td3-serial-tuning/scripts/test_g431_comp_break.py --output "${{ runner.temp }}/td3-g431-comp-break"
       - name: Offline current calibration fit keeps hardware approval closed

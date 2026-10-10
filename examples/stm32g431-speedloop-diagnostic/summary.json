@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-11",
+  "mode": "g431-speedloop-can-diagnostic-motion-inhibited",
+  "firmware_id": "g431-speedloop-diag-v1",
+  "flash_programmed": true,
+  "full_flash_comparison_bytes": 32796,
+  "full_image_match": true,
+  "image_sha256": "f4bede2fb31b59abefdded1d59c5d3b623c97bd77c6f5e905856be63e46ad23d",
+  "hex_sha256": "a2bde28b4f1064c2c376dc9325da2008688cf4a6a360c38a29773153ac9ecd42",
+  "private_source_unchanged": true,
+  "source_tree_sha256": "4bf62e07ff571cb53ef4b6890c4daea387726eddb98d42d3022617e50a095c0b",
+  "source_files_checked": 1064,
+  "translation_units": 47,
+  "memory": {
+    "text": 32776,
+    "data": 20,
+    "bss_including_heap_stack_reserve": 7936,
+    "stack_reserved": 4096,
+    "heap_reserved": 512
+  },
+  "capabilities": 0,
+  "td3_actor_deployed": false,
+  "motor_started": false,
+  "thermal_sensor": false,
+  "tests": {
+    "adapter_speedloop": 25,
+    "adapter_original": 25,
+    "sampler": 7
+  },
+  "sampling": {
+    "first_count": 30,
+    "second_count": 60,
+    "device_elapsed_ms": 301,
+    "errors": 0,
+    "offsets": [
+      2022,
+      2029,
+      2026
+    ],
+    "adc_trigger": "software; nominal 100Hz; sequential ADC1/ADC2",
+    "foc_synchronized": false,
+    "vbus_adc_codes": [
+      78,
+      77
+    ],
+    "nominal_vbus_v": [
+      1.633886694908142,
+      1.6129393577575684
+    ]
+  },
+  "systick_without_foreground": {
+    "passed": true,
+    "test_ms": 22,
+    "adc_count_before": 60,
+    "adc_count_after": 60,
+    "fault_latched": true,
+    "moe_off": true,
+    "phase_ccer_off": true,
+    "cen_off": true,
+    "power_stage_disconnected": true,
+    "hardware_watchdog_validated": false
+  },
+  "pc13_software_interrupt": {
+    "passed": true,
+    "fault_before": 0,
+    "fault_after": 1,
+    "motor_state_after": 0,
+    "physical_button_tested": false
+  },
+  "final": {
+    "Motor_state": 0,
+    "ADC_offset": 1,
+    "IA_Offset": 2020,
+    "IB_Offset": 2030,
+    "IC_Offset": 2026,
+    "motor_td3_speedloop_sample_count": 30,
+    "motor_td3_speedloop_sample_errors": 0,
+    "irq_fault": 0,
+    "tim1_cr1": "0x00000120",
+    "tim1_ccer": "0x00000000",
+    "tim1_bdtr": "0x02023078",
+    "core": "halted",
+    "power_stage": "24V physically disconnected"
+  },
+  "external_can_this_firmware_tested": false,
+  "training_data_collected": false
+}
