@@ -2,7 +2,7 @@
 
 把电机串口数据送进 MATLAB 训练 TD3，输出有界的速度环 Kp、Ki，经串口应用确认后形成学习经验；Codex 管理实验和分析结果，最终导出仅用于推理的 Actor C 代码。
 
-现已增加经典 CAN 的应用层与 `--transport can` 入口：沿用 MATLAB 的状态/动作接口，加入会话、时效、分帧校验和实际参数回读。**CAN 物理链路已实测；新训练协议目前完成软件端点验证与目标编译，板级接入和实机保护仍待验证。**
+现已增加经典 CAN 的应用层与 `--transport can` 入口：沿用 MATLAB 的状态/动作接口，加入会话、时效、分帧校验和实际参数回读。**CAN 物理链路已实测；G431 FOC 的默认禁止运动接入版本已完整编译，11 项共享禁能/协议检查在真实 MCU RAM 中通过。完整接入固件尚未烧录运行，实机训练保护仍待验证。**
 
 **Codex 可以管理 TD3 训练、分析训练结果，并将 Actor 部署到单片机执行。** 本项目已跑通真实 MATLAB TD3 训练与独立评估，并在实际 **STM32G431** 上完成 Actor 的 **RAM 部署及推理验证（PIL）**：40 组测试通过，原 Flash 内容保持不变。电机闭环训练和永久 Flash 部署仍待验证。
 
@@ -15,6 +15,7 @@
 | **分析训练好坏** | 比较固定 PI 与固定 TD3 的误差、超调、电流、饱和和故障；解释候选是否值得使用 | [独立评估](examples/mock-validation/evaluation-summary.json)：改进 TD3 在 mock 工况优于 PI，但仍未批准电机闭环部署 |
 | **部署到单片机** | 导出 Actor C、目标编译、核对芯片、加载到 MCU RAM、读取并分析推理结果 | [G431 板上验证](docs/stm32g431-validation.md)：40 组通过，Kp/Ki 与 MATLAB 一致 |
 | 诊断实际通信 | 对照示例与原理图，构建 CAN 专用 RAM 程序，分析控制器状态、回包与 PWM 禁能状态 | [CAN 板上验证](docs/stm32g431-can-diagnostics.md)：64 组内部回环、16 组电脑与板端双向收发通过 |
+| 接入真实工程 | 核对 PI/NNSMC 与刹车配置，编写锁定板级适配层，完整编译工程副本，在 MCU 验证共享禁能逻辑 | [FOC / CAN 接入](docs/stm32g431-foc-can-integration.md)：45 单元链接成功，16 项软件测试、11 项板上 RAM 测试通过 |
 | 管理正式上线 | 接入真实观测与保护，构建/烧录目标固件，检查输入尺度、性能和实时预算 | 提供接入流程；本次尚未完成电机闭环与永久 Flash 部署 |
 
 例如，Codex 的本次分析结论是：**原始训练的误差没有改善，原因是探索没有覆盖高增益区域；加入有界方向性覆盖、增加训练更新并把峰值电流/过冲/饱和写入奖励后，mock 三个工况的平均误差下降约 2.78%。网络可以上板计算，是否适合接管真实电机仍需单独验证。**
@@ -165,11 +166,21 @@ Codex 在链路验证后新增 `motor-td3-can-v1` 与 MCU 控制任务接口：�
 | 完整桥接回合 | 经编译 C 软件端点形成 3 条可审计经验，实际参数、序号和设备时间一致 |
 | 原串口/C 接口 | 14 项串口测试和 19 项既有 C 协议/保护测试通过 |
 | MCU 编译 | 3 个新增/复用模块通过 Cortex-M4F Arm Compiler 对象编译，警告按错误处理 |
-| 实际 FOC 固件 | 仍需板级 FDCAN、计时、真实传感器/PI/PWM hooks 接入和保护验证；本轮未烧录、未启动电机 |
+| 实际 FOC 工程接入 | 默认禁止运动的副本已完成 FDCAN、计时、PI/PWM 观测和停机接入并完整链接；温度、生产 boot 身份和实际增益切换仍待完成，尚未烧录运行 |
 
 故障发生后，主机锁住学习和动作，仍读取有效的故障遥测以确认实际禁能；无法确认动作或终点的数据不会进入训练。本地原速度环还有 NNSMC 补偿，实机基准须按实际控制结构建立，不能把软件端点数据当成电机效果。
 
 [CAN 协议、命令与板级接入](skills/motor-td3-serial-tuning/references/can-runtime.md) · [未配置 CAN 模板](skills/motor-td3-serial-tuning/assets/can-session-profile.example.json) · [软件验证摘要](examples/can-runtime-validation/summary.json)
+
+### G431 FOC 接入与断电验证
+
+Codex 核对了原 FOC 例程，保留现有 PI + NNSMC，完成禁止运动的 CAN 接入副本：USER3 只能停机、BEGIN/GAINS 无法开启输出，SysTick 独立执行禁能，实际 PI 回读与原始电机观测用于诊断。完整工程 45 个单元链接成功，ROM **44,676 B**、RAM **8,176 B**，包含 4KB 栈预留。
+
+**16 项板级软件测试与 11 项真实 MCU RAM 测试通过。** 板上测试执行共享 TIM1 禁能函数与锁定协议端点；未执行完整 HAL/FOC 接入固件。55 次实际 SysTick 检查、71 次禁能调用，结束 TIM1/GPIO 关闭、核心暂停、完整 128KB Flash 未变。没有产生电机驱动波形或应用 TD3 增益。
+
+实际温度采集尚未接入，缺失值保留 NaN，能力位恒为 0；训练器会拒绝该诊断固件。下一阶段需验证热保护、过流阈值、独立硬件看门狗、生产启动身份和无扰增益切换，才能开放有界基准试验及真实训练。
+
+[接入实现、证据和待验证项](docs/stm32g431-foc-can-integration.md) · [结构化验证摘要](examples/stm32g431-foc-can-integration/summary.json)
 
 ## 组成
 
@@ -187,6 +198,8 @@ Codex 在链路验证后新增 `motor-td3-can-v1` 与 MCU 控制任务接口：�
 | `scripts/stm32_can_loopback.py` / `scripts/stm32_can_echo.py` | CAN 专用 SRAM 诊断；分别验证内部回环和有界 PCAN 双向收发，保持 PWM 禁能 |
 | `skills/motor-td3-serial-tuning/scripts/can_transport.py` | TD3 经典 CAN 二进制协议与 PCAN 单一所有者；与 `motor_runtime.py --transport can` 配合 |
 | `skills/motor-td3-serial-tuning/firmware/motor_td3_can*.c/.h` | MCU CAN 协议与控制周期接口，需实际板级 hooks |
+| `skills/motor-td3-serial-tuning/scripts/build_g431_locked_foc.py` | 对已审计私有 FOC 工程创建默认禁止运动副本并完整链接，不修改原目录 |
+| `skills/motor-td3-serial-tuning/scripts/g431_locked_pil.py` | 在真实 MCU SRAM 验证共享禁能函数和锁定端点；不是完整 FOC 固件的运行 |
 | `firmware/` | CRC 协议、参数保护、租约/失联/故障锁存 C 模块 |
 | `scripts/session_checks.py` | 配置与经验审计 |
 | `assets/` | 未配置的实机模板、仅用于模拟的配置 |
@@ -216,7 +229,7 @@ Codex 可在目标条件齐全的已授权会话中完成导出、工程接入�
 
 当前板上原固件的只读串口布局见 [legacy-board-telemetry.md](docs/legacy-board-telemetry.md)。它只适合 shadow 观测，缺少 TD3 所需的动作应用确认和独立停机协议。
 
-CAN 是另一条可接入 MATLAB 的通信路径。对应原固件的工程已包含 500 kbit/s 经典 CAN，发送扩展 ID `0x1B`、8 字节占位帧；尚未接入 TD3 应用确认或通信保护。本项目提供 [PCAN 静默监听器](scripts/can_monitor.py)、[CAN 专用诊断](docs/stm32g431-can-diagnostics.md) 及 [新的 CAN 训练传输入口](skills/motor-td3-serial-tuning/references/can-runtime.md)。电脑与板端的 16 组双向收发已通过；新增应用层的软件验证通过，实际 FOC 固件接入仍待完成。详见 [CAN 接入与验证状态](docs/stm32g4-can-path.md)。
+CAN 是另一条可接入 MATLAB 的通信路径。板上原 Flash 固件包含 500 kbit/s 经典 CAN，发送扩展 ID `0x1B`、8 字节占位帧，仍没有 TD3 应用确认或通信保护。本项目提供 [PCAN 静默监听器](scripts/can_monitor.py)、[CAN 专用诊断](docs/stm32g431-can-diagnostics.md)、[CAN 训练入口](skills/motor-td3-serial-tuning/references/can-runtime.md) 和 [禁止运动的 FOC 接入版本](docs/stm32g431-foc-can-integration.md)。电脑与板端的 16 组双向收发已通过；新接入版本完整编译、共享禁能/端点 RAM 测试通过，完整固件尚未烧录运行。详见 [CAN 验证状态](docs/stm32g4-can-path.md)。
 
 ## 独立测试
 

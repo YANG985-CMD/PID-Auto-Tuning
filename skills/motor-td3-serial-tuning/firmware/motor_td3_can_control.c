@@ -5,6 +5,15 @@ static void trip(motor_td3_can_control *c,int fault) {
     motor_td3_stop(&c->guard); if(!c->guard.fault) c->guard.fault=fault;
     c->hooks.disable(c->hooks.user);
 }
+int motor_td3_can_control_init_locked(motor_td3_can_control *c,const motor_td3_can_hooks *h,
+    uint64_t boot,const char *fw,const char *profile) {
+    uint8_t check[TD3_CAN_MAX_PACKET];
+    if(!c||!h||!h->disable||!h->begin||!h->apply||!h->snapshot) return 0;
+    memset(c,0,sizeof(*c)); c->hooks=*h; h->disable(h->user);
+    if(!boot||!motor_td3_can_hello(check,1,boot,0,fw,profile)) return 0;
+    c->boot=boot; c->guard.fault=TD3_CAN_NOT_READY;
+    strcpy(c->firmware,fw); strcpy(c->profile,profile); return 1;
+}
 int motor_td3_can_control_init(motor_td3_can_control *c,const motor_td3_limits *limits,
     const motor_td3_can_hooks *hooks,uint64_t boot,const char *fw,const char *profile,
     const float *refs,unsigned count,uint32_t age,uint16_t caps) {

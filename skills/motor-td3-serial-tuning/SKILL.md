@@ -1,6 +1,6 @@
 ---
 name: motor-td3-serial-tuning
-description: "Build or run a Codex-managed motor serial/CAN-to-MATLAB TD3 workflow for bounded speed-loop PI gain schedules. Use for training, experience audits, fixed-policy evaluation, Actor C export/RAM PIL, and STM32G431 CAN diagnostics or protocol integration."
+description: "Build or run a Codex-managed motor serial/CAN-to-MATLAB TD3 workflow for bounded speed-loop PI gain schedules. Use for training, experience audits, fixed-policy evaluation, Actor C export/RAM PIL, STM32G431 CAN diagnostics, and locked FOC integration."
 ---
 
 # Motor TD3 Serial Tuning
@@ -49,7 +49,7 @@ description: "Build or run a Codex-managed motor serial/CAN-to-MATLAB TD3 workfl
 
 CAN 通信问题单独按 [stm32-can-diagnostics.md](references/stm32-can-diagnostics.md) 处理：先辨别示例载荷与当前固件，不用含电机启停的示例代替通信诊断。专用外部收发诊断允许在明确授权、板端供电已确认、功率输出禁能的条件下运行；每次发送前核对 SRAM 就绪状态及 PWM/引脚状态。CAN 回包通过只验证通信，不解除实机训练门槛。
 
-CAN 训练接入读 [can-runtime.md](references/can-runtime.md)。已有 PCAN 主机入口和可编译 C 端点，软件完整回合已验证；原 FOC 固件尚未接入这些 hooks，不把诊断成功或软件故障测试写成实机保护已验证。使用 `can-session-profile.example.json` 配置，不复制软件测试 peer 的验证标记到真实配置。
+CAN 训练接入读 [can-runtime.md](references/can-runtime.md)。已有 PCAN 主机入口和可编译 C 端点，软件完整回合已验证；G431 原 FOC 工程的锁定接入副本已完整编译，具体按 [g431-locked-integration.md](references/g431-locked-integration.md) 操作。其能力为 0，禁止启动/增益应用；共享禁能函数与协议端点的真实 RAM 测试通过，完整 FOC 接入固件尚未烧录执行。缺失温度保留 NaN，不伪造训练观测。使用 `can-session-profile.example.json` 配置，不复制软件测试 peer 的验证标记到真实配置。
 
 ## 实机门槛
 

@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "date": "2026-10-10",
+  "target": "STM32G431 128KB",
+  "full_foc_build": {
+    "translation_units": 45,
+    "linked": true,
+    "rom_bytes": 44676,
+    "ram_bytes": 8176,
+    "stack_reserved_bytes": 4096,
+    "hardware_executed": false,
+    "flash_programming": false,
+    "source_files_unchanged": true,
+    "controller_preserved": "PI plus existing NNSMC overlay",
+    "motion_enable_implemented": false,
+    "capabilities": 0,
+    "temperature_sensor_implemented": false,
+    "production_boot_identity_implemented": false,
+    "elf_sha256": "a5257240f1a5e9995baaccfae38107f026fcacfb9dcf2f624676aba0cb088cb4",
+    "hex_sha256": "2cffcaaad842ac457b3d214c3a23819b11d0adf9cb1a9cd4d02838963514e036",
+    "adapter_sha256": "88fb99a1b686fa5df3a150438e9d4e56b060752b69c70b18ad59d5d4a0804a7d",
+    "audited_source_tree_sha256": "64c32a931909146761cd1fcf0d0613bc72be3bae5100d193feb43fdb98be5f5f",
+    "source_files_checked": 1062
+  },
+  "software_tests": {
+    "adapter": 16,
+    "pil_contract": 5,
+    "can_regression": 16,
+    "passed": true,
+    "hardware_accessed": false
+  },
+  "ram_pil": {
+    "schema_version": 1,
+    "mode": "g431-shared-disable-and-locked-endpoint-pil",
+    "verified": true,
+    "flash_programming": false,
+    "motor_output": false,
+    "external_can": false,
+    "full_foc_executed": false,
+    "power_disconnected_confirmed_by_user": true,
+    "original_application_resumed": false,
+    "identity": {
+      "cpuid": "0x410fc241",
+      "dbgmcu_idcode": "0x20036468",
+      "flash_kb": 128
+    },
+    "mailbox": {
+      "magic": 1196182321,
+      "schema": 1,
+      "state": 2,
+      "error": 0,
+      "cases": 11,
+      "passed": 11,
+      "rejected_mask": 3,
+      "disable_calls": 71,
+      "systick_count": 55,
+      "tim1_ccer": 0,
+      "tim1_bdtr": 0,
+      "gpio_clock": 0,
+      "rcc_apb2enr": 0,
+      "callback_calls": 0
+    },
+    "stack_observed_bytes": 872,
+    "stack_bottom_fence_intact": true,
+    "image_bytes": 10032,
+    "image_sha256": "428eff87f14b752d84d5f1fc8ba32d16abba0ba16bc5c712d9faf4a6dd886829",
+    "source_sha256": {
+      "stm32_g431_locked_pil.c": "421961dbefacc76daec8f1441af6875b24021eb85e713990dfa20736b6810788",
+      "stm32_g431_locked_pil.S": "e3658bbcef5e4102852df2319ef34168d1fb225de43730936a80ab62a6b41d8c",
+      "motor_td3_g431_off.h": "6fc39b6a5261602dd39eb7b2fb3a12833f80bff0a46b1dd8bc6eeb0aacd016f9",
+      "motor_td3_can_control.c": "d5ab3de451c22f287db96b394cd63abfc6abfbb6c476489004335a5d48f1ecb0",
+      "motor_td3_can_control.h": "f94b69de8b5ce33899da5a110fb15c6f497cbd9834db8ca711719cd9a859e81b",
+      "motor_td3_can.c": "0654d76969e3004426311f6a7c4eefc4229b6f79ec39bf5abd2f4f57c5885251",
+      "motor_td3_can.h": "652b77a491a9005aba0fc70431a763475a0d9be8cf2ca2a1a19e2ee626e5b34d",
+      "motor_td3_guard.c": "048fd9703f33fb262ac2e1d09a40b6af89a9cca365534eaa147ed4188e866504",
+      "motor_td3_guard.h": "f7773c9d1f8898646b25329c0ca111ffe69e959c015c531bded412a7fa97d77d",
+      "motor_td3_protocol.h": "3d71de6e45ef549c2ff7283d7abfdd0929a3373a089f2f48e42867a03429bf32"
+    },
+    "core_left_halted": true,
+    "final_registers": {
+      "tim1_cr1": 0,
+      "tim1_ccer": 0,
+      "tim1_bdtr": 0,
+      "gpio_clocks": 0
+    },
+    "flash_unchanged": true
+  },
+  "remaining": [
+    "measured thermal protection",
+    "calibrated hardware overcurrent and emergency stop",
+    "independent hardware watchdog",
+    "production boot identity",
+    "verified baseline and gain/experiment bounds",
+    "bumpless PI updates at speed-loop boundary",
+    "full HAL/FOC firmware hardware execution and timing",
+    "real motor TD3 training and fixed-policy evaluation"
+  ]
+}

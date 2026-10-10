@@ -85,7 +85,7 @@ CAN 链路层自带帧校验，但 TD3 仍需要应用层的序号、原子增�
 
 已新增 C 协议与控制任务接口：接收端校验并暂存完整命令，在控制周期边界应用 Kp/Ki；board callback 成功且实际 PI 回读一致后才提交应用序号；控制任务独立执行租约/失联禁能。`motor_runtime.py` 现支持 **`--transport can`**，保留现有 `Engine` 和 MATLAB 接口。Python 与编译 C 端点的 16 项软件检查通过，3 条完整回合经验通过审计；这些是软件证据，尚未在实际 FOC 固件中接入和验证。详见 [CAN 运行与协议](../skills/motor-td3-serial-tuning/references/can-runtime.md)。
 
-在没有完成上述固件改造、编译和断电验证前，CAN 只能作为物理通信通道，不能作为 TD3 实机控制接口。Codex 可以先监听并分析帧，再在协议固定后把 MATLAB/桥接器的传输层接到 CAN。
+后续已完成原 FOC 工程的**锁定接入副本**与完整编译，新增 16 项板级软件测试、11 项共享禁能函数/协议端点的实际 MCU RAM 测试。完整 HAL/FOC 接入固件尚未烧录运行，实机温度与保护验收、生产 boot 身份、无扰增益应用未完成，能力位保持 0；它仍不能作为 TD3 实机控制接口。见 [FOC 接入报告](stm32g431-foc-can-integration.md)。板上原 Flash 没有改变，仍是原应用。
 
 ## 公开接口依据
 

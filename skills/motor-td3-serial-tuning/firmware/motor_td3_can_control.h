@@ -2,7 +2,7 @@
 #define MOTOR_TD3_CAN_CONTROL_H
 #include "motor_td3_can.h"
 #include "motor_td3_guard.h"
-enum { TD3_CAN_PROTOCOL_FAULT=10,TD3_CAN_BOARD_FAULT=11 };
+enum { TD3_CAN_PROTOCOL_FAULT=10,TD3_CAN_BOARD_FAULT=11,TD3_CAN_NOT_READY=12 };
 typedef struct {
     void *user;
     void (*disable)(void *);
@@ -27,6 +27,11 @@ typedef struct {
 int motor_td3_can_control_init(motor_td3_can_control *,const motor_td3_limits *,
     const motor_td3_can_hooks *,uint64_t boot,const char *firmware,const char *profile,
     const float *verified_refs,unsigned ref_count,uint32_t max_age_us,uint16_t verified_capabilities);
+/* Diagnostic-only identity/STOP service. No guessed limits or verified capabilities.
+ * Permanently faulted; begin/apply callbacks can never be reached in this mode.
+ * Missing sensor values must remain NaN: no training telemetry is fabricated. */
+int motor_td3_can_control_init_locked(motor_td3_can_control *,const motor_td3_can_hooks *,
+    uint64_t boot,const char *firmware,const char *profile);
 /* Serialize RX queue access with the control task; no board callbacks in RX. */
 int motor_td3_can_receive(motor_td3_can_control *,uint16_t id,int standard_data,
     const uint8_t frame[8],size_t dlc,uint64_t now_us);
