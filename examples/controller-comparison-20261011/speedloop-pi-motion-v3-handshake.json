@@ -1,0 +1,121 @@
+{
+  "schema_version": 1,
+  "utc": "2026-10-11T10:17:55.231810+00:00",
+  "firmware_id": "g431-speedloop-pi-motion-v3",
+  "bin_sha256": "7128a27aad687c31a3bc26c2734eb6ea3d79cc96922addf0b2f6319d25fd3c93",
+  "passed": true,
+  "begin_sent": false,
+  "gains_sent": false,
+  "motion_command_sent": false,
+  "thermal_exception": "operator approved this trial; no thermal gate",
+  "temperature_c": null,
+  "td3_training_performed": false,
+  "hardware_accessed": true,
+  "preflight_state": {
+    "tim1_ccer": 4096,
+    "tim1_bdtr": 33730680,
+    "gpioa_moder": 2861957119,
+    "gpiob_moder": 1471065791,
+    "device_id": 537093224,
+    "endpoint_ready": 1,
+    "initialized": 1,
+    "irq_fault": 0,
+    "adc_samples": 4964,
+    "motor_td3_g431_debugger_boot_token": 0,
+    "Motor_state": 0,
+    "ADC_offset": 1
+  },
+  "hello": {
+    "type": "hello",
+    "protocol_id": "motor-td3-can-v1",
+    "firmware_id": "g431-speedloop-pi-motion-v3",
+    "profile_id": "g431-speedloop-pi-motion-v3",
+    "boot_id": "f1a2ff6c8d481635",
+    "capabilities": [
+      "atomic_gains",
+      "applied_feedback",
+      "lease",
+      "link_watchdog",
+      "fault_latch",
+      "single_owner"
+    ]
+  },
+  "stop_sent": true,
+  "telemetry_packets": 116,
+  "nominal_bus_v_range": [
+    24.21504020690918,
+    24.550193786621094
+  ],
+  "nominal_current_a_range": [
+    0.0,
+    0.0439453125
+  ],
+  "applied_seq_values": [
+    0
+  ],
+  "all_snapshots_disabled": true,
+  "all_faults_zero": true,
+  "final_board_state": {
+    "tim1_ccer": 4096,
+    "tim1_bdtr": 33697912,
+    "gpioa_moder": 2861957119,
+    "gpiob_moder": 1471065791,
+    "device_id": 537093224,
+    "endpoint_ready": 1,
+    "initialized": 1,
+    "irq_fault": 0,
+    "adc_samples": 26352,
+    "motor_td3_g431_debugger_boot_token": 0,
+    "Motor_state": 0,
+    "ADC_offset": 1,
+    "gpioa_odr": 0,
+    "gpiob_odr": 0
+  },
+  "core_halted_before_can_release": true,
+  "can_released": true,
+  "telemetry_interval_median_ms": 19.999,
+  "telemetry_file": "speedloop-pi-motion-v3-disabled-telemetry.jsonl",
+  "flash_programmed": true,
+  "binary_bytes": 49148,
+  "full_readback_matches": true,
+  "current_conversion_calibrated": false,
+  "independent_motion_watchdog_integrated": false,
+  "training_experiences_collected": 0,
+  "proprietary_source_or_binary_published": false,
+  "startup_prepare_after_power_on": {
+    "schema_version": 1,
+    "firmware_id": "g431-speedloop-pi-motion-v3",
+    "passed": true,
+    "hardware_accessed": true,
+    "motor_power_physically_disconnected": false,
+    "energized_preparation_exception": true,
+    "begin_sent": false,
+    "gains_sent": false,
+    "full_readback_sha256": "7128a27aad687c31a3bc26c2734eb6ea3d79cc96922addf0b2f6319d25fd3c93",
+    "energized_pre_reset_state": {
+      "tim1_ccer": 4096,
+      "tim1_bdtr": 33697912,
+      "gpioa_moder": 2861957119,
+      "gpiob_moder": 1471065791,
+      "device_id": 537093224
+    },
+    "startup_state": {
+      "tim1_ccer": 4096,
+      "tim1_bdtr": 33730680,
+      "gpioa_moder": 2861957119,
+      "gpiob_moder": 1471065791,
+      "device_id": 537093224,
+      "endpoint_ready": 1,
+      "initialized": 1,
+      "irq_fault": 0,
+      "adc_samples": 4964,
+      "motor_td3_g431_debugger_boot_token": 0,
+      "Motor_state": 0,
+      "ADC_offset": 1
+    },
+    "core_halted": true,
+    "boot_token_consumed": true,
+    "run_seconds": 0.5
+  },
+  "final_gpio_output_latches_verified": true
+}

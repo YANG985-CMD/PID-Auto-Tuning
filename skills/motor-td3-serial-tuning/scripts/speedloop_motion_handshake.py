@@ -20,7 +20,8 @@ import can_transport as wire
 IDENTITY='g431-speedloop-pi-motion-v3'
 PHASE_MASK=0x555
 REGS={'tim1_ccer':0x40012c20,'tim1_bdtr':0x40012c44,
-      'gpioa_moder':0x48000000,'gpiob_moder':0x48000400,'device_id':0xe0042000}
+      'gpioa_moder':0x48000000,'gpiob_moder':0x48000400,
+      'gpioa_odr':0x48000014,'gpiob_odr':0x48000414,'device_id':0xe0042000}
 RAM=('endpoint_ready','initialized','irq_fault','adc_samples','motor_td3_g431_debugger_boot_token',
      'Motor_state','ADC_offset')
 
@@ -57,6 +58,7 @@ def state(text,symbols,after_stop=False):
     if (not re.search(r'Core 0 .*:\s+Halted\b',text) or values['device_id']&0xfff!=0x468 or
         values['tim1_ccer']&PHASE_MASK or values['Motor_state'] or
         values['gpioa_moder']&0x3f0000!=0x150000 or values['gpiob_moder']&0xfc000000!=0x54000000 or
+        values['gpioa_odr']&0x700 or values['gpiob_odr']&0xe000 or
         values['endpoint_ready']!=1 or values['initialized']!=1 or values['irq_fault'] or
         values['ADC_offset']!=1 or values['adc_samples']<100 or
         values['motor_td3_g431_debugger_boot_token'] or

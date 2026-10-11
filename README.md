@@ -140,7 +140,7 @@ python -B scripts/controller_comparison.py --output OUTPUT \
 
 ## STM32G431 实机接入进度
 
-以用户已正常运行的 `17.SpeedLoop` 为控制基线，Codex 已把 CAN 的 BEGIN/GAINS 动作接到生成的 1 ms 速度 PI 边界。当前板上版本为 `g431-speedloop-pi-motion-v2`：
+以用户已正常运行的 `17.SpeedLoop` 为控制基线，Codex 已把 CAN 的 BEGIN/GAINS 动作接到生成的 1 ms 速度 PI 边界。当前板上版本为 `g431-speedloop-pi-motion-v3`：
 
 - 49 个翻译单元编译通过；20 项 PI 核心检查和 10 项实际生成模型检查通过。
 - 已在 **24 V 功率电源物理断开**时烧录到 STM32G431，并按完整应用镜像回读；构建与回读 SHA-256 一致。
@@ -155,12 +155,18 @@ python -B scripts/controller_comparison.py --output OUTPUT \
 
 当前记录证明的是**编译、烧录、完整回读和板上禁止运动采样**，还没有发送 BEGIN，也没有用这份静态数据训练 Actor。后续依次完成本版 HELLO/STOP、运行保护验收和有界参数动作采集；不能把普通静态曲线当成 TD3 经验。
 
-v2 随后的真实 HELLO 已回包，但完整状态检查发现时间故障 9，STOP 后已确认 MOE 和三相输出关闭。原因是 ADC 抢占 SysTick 导致保护时间倒退。修正版 `g431-speedloop-pi-motion-v3` 已编译，并通过新增抢占检查；旧版在相同检查下失败。v3 还将完整遥测周期缩短为 20 ms，并修复主循环失联时必须直接关闭输出的问题；10 项运动适配器检查、3 项专用编解码检查和 26 项禁止运动适配器回归通过。**v3 目前待断电烧录和实机复测，未宣称训练已完成。**
+v2 随后的真实 HELLO 已回包，但完整状态检查发现时间故障 9，STOP 后已确认 MOE 和三相输出关闭。原因是 ADC 抢占 SysTick 导致保护时间倒退。修正版 `g431-speedloop-pi-motion-v3` 在相同抢占检查下通过，还将完整遥测周期缩短为 20 ms，并修复主循环失联时必须直接关闭输出的问题；10 项运动适配器检查、3 项专用编解码检查和 26 项禁止运动适配器回归通过。
+
+**v3 已烧录并通过真实 CAN 完整状态采集：116 组状态帧，序号与时间连续，故障均为 0。**名义母线电压 24.215～24.550 V，名义峰值相电流 0～0.04395 A；缺失温度均为 `null`。STOP 后 MOE 和三相通道关闭、核心暂停，之后才释放 CAN。采集没有发送 BEGIN/GAINS，实际应用序号均为 0；它证明实时观测和收尾链路已工作，**不代表已取得 TD3 动作经验或训练结果**。
+
+本次接通 24V 后观察到 MCU 复位并清除准备标识。按用户已授权保留 24V 的要求，重新准备限定于完整哈希一致的这份 v3 镜像：先确认 MOE 关闭、六路功率引脚 GPIO 低电平，再复位并创建独立会话；没有擦写 Flash 或启动电机。这项专用例外不能用于任意固件。
 
 Codex 的工作包括分析真实遥测与训练结果、检查实际应用参数和停止状态、按独立工况判断候选是否改善，以及生成、验证和烧录部署文件。MATLAB 负责 TD3 梯度训练，MCU 执行实时 FOC 和保护；**当前进度不代表 Actor 已部署或四种方法均已实机比较**。
 
 - [运动版构建和烧录回读记录](examples/controller-comparison-20261011/speedloop-pi-motion-flash.json)
 - [v2 修正与板上启动采样记录](examples/controller-comparison-20261011/speedloop-pi-motion-v2-startup.json)
 - [v2 HELLO 与时间故障实测记录](examples/controller-comparison-20261011/speedloop-pi-motion-v2-handshake.json)
+- [v3 完整状态采集与 STOP 实测](examples/controller-comparison-20261011/speedloop-pi-motion-v3-handshake.json)
+- [v3 实际采集的 116 组静态状态](examples/controller-comparison-20261011/speedloop-pi-motion-v3-disabled-telemetry.jsonl)
 - [v2 启动问题与修复说明](docs/speedloop-motion-v2-startup-20261011.md)
 - [原始 SpeedLoop 实机基线](examples/controller-comparison-20261011/real-speedloop-baseline-user3.json)
