@@ -140,15 +140,27 @@ python -B scripts/controller_comparison.py --output OUTPUT \
 
 ## STM32G431 实机接入进度
 
-本次以 `17.SpeedLoop` 为唯一控制基线，Codex 已完成一份可编译的 `g431-speedloop-pi-motion-v1` 运动版镜像，并把 CAN 的 BEGIN/GAINS 动作接到生成的 1 ms 速度 PI 边界：
+以用户已正常运行的 `17.SpeedLoop` 为控制基线，Codex 已把 CAN 的 BEGIN/GAINS 动作接到生成的 1 ms 速度 PI 边界。当前板上版本为 `g431-speedloop-pi-motion-v2`：
 
 - 49 个翻译单元编译通过；20 项 PI 核心检查和 10 项实际生成模型检查通过。
 - 已在 **24 V 功率电源物理断开**时烧录到 STM32G431，并按完整应用镜像回读；构建与回读 SHA-256 一致。
-- 回读后 `TIM1.BDTR.MOE=0`，`TIM1.CCER` 的 CH1～CH3 输出位为 0；CH4 采样触发保持原例程配置。
-- USER3 在运动版只触发停机；BEGIN/GAINS 只能在受控 CAN 会话和生成 PI 边界应用，STOP、CAN 故障、Hall 无效、ADC 失联、硬件 COMP/TIM1 Break 和租约/链路超时均独立停机。
+- 修复 v1 初始化失败：原转速计划含 1800/2000 rpm，违反 1800 rpm 的严格上限；首轮计划收窄为已观察过的 1000 rpm，没有提高保护上限。
+- 修复 v1 采样中断：本例程的 CH4 触发依赖 MOE。等待启动时保留 CH4/MOE，但关闭三相通道，并将 PA8/9/10、PB13/14/15 六路功率引脚切为 GPIO 低电平；STOP 同时关闭 MOE 和三相通道。
+- 板上断电运行约 0.5 秒，ADC 采样计数达到 **4970**，零点采样完成，端点就绪且故障为 0；三相输出没有自行开启。
+- CAN 初始化在 ADC/model 中断之前完成；三相启动改为一次 CCER 使能，取消逐路 HAL Start。母线转换成功才刷新测量时间，启动与运动中拒绝过期采样。
+- USER3 在本版只触发停机。启动使用每次复位后独立、一次性消费的会话标识，普通复位不能沿用旧会话。试验最长 3 秒。
 - 本次按用户要求没有启用温度门；板上没有可用温度传感器。软件电流边界使用 2 A 名义值，硬件比较器仍保留，但其实际跳闸电流尚未用受控电流源标定。
 
-当前状态仍是 `motion_approved=false`：还没有在接通 24 V 后发送 BEGIN，也没有把实机数据送入 MATLAB TD3。因此这份记录证明的是**编译、烧录、回读和上电前输出禁能**，不是实机转动结果。实机步骤必须先由 Codex 完成 HELLO/STOP 握手，再单独授权一次空载 BEGIN；训练 Actor 仍需逐条记录“观测 → 实际应用 Kp/Ki → 下一观测 → 奖励”。
+缺失温度在专用试验遥测中保留为 `null`；普通训练入口仍拒绝缺失测温门，本次例外不修改 `SKILL.md`。新增 8 项实际运动适配器启动检查、3 项缺失温度编解码检查和 19 项标准 CAN 回归均通过，这些是主机软件检查。
+
+当前记录证明的是**编译、烧录、完整回读和板上禁止运动采样**，还没有发送 BEGIN，也没有用这份静态数据训练 Actor。后续依次完成本版 HELLO/STOP、运行保护验收和有界参数动作采集；不能把普通静态曲线当成 TD3 经验。
+
+v2 随后的真实 HELLO 已回包，但完整状态检查发现时间故障 9，STOP 后已确认 MOE 和三相输出关闭。原因是 ADC 抢占 SysTick 导致保护时间倒退。修正版 `g431-speedloop-pi-motion-v3` 已编译，并通过新增抢占检查；旧版在相同检查下失败。v3 还将完整遥测周期缩短为 20 ms，并修复主循环失联时必须直接关闭输出的问题；10 项运动适配器检查、3 项专用编解码检查和 26 项禁止运动适配器回归通过。**v3 目前待断电烧录和实机复测，未宣称训练已完成。**
+
+Codex 的工作包括分析真实遥测与训练结果、检查实际应用参数和停止状态、按独立工况判断候选是否改善，以及生成、验证和烧录部署文件。MATLAB 负责 TD3 梯度训练，MCU 执行实时 FOC 和保护；**当前进度不代表 Actor 已部署或四种方法均已实机比较**。
 
 - [运动版构建和烧录回读记录](examples/controller-comparison-20261011/speedloop-pi-motion-flash.json)
+- [v2 修正与板上启动采样记录](examples/controller-comparison-20261011/speedloop-pi-motion-v2-startup.json)
+- [v2 HELLO 与时间故障实测记录](examples/controller-comparison-20261011/speedloop-pi-motion-v2-handshake.json)
+- [v2 启动问题与修复说明](docs/speedloop-motion-v2-startup-20261011.md)
 - [原始 SpeedLoop 实机基线](examples/controller-comparison-20261011/real-speedloop-baseline-user3.json)

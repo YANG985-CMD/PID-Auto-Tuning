@@ -24,7 +24,7 @@ CAN_FILES=('motor_td3_speedloop_can.c','motor_td3_speedloop_can.h',
            'motor_td3_guard.c','motor_td3_guard.h','motor_td3_protocol.h',
            'motor_td3_g431_adapter.c','motor_td3_g431_adapter.h','motor_td3_g431_off.h')
 CAN_BUILD_ID='g431-speedloop-pi-can-review-v1'
-MOTION_BUILD_ID='g431-speedloop-pi-motion-v1'
+MOTION_BUILD_ID='g431-speedloop-pi-motion-v3'
 
 
 def patch_copy(copy,can_pi=False,motion=False):
@@ -51,13 +51,12 @@ def patch_copy(copy,can_pi=False,motion=False):
     text=function(text,'HAL_GPIO_EXTI_Callback',
         '  if(GPIO_Pin==Button3_Pin) '+stop_call)
     if motion:
-        text=replace_once(text,'  UNUSED(hadc);\n\tif(hadc == &hadc1)',
-            '  UNUSED(hadc);\n\tmotor_td3_g431_adc_sample();\n\tif(hadc == &hadc1)')
-        text=replace_once(text,
-            '\t\tHallReadTemp |= HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_6)<<2;\n\t\tif(HallReadTemp==0x05)',
-            '\t\tHallReadTemp |= HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_6)<<2;\n'
-            '\t\tif(!motor_td3_g431_hall_capture((uint32_t)HallTemp,(uint8_t)HallReadTemp)) return;\n'
-            '\t\tif(HallReadTemp==0x05)')
+        text=replace_once(text,'\t\tif(ADC_offset == 0)',
+            '\t\tmotor_td3_g431_adc_sample();\n\t\tif(ADC_offset == 0)')
+        hall_line='\t\tHallTemp = HAL_TIM_ReadCapturedValue(&htim4,TIM_CHANNEL_1);;'
+        text=replace_once(text,hall_line,hall_line+'\n'
+            '\t\tif(!motor_td3_g431_hall_capture((uint32_t)HallTemp,\n'
+            '\t\t  (uint8_t)(((GPIOB->IDR>>8)&1U)|((GPIOB->IDR>>6)&2U)|((GPIOB->IDR>>4)&4U)))) return;')
     text=replace_once(text,'  __disable_irq();','  motor_td3_speedloop_pi_stop();\n  __disable_irq();')
     main.write_text(text,encoding='utf-8',newline='\n')
     if 'HAL_TIMEx_PWMN_Start' in text or 'Motor_OnOff = 1' in text:
@@ -91,17 +90,43 @@ def patch_copy(copy,can_pi=False,motion=False):
         text=replace_once(text,'\tHAL_UART_Receive_IT(&huart3, (uint8_t *)&aRxBuffer, 1);','')
         text=replace_once(text,'\t\t\tHAL_UART_Transmit_DMA(&huart3,(uint8_t *)tempData,6*4);','')
         text=function(text,'FDCAN_Config','  motor_td3_g431_init();')
+        if motion:
+            begin=text.index('  /* USER CODE BEGIN 2 */')
+            finish=text.index('  /* USER CODE END 2 */',begin)
+            text=text[:begin]+'''  /* USER CODE BEGIN 2 */
+    FOC_Model_initialize();
+    FuzzyPID_Init(&fuzzy_speed_pid,0.003389f,0.00144f,0.0f,500.0f,100.0f);
+    motor_td3_speedloop_pi_bind_init();
+    rtU.SpeedRef=1000.0f;rtU.v_bus=24.0f;
+    HAL_OPAMP_Start(&hopamp1);HAL_OPAMP_Start(&hopamp2);HAL_OPAMP_Start(&hopamp3);
+    HAL_ADCEx_Calibration_Start(&hadc1,ADC_SINGLE_ENDED);
+    HAL_ADCEx_Calibration_Start(&hadc2,ADC_SINGLE_ENDED);
+    HAL_DAC_SetValue(&hdac3,DAC_CHANNEL_1,DAC_ALIGN_12B_R,3000);
+    HAL_DAC_Start(&hdac3,DAC_CHANNEL_1);HAL_DAC_Start(&hdac1,DAC_CHANNEL_1);
+    HAL_COMP_Start(&hcomp1);HAL_TIMEx_HallSensor_Start_IT(&htim4);
+    /* Attach the endpoint before any model/ADC interrupt can call it. */
+    FDCAN_Config();
+    __HAL_ADC_CLEAR_FLAG(&hadc1,ADC_FLAG_JEOC|ADC_FLAG_EOC);
+    __HAL_ADC_CLEAR_FLAG(&hadc2,ADC_FLAG_JEOC|ADC_FLAG_EOC);
+    TIM1->ARR=7999;TIM1->CCR4=7998;
+    HAL_ADCEx_InjectedStart_IT(&hadc1);HAL_ADCEx_InjectedStart(&hadc2);
+    /* Six pins are GPIO low; only CH4 supplies the ADC trigger. */
+    HAL_TIM_Base_Start(&htim1);HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_4);
+    motor_td3_g431_sampling_ready();
+'''+text[finish:]
         start=text.index('\t\tHAL_ADC_Start(&hadc1);',text.index('  while (1)'))
         end=text.index('    /* USER CODE END WHILE */',start)
         text=text[:start]+'''    static uint32_t bus_due;
     motor_td3_g431_poll();
     if((int32_t)(HAL_GetTick()-bus_due)>=0) {
       bus_due=HAL_GetTick()+10U;
-      if(HAL_ADC_Start(&hadc1)!=HAL_OK || HAL_ADC_Start(&hadc2)!=HAL_OK ||
-         HAL_ADC_PollForConversion(&hadc1,1)!=HAL_OK || HAL_ADC_PollForConversion(&hadc2,1)!=HAL_OK) {
-        motor_td3_g431_fault_irq();
-      } else {
-        adc_vbus=HAL_ADC_GetValue(&hadc2);Vbus=adc_vbus*3.3f/4096*26;rtU.v_bus=Vbus;
+      /* Injected conversions may temporarily own an ADC. Only successful
+       * regular conversions refresh the bus measurement; motion rejects stale data. */
+      if(HAL_ADC_Start(&hadc1)==HAL_OK && HAL_ADC_Start(&hadc2)==HAL_OK &&
+         HAL_ADC_PollForConversion(&hadc1,1)==HAL_OK && HAL_ADC_PollForConversion(&hadc2,1)==HAL_OK) {
+        adc_vbus=HAL_ADC_GetValue(&hadc2);Vbus=adc_vbus*3.3f/4096*26;
+        rtU.v_bus=Vbus>1.0f?Vbus:24.0f;
+        motor_td3_g431_bus_sample();
       }
     }
 '''+text[end:]
@@ -150,6 +175,9 @@ def patch_can_port(path,motion=False):
     elif motion_aware_tick in text:
         text=replace_once(text,motion_aware_tick,
             'motor_td3_can_control_tick_ready(&endpoint,now_us,1,0); /* Review image remains motion inhibited. */')
+    elif 'motor_td3_can_control_tick(&endpoint,now_us,estop);' in text:
+        text=replace_once(text,'motor_td3_can_control_tick(&endpoint,now_us,estop);',
+            'motor_td3_can_control_tick_ready(&endpoint,now_us,1,0); /* Review image is inhibited. */')
     elif not motion:
         raise ValueError('SpeedLoop CAN tick anchor missing')
     old='''        const motor_td3_can_hooks h={0,disable_hook,reject_begin,reject_apply,actual_snapshot};
@@ -271,7 +299,7 @@ def build(a):
         '-O2','-g','-pipe','-ffunction-sections','-fdata-sections','-ffp-contract=off','-fno-fast-math',
         '-DSTM32G431xx','-DUSE_HAL_DRIVER','-DARM_MATH_CM4','-Wall','-Wextra']
     if a.can_pi:flags+=['-DMOTOR_TD3_SPEEDLOOP_DIAGNOSTIC','-DMOTOR_TD3_SPEEDLOOP_PI_CAN']
-    if a.motion_can:flags+=['-DMOTOR_TD3_SPEEDLOOP_PI_MOTION']
+    if a.motion_can:flags+=['-DMOTOR_TD3_SPEEDLOOP_PI_MOTION','-DMOTOR_TD3_CAN_NO_TEMPERATURE']
     objects=[]
     for i,p in enumerate(sources):
         obj=out/(f'{i:02d}_'+p.stem+'.o');objects.append(obj)
@@ -320,6 +348,8 @@ def build(a):
         own_source_sha256={name:digest(own/name) for name in files},
         image_sections_bytes=dict(text=int(size_fields[0]),data=int(size_fields[1]),bss=int(size_fields[2])),
         source_unchanged=True,reference_profile=profile,phase_start_calls_removed=True,
+        idle_sampling_requires_moe=bool(a.motion_can),
+        idle_phase_pins_gpio_low=bool(a.motion_can),
         hardware_accessed=False,flash_programmed=False,motion_capable=bool(a.motion_can),motion_approved=False,
         transport_gain_commands_connected=bool(connected),board_can_hal_connected=bool(a.can_pi),
         connected_can_model_checks=connected,td3_actor_connected=False,

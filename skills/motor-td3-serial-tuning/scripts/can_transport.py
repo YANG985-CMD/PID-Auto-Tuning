@@ -75,7 +75,7 @@ def pack(obj, nonce, boot=0, wire_seq=0, expires_us=0):
     return data
 
 
-def unpack(data):
+def unpack(data, *, allow_missing_temperature=False):
     if (not 36 <= len(data) <= MAX_PACKET
             or zlib.crc32(data[:-4]) != struct.unpack('<I', data[-4:])[0]):
         raise WireError('CAN datagram size/CRC failure')
@@ -126,6 +126,9 @@ def unpack(data):
                    fault=values[3], enabled=bool(values[4]), **dict(zip(FLOATS, values[5:])))
         if obj['t_apply_us'] > obj['t_us']:
             raise WireError('Telemetry apply time after snapshot')
+    if (allow_missing_temperature and obj.get('type') == 'telemetry'
+            and math.isnan(obj['temperature_c'])):
+        obj['temperature_c'] = None
     if any(isinstance(v, float) and not math.isfinite(v) for v in obj.values()):
         raise WireError('Non-finite CAN value')
     return obj, meta
@@ -140,9 +143,10 @@ def fragment(data, transfer):
 
 
 class Reassembler:
-    def __init__(self):
+    def __init__(self, *, allow_missing_temperature=False):
         self.pending = None
         self.last_time = 0
+        self.allow_missing_temperature = allow_missing_temperature
 
     def check_timeout(self, now):
         if now < self.last_time or (self.pending is not None and now - self.started >= FRAGMENT_TIMEOUT):
@@ -170,7 +174,7 @@ class Reassembler:
         self.index += 1
         if len(self.pending) == size:
             result, self.pending = bytes(self.pending), None
-            unpack(result)
+            unpack(result, allow_missing_temperature=self.allow_missing_temperature)
             return result
         return None
 

@@ -88,7 +88,14 @@ int motor_td3_can_telemetry(uint8_t out[TD3_CAN_MAX_PACKET],uint64_t nonce,uint6
     if(!out||!t||!nonce||!boot||(t->enabled!=0&&t->enabled!=1)||t->t_apply_us>t->t_us) return 0;
     values[0]=t->speed_ref; values[1]=t->speed; values[2]=t->error_history; values[3]=t->integral_output;
     values[4]=t->current; values[5]=t->vbus; values[6]=t->temperature_c; values[7]=t->kp; values[8]=t->ki; values[9]=t->elapsed_ms;
-    for(i=0;i<10;i++) if(!isfinite(values[i])) return 0;
+    for(i=0;i<10;i++) if(!isfinite(values[i])) {
+#ifdef MOTOR_TD3_CAN_NO_TEMPERATURE
+        /* Explicit sensorless trial only: preserve unknown temperature as NaN.
+         * Every other field, and infinite temperature, remains invalid. */
+        if(i==6U && isnan(values[i])) continue;
+#endif
+        return 0;
+    }
     header(out,0x82,nonce,boot,t->seq);
     put64(out+32,t->t_us); put64(out+40,t->t_apply_us); put32(out+48,t->applied_seq); put32(out+52,t->fault);
     out[56]=(uint8_t)t->enabled; memset(out+57,0,3);

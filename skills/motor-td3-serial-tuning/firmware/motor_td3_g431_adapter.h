@@ -7,6 +7,8 @@
 extern volatile uint64_t motor_td3_g431_debugger_boot_token;
 void motor_td3_g431_disable(void);
 void motor_td3_g431_init(void);
+int motor_td3_g431_sampling_ready(void);
+void motor_td3_g431_bus_sample(void);
 void motor_td3_g431_tick_1ms(void);
 void motor_td3_g431_poll(void);
 void motor_td3_g431_adc_sample(void);
