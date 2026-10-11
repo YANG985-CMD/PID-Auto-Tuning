@@ -3,6 +3,12 @@
   "evidence_type": "serial-read-only-probe",
   "board_port": "COM9",
   "port_identity": "STMicroelectronics STLink Virtual COM Port",
+  "stlink_probe": {
+    "recognized": true,
+    "unique_id": "0674FF554850715087183841",
+    "target_reported_by_pyocd": "n/a",
+    "write_or_reset_performed": false
+  },
   "protocol_source": "17.SpeedLoop USART3 PB10/PB11, 921600 8N1, 24-byte legacy packet",
   "duration_s_per_baud": 3,
   "followup_921600_duration_s": 5,
