@@ -32,3 +32,9 @@
 电流使用 `17.SpeedLoop` 源码的名义换算系数 `0.02197265625 A/count`，没有做已知电流源标定；板上没有温度传感器，本次没有验证摄氏温度或热阈值。试验验证了基线固件的受限运行和自动收尾，不表示 TD3 已经调参，也不表示可以把 Actor 直接接管电机。
 
 机器可读摘要见 [`examples/speedloop-baseline-20261011/summary.json`](../examples/speedloop-baseline-20261011/summary.json)。
+
+## 追加：17.SpeedLoop UART 实机回读
+
+用户随后按下 USER3，Codex 在 `COM9` 上以 921600 8N1 只读监听 5 s，没有向板子发送启动、停止或增益数据。恢复的旧 SpeedLoop 镜像连续输出了 16,865 个完整遥测帧：参考转速 1000 rpm，Hall 转速范围 939.9–1053.8 rpm，平均 1000.27 rpm；速度误差 MAE 25.18 rpm、RMSE 30.62 rpm，Hall 周期范围 15,183–17,023 ticks。由此确认这次是有效的空载转动数据，串口链路可以作为 MATLAB 的实时观测输入。
+
+这批数据仍只能作为 SpeedLoop 基线。旧 UART 帧没有控制器选择、Kp/Ki 下发、实际增益回读、动作确认或失联租约，因此不能据此宣称 AI 调参、模糊 PID、神经网络 PID 和 TD3 已完成实机对比。机器可读结果见 [`examples/controller-comparison-20261011/real-speedloop-baseline-user3.json`](../examples/controller-comparison-20261011/real-speedloop-baseline-user3.json)。

@@ -1,4 +1,19 @@
-# Codex 电机 TD3 训练、结果分析与 MCU 部署
+# 电机速度环四种方法对比：控制系统超参数调优的通用示例
+
+本仓库的核心是比较四种用于**控制系统超参数调优**的方法，而不是只服务于电机。电机速度环只是当前的示例场景：在相同模型、相同给定和相同测试工况下，比较四种方法对跟踪误差、电流、过冲、饱和和故障的影响。相同的实验框架也可以用于位置环、姿态环、温度环、压力环、流量环以及其他需要自动调整控制器超参数的任务。
+
+重要的是下面四种方法：
+
+- **AI skill 有界搜索（AI skill bounded search）**
+- **模糊 PID（fuzzy PID）**
+- **神经网络 PID（neural-network PID）**
+- **TD3 Actor**
+
+固定 PI 只作为比较基线，不是四种方法之一。四种方法都可以直接用 AI 按目标板卡的接口、算力、编译链和实时约束生成或移植为 MCU 可运行的 C/C++ 实现；训练、搜索和模型分析留在主机侧，板端只保留所需的控制或推理部分。
+
+下面的图片展示了以电机速度环为例的四种方法对比结果：
+
+![Controller comparison (simulation only)](docs/images/controller-comparison.png)
 
 把电机串口数据送进 MATLAB 训练 TD3，输出有界的速度环 Kp、Ki，经串口应用确认后形成学习经验；Codex 管理实验和分析结果，最终导出仅用于推理的 Actor C 代码。
 
@@ -153,6 +168,8 @@ Codex 查阅板卡原理图与安全说明，经 STLink 核对芯片后，将已
 
 这次明确体现了 Codex 的作用：它负责构建/烧录检查、实时读取和分析 TD3 训练所需的运行结果、判断候选是否可以继续，以及管理停机收尾；本次仍使用原例程的模糊 PI，没有接入 Actor 或应用 TD3 增益。电流是源码名义换算，板上无温度传感器，热保护和 TD3 实机调参仍未验收。[完整基线记录](docs/speedloop-baseline-run-20261011.md) · [机器可读摘要](examples/speedloop-baseline-20261011/summary.json)
 
+随后在用户按下 USER3 后，Codex 直接监听恢复的 `17.SpeedLoop` UART3（`COM9`，921600 8N1）5 s，未向串口写入任何控制字节。共解析 16,865 个完整 24 字节遥测帧：参考转速固定 1000 rpm，Hall 转速 939.9–1053.8 rpm，平均 1000.27 rpm，速度误差 MAE 25.18 rpm、RMSE 30.62 rpm，Hall 周期 15,183–17,023 ticks。这个结果是**真实电机空载基线**，证明串口实时回读链路可用；它仍然不是四种控制器的对比，因为该旧协议没有控制器选择、增益写入或实际增益回读。[实机串口基线](examples/controller-comparison-20261011/real-speedloop-baseline-user3.json)
+
 ### CAN 板上实测
 
 2026-10-10，Codex 对照套件 CAN 示例、实物接口和原理图，编写并在 STM32G431 SRAM 中运行了独立 CAN 诊断程序：
@@ -296,16 +313,20 @@ python -B skills/motor-td3-serial-tuning/scripts/thermal_can.py --log examples/t
 
 该入口只读已有日志。Windows 输出目录须位于 `E:\simulink\_codex_tmp\` 的独立空任务目录；`summary.json` 的 `passed` 表示日志解析一致，`motion_approved` 始终为 false。
 
-### 四种速度环方法对比：当前为可复现实验，实机四路尚未具备
+### 电机速度环示例：四种方法的可复现实验
 
-为回答“AI skill 调参、模糊 PID、神经网络 PID、TD3 Actor 谁更好”，仓库新增了统一工况对比入口：
+这个实验比较四种可部署的速度环方法：AI skill 有界搜索、模糊 PID、神经网络 PID 和 TD3 Actor。固定 PI 不是第五种待比较方法，而是用于衡量改进幅度的基线。四种方法都可以让 AI 根据目标板卡的 MCU、编译链、接口和实时预算生成或移植代码，再接入已有的速度环和独立保护。
+
+图中固定 PI 是基线，真正要比较的是其下方的四种方法：AI skill bounded search、fuzzy PID、neural-network PID 和 TD3 Actor。电机速度环用于展示实验流程；方法本身可复用于任何需要调控制器超参数的控制任务。
+
+仓库提供统一工况对比入口：
 
 ```text
 python -B scripts/controller_comparison.py --output OUTPUT \
   --td3-evaluation path/to/evaluation-summary.json
 ```
 
-这次使用同一个确定性速度环模型、相同的 500/800/1100 rpm 给定和 101/202/303 测试种子。AI skill 方法按 `AI-Parameter-Tuning` 的边界候选、逐个评估、回退语义实现；它不是神经网络。神经网络 PID 是监督学习去拟合模糊增益；TD3 行来自 MATLAB 的 20 轮、600 条 mock 经验评估。结果如下，数值全部是**仿真/离线比较**：
+这次使用同一个确定性速度环模型、相同的 500/800/1100 rpm 给定和 101/202/303 测试种子。AI skill 方法按 `AI-Parameter-Tuning` 的边界候选、逐个评估、回退语义实现；它不是神经网络。神经网络 PID 是监督学习去拟合模糊增益；TD3 行来自 MATLAB 的 20 轮、600 条 mock 经验评估。结果如下，数值全部是**仿真/离线比较**；表中的固定 PI 仅作基线：
 
 | 方法 | 平均归一化 RMSE | 平均峰值电流 (A) | 平均饱和占比 | 相对固定 PI |
 |---|---:|---:|---:|---:|
@@ -315,7 +336,7 @@ python -B scripts/controller_comparison.py --output OUTPUT \
 | 神经网络 PID | 0.164725 | 2.6624 | 0.0161 | -5.75% |
 | TD3 Actor | 0.167076 | 2.5010 | 0.0094 | -4.40% |
 
-神经网络 PID 在这个模型上的 RMSE 最低，TD3 次之；这不代表实机排名。当前板端串口实测只有 ST-Link 的 COM9，但按 `17.SpeedLoop` 的 921600/8N1 监听 5 秒得到 0 字节；旧 UART 包只有 24 字节观测，没有控制器选择、原子 Kp/Ki 写入和实际应用回读，因此不能据此宣称四种控制器已经在同一台电机上完成闭环比较。串口证据见 [serial-probe.json](examples/controller-comparison-20261011/serial-probe.json)。
+神经网络 PID 在这个模型上的 RMSE 最低，TD3 次之；这不代表实机排名。四种方法都具备 AI 辅助移植到目标板卡的实现路径，但“能生成或移植 MCU 代码”不等于“已经通过该板卡的闭环验收”。COM9 在原先未知镜像下曾经 5 秒无输出；恢复用户确认可运行的 `17.SpeedLoop` 镜像后，5 秒得到 16,865 个有效 UART 遥测帧。旧 UART 包只有 24 字节观测，没有控制器选择、原子 Kp/Ki 写入和实际应用回读，因此不能据此宣称四种控制器已经在同一台电机上完成闭环比较。串口证据见 [serial-probe.json](examples/controller-comparison-20261011/serial-probe.json) 和 [实机串口基线](examples/controller-comparison-20261011/real-speedloop-baseline-user3.json)。
 
 要得到四组**实机**数据，板端必须先加入并验证：控制器模式选择、原子增益写入、应用序号回读、运行中遥测和失联停机；然后在四个独立回合中采集同一组给定、速度、电流、母线电压、故障和实际增益。当前 24V 连接状态不能用于烧录或复位这类操作，必须先物理断开功率电源，避免 SWD 操作或复位瞬间使相桥进入不可控状态。
 
