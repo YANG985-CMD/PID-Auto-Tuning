@@ -157,13 +157,17 @@ def main():
     parser.add_argument('--compiler', default='gcc')
     parser.add_argument('--require-real-motor-data', action='store_true',
                         help='reject mock/simulation Actors and require real-motor provenance')
+    parser.add_argument('--dataset',
+                        help='immutable transitions.jsonl to hash and compare with Actor provenance')
     args = parser.parse_args()
     if args.require_real_motor_data:
         from actor_provenance import validate_real_motor_provenance
         model = load_json(args.model)
-        errors = validate_real_motor_provenance(model)
+        errors = validate_real_motor_provenance(model, args.dataset)
         if errors:
             raise ValueError('Real-motor Actor gate failed: ' + '; '.join(errors))
+    elif args.dataset:
+        raise ValueError('--dataset requires --require-real-motor-data')
     report = export(args.model,args.output)
     if args.reference:
         report['verification'] = verify(args.output,args.reference,args.compiler)

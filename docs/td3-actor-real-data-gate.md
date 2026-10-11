@@ -16,7 +16,10 @@
 python -B skills/motor-td3-serial-tuning/scripts/actor_codegen.py \
   --model REAL_ACTOR_JSON --output ACTOR_OUTPUT \
   --reference MATLAB_REFERENCE_JSON --compiler gcc \
-  --require-real-motor-data
+  --require-real-motor-data --dataset TRANSITIONS_JSONL
 ```
+
+`--dataset` 会重新计算桥接器保存的 `transitions.jsonl`，必须与 Actor 内的
+`training_data.dataset_sha256` 完全一致；缺少数据文件或哈希不一致时，Codex 拒绝导出用于部署的 C 代码。
 
 当前仓库没有满足该门槛的真实 TD3 Actor。此前的 3 秒 `17.SpeedLoop` 试转是基线遥测，未应用 TD3 增益，也没有形成可训练的动作覆盖。因此当前正确状态是“Actor 接口和校验已准备，实际 Actor 等待真实数据采集和训练”，而不是把 `candidate-020` 接到电机上。

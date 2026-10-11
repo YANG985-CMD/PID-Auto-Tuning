@@ -3,6 +3,7 @@
 import argparse
 import collections
 import copy
+import hashlib
 import json
 import math
 import secrets
@@ -510,6 +511,11 @@ class Engine:
         transport = transport or ('serial' if live else 'mock')
         validate_runtime(profile, live, transport)
         self.p, self.live = profile, live
+        self.transport = transport
+        # The device loop is continuous and owns the real-time receive path.
+        # MATLAB/Codex RPC calls only select the next bounded decision window;
+        # they never replace the MCU's control-period task.
+        self.realtime_closed_loop = bool(live)
         self.output = Path(output)
         self.output.mkdir(parents=True, exist_ok=True)
         self.run_id = str(uuid.uuid4())
@@ -527,6 +533,29 @@ class Engine:
         self.monitor = threading.Thread(target=self._monitor, daemon=True)
         self.monitor.start()
         (self.output / 'profile.json').write_text(json.dumps(profile, indent=2), encoding='utf-8')
+
+    def metadata(self):
+        """Return an immutable identity for the transitions collected so far.
+
+        The bridge keeps the raw log local and continuously flushes it after
+        every accepted transition.  MATLAB asks for this only after a round
+        has stopped, so the hash can be attached to the exported Actor and
+        later checked by Codex before any deployment decision.
+        """
+        with self.lock:
+            if self.active or self.in_step:
+                raise SafetyError('Metadata requires a stopped decision window')
+            self.log.flush()
+            raw = (self.output / 'transitions.jsonl').read_bytes()
+            rows = raw.count(b'\n')
+            return dict(schema_version=1, run_id=self.run_id,
+                        profile_id=self.p['profile_id'],
+                        firmware_id=self.p['device']['firmware_id'],
+                        protocol_id=self.p['device']['protocol_id'],
+                        transport=self.transport,
+                        realtime_closed_loop=self.realtime_closed_loop,
+                        transition_count=rows,
+                        transitions_sha256=hashlib.sha256(raw).hexdigest())
 
     def event(self, kind, **details):
         with self.lock:
@@ -734,7 +763,8 @@ def serve(engine, port, token, approved_policy=None):
                                 if req.get('op') != 'hello' or not secrets.compare_digest(str(req.get('token', '')), token):
                                     raise SafetyError('RPC authentication failed')
                                 authenticated = True
-                                result = dict(profile=engine.p, simulation_only=not engine.live)
+                                result = dict(profile=engine.p, simulation_only=not engine.live,
+                                              realtime_closed_loop=engine.realtime_closed_loop)
                             else:
                                 op = req.get('op')
                                 if op == 'reset':
@@ -743,6 +773,10 @@ def serve(engine, port, token, approved_policy=None):
                                     result = engine.step(req['action'])
                                 elif op == 'stop':
                                     result = engine.stop()
+                                elif op == 'metadata':
+                                    if engine.active or engine.in_step:
+                                        raise SafetyError('Metadata requires a stopped decision window')
+                                    result = engine.metadata()
                                 elif op == 'shutdown':
                                     result = engine.stop()
                                     shutdown = True

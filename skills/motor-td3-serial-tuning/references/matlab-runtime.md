@@ -90,6 +90,8 @@ trainMotorTD3(47653,'TOKEN_FILE','MODEL_OUTPUT',6);
 
 经典 CAN 也可使用同一个 MATLAB 接口：在板端已接入 `motor-td3-can-v1` 并完成独立保护验证后，使用 CAN 配置与 `--transport can --allow-live` 启动桥接器，详见 [can-runtime.md](can-runtime.md)。原厂占位帧和独立诊断回包没有训练语义；本次 CAN 应用层验证来自软件 C 端点，尚未在实际 FOC 固件中运行。
 
+这是实时闭环的边界：MCU 仍运行自己的 1 ms 控制任务，桥接器的读线程持续接收状态；MATLAB 只在已限定的响应窗口选择下一次动作。每轮确认停机后，MATLAB 调用桥接器的 `metadata` 操作；桥接器刷新 `transitions.jsonl`，返回运行 ID、固件/协议身份、实时闭环标记、样本数和该文件的 SHA-256，训练摘要和导出的 Actor 会保存这个哈希。Codex 在部署前重新计算文件哈希并与 `training_data.dataset_sha256` 比较，哈希缺失或不一致时拒绝部署。
+
 要评估已训练的实机候选，启动新的桥接器并增加 `--approved-policy candidate-NNN`，随后调用 `evaluateCheckpoint(PORT,TOKEN_FILE,CHECKPOINT,REPORT_FILE)`。版本身份、尺度和增益映射必须完全一致；模拟训练的模型被此实机入口拒绝。固定 PI 和候选使用相同给定与计划。实机负载、初始转速、积分状态和冷却条件必须由操作者/固件建立；mock 的 seed 不会创造实际负载或替代可重复初态。不要据此报告不存在的负载对比。
 
 ## 上传与部署

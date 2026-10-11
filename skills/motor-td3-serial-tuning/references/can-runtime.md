@@ -25,7 +25,7 @@ python -B scripts/motor_runtime.py --profile CAN_PROFILE --output RUN_OUTPUT --t
 
 PCAN 驱动、python-can 依赖同 `scripts/requirements-can.txt`。只支持经典 PCAN USB、500 kbit/s，不支持 CAN-FD。占用中的通道拒绝打开；设置并持续核验正常模式，不共享写入者，不调用适配器 Reset。协议验证、参数边界和保护证据没有齐全时，在打开驱动前拒绝运行。
 
-MATLAB 的 `trainMotorTD3`、`evaluateCheckpoint` 与本机认证 TCP 接口保持相同。Codex 负责检查配置、启动程序、分析经验与固定策略评估；梯度更新由 MATLAB 执行。不得把软件端点的验证配置用于实际板子。
+MATLAB 的 `trainMotorTD3`、`evaluateCheckpoint` 与本机认证 TCP 接口保持相同。Codex 负责检查配置、启动程序、分析经验与固定策略评估；梯度更新由 MATLAB 执行。CAN 读线程持续接收报文，`step` 只提交下一次有界动作，并按设备时间等待响应窗口，所以数据采集、Codex 门控和板端执行发生在同一实时闭环里。不得把软件端点的验证配置用于实际板子。
 
 ## 固定线协议 v1
 

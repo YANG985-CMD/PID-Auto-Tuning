@@ -2,6 +2,7 @@
 """Fault and causality tests. Only mock devices; all artifacts need --output."""
 import argparse
 import copy
+import hashlib
 import json
 import math
 import socket
@@ -113,6 +114,24 @@ class RuntimeTests(unittest.TestCase):
         self.assertTrue(rows[-1]['truncated'])
         self.assertFalse(engine.device.enabled)
         self.assertEqual(rows[1]['state'],rows[0]['next_state'])
+
+    def test_stopped_metadata_hashes_realtime_transition_log(self):
+        engine = self.engine()
+        engine.reset(1, 0, 'metadata-test')
+        engine.step([.1, -.1])
+        engine.stop()
+        metadata = engine.metadata()
+        raw = (engine.output / 'transitions.jsonl').read_bytes()
+        self.assertFalse(engine.realtime_closed_loop)
+        self.assertEqual(metadata['transition_count'], 1)
+        self.assertEqual(metadata['transitions_sha256'], hashlib.sha256(raw).hexdigest())
+        self.assertEqual(metadata['transport'], 'mock')
+
+    def test_metadata_rejected_during_active_window(self):
+        engine = self.engine()
+        engine.reset(1, 0, 'metadata-active-test')
+        with self.assertRaisesRegex(SafetyError, 'stopped decision window'):
+            engine.metadata()
 
     def test_crc_duplicate_nan_overflow(self):
         good = encode_frame({'speed':12.5})
