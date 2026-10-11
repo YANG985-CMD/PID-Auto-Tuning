@@ -1,0 +1,86 @@
+{
+  "schema_version": 1,
+  "source": "17.SpeedLoop baseline CAN snapshots (2026-10-11)",
+  "source_sha256": "6f0e5c3819f652c5482fb045838df70a55579b4863bde30f3e602b641c652322",
+  "records": 325,
+  "running_records": 150,
+  "closed_loop_records": 40,
+  "fields": [
+    "bus_nominal_v",
+    "elapsed_ms",
+    "fault",
+    "hall_edges",
+    "host_sequence",
+    "host_time_s",
+    "ia_nominal_a",
+    "ib_nominal_a",
+    "ic_nominal_a",
+    "ki",
+    "kp",
+    "peak_nominal_a",
+    "phase_enabled",
+    "sample_counter_mod65536",
+    "speed_rpm",
+    "stage",
+    "state"
+  ],
+  "fault_records": 0,
+  "phase_enabled_records": 150,
+  "speed_rpm": {
+    "count": 150,
+    "min": 0.0,
+    "max": 11251.7578125,
+    "mean": 869.7268673706054,
+    "unique_count": 125
+  },
+  "peak_nominal_current_a": {
+    "count": 150,
+    "min": 0.087890625,
+    "max": 1.0986328125,
+    "mean": 0.9955078125,
+    "unique_count": 24
+  },
+  "bus_nominal_v": {
+    "count": 325,
+    "min": 23.85893440246582,
+    "max": 24.403564453125,
+    "mean": 24.10604829641489,
+    "unique_count": 24
+  },
+  "kp": {
+    "count": 150,
+    "min": 0.002372299786657095,
+    "max": 0.004405700135976076,
+    "mean": 0.0030275065870955585,
+    "unique_count": 7
+  },
+  "ki": {
+    "count": 150,
+    "min": 0.0011520000407472253,
+    "max": 0.001728000002913177,
+    "mean": 0.0013516800183181962,
+    "unique_count": 5
+  },
+  "hall_edges": {
+    "count": 150,
+    "min": 0.0,
+    "max": 317.0,
+    "mean": 99.88666666666667,
+    "unique_count": 125
+  },
+  "temperature_field_present": false,
+  "td3_action_fields_present": false,
+  "causal_action_ack_present": false,
+  "trainable_for_td3": false,
+  "reason": "Baseline telemetry has observations and controller gains but no TD3 action/ack causal pairs; temperature_c is absent and current values use nominal conversion.",
+  "safe_use": [
+    "baseline plots",
+    "sensor/fault audit",
+    "offline plant identification after separate validation"
+  ],
+  "blocked_use": [
+    "TD3 replay training",
+    "Actor deployment approval",
+    "live gain application"
+  ]
+}

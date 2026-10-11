@@ -236,6 +236,8 @@ Codex 同时给实际接入适配层补上 1ms Break 标志检测：24 项适配
 
 当前实机基准以用户确认可运行的 `Folder 2 Program Model/17.SpeedLoop` 为准：它启动时动态采集 10 次三相 ADC 零点，USER3 才开启三相 PWM，并保留 COMP1→TIM1 Break。A=2021.08、B=2028.78、C=2024.63 作为这份工程启动校零的参考值，不直接替代动态采样。2026-10-11 在 24V 断开、USB/STLink 供电时复位回读到 A/B/C=`2023/2028/2026`，校零完成且在 4 码容差内；TIM1 CCER 只有 CH4，CH1/2/3 相位通道关闭，但 BDTR.MOE 仍为 1，正式接入前应显式把 MOE 纳入启动门控。详见 [SpeedLoop 校零回读](docs/speedloop-offset-readback.md) 和 [机器可读记录](examples/stm32g431-speedloop-offset/summary.json)。
 
+对这次真实基线 CAN 快照的审计显示：325 条记录中 150 条处于运行态、40 条闭环快照，故障记录为 0；但数据没有 TD3 动作、应用确认和因果的下一状态，温度字段缺失，电流仍是名义换算。因此它可以用于基线曲线和传感器审计，不能直接生成 TD3 replay 或批准 Actor。[基线遥测审计](examples/speedloop-baseline-20261011/telemetry-audit.json)
+
 MOE 门控的私有副本改动建议见 [SpeedLoop MOE 检查](docs/speedloop-moe-gate-review.md)。在该门控、过流标定和独立停机路径完成前，TD3 仍保持 shadow/离线模式。
 
 ### Codex 实际烧录与试转复核
