@@ -372,6 +372,12 @@ Codex 可在目标条件齐全的已授权会话中完成导出、工程接入�
 
 CAN 是另一条可接入 MATLAB 的通信路径。原例程发送 500 kbit/s 经典 CAN 扩展 ID `0x1B` 的8字节占位帧。本项目提供 [PCAN 静默监听器](scripts/can_monitor.py)、[CAN 专用诊断](docs/stm32g431-can-diagnostics.md)、[CAN 训练入口](skills/motor-td3-serial-tuning/references/can-runtime.md) 和 [早期 PID/NNSMC 接入版本](docs/stm32g431-foc-can-integration.md)。独立诊断的16组双向收发已通过；最新 [SpeedLoop 固件](docs/speedloop-can-live-validation.md) 已烧录并通过真实握手、30组连续诊断及退出状态核验，仍保持禁止运动。
 
+为解决“只读监听收不到帧”的问题，新增两个不改增益的 Shadow 入口：[诊断协议遥测](scripts/can_shadow_telemetry.py)只发送 HELLO，[17.SpeedLoop 心跳遥测](scripts/speedloop_shadow.py)只发送 `0x640` 心跳并重组 `0x641–0x646` 快照；两者都不会发送 BEGIN、GAINS、STOP，也不会生成 TD3 训练经验。SpeedLoop 固件只有收到 `0x640` 心跳后才广播快照，因此纯 Listen-Only 看到 0 帧是预期行为。示例：
+
+```text
+python -B scripts/speedloop_shadow.py --channel PCAN_USBBUS1 --output SHADOW_OUTPUT --duration 10 --allow-live
+```
+
 ## 独立测试
 
 ```text
