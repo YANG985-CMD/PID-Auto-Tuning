@@ -1,5 +1,11 @@
-function artifact = exportMotorActor(agent, profile, outputDir, policyVersion)
+function artifact = exportMotorActor(agent, profile, outputDir, policyVersion, trainingData)
 % Export only this exact feedforward architecture, not arbitrary RL networks.
+if nargin < 5
+    trainingData = struct('source', ternary(profile.simulation_only,'mock','unknown'), ...
+        'dataset_sha256','','profile_id',profile.profile_id,'firmware_id',profile.device.firmware_id, ...
+        'protocol_id',profile.device.protocol_id,'eligible_transitions',0,'episodes',0, ...
+        'action_unique_count',0,'hash_note','Missing immutable bridge dataset hash');
+end
 if ~isfolder(outputDir), mkdir(outputDir); end
 net = getModel(getActor(agent));
 expected = {'state','fc1','relu1','fc2','relu2','fc3','bounded_action'};
@@ -17,7 +23,8 @@ artifact = struct('schema_version',1,'policy_version',policyVersion, ...
     'state_fields',{cellstr(string(profile.training.state_fields))'}, ...
     'state_scale',profile.runtime.state_scale(:)', ...
     'weights',{weights},'biases',{biases},'controller',profile.controller, ...
-    'simulation_only',profile.simulation_only, 'hardware_deployment_approved',false);
+    'simulation_only',profile.simulation_only, 'hardware_deployment_approved',false, ...
+    'training_data',trainingData);
 path = fullfile(outputDir,'actor.json');
 fid = fopen(path,'w'); assert(fid >= 0); cleaner = onCleanup(@() fclose(fid));
 fprintf(fid,'%s\n',jsonencode(artifact,'PrettyPrint',true));
@@ -54,4 +61,12 @@ end
 fid = fopen(fullfile(outputDir,'matlab-reference.json'),'w'); assert(fid >= 0);
 cleaner = onCleanup(@() fclose(fid));
 fprintf(fid,'%s\n',jsonencode(vectors,'PrettyPrint',true));
+end
+
+function value = ternary(condition, whenTrue, whenFalse)
+if condition
+    value = whenTrue;
+else
+    value = whenFalse;
+end
 end

@@ -4,7 +4,7 @@
 
 现已增加经典 CAN 的应用层与 `--transport can` 入口：沿用 MATLAB 的状态/动作接口，加入会话、时效、分帧校验和实际参数回读。**CAN 物理链路已实测；用户 SpeedLoop 的禁止运动诊断固件已烧录，真实握手与 3 秒连续遥测通过。早期 PID/NNSMC 接入版完成编译和 RAM 检查，尚未完整上板运行；实机训练保护仍待验证。**
 
-**Codex 可以管理 TD3 训练、分析训练结果，并将 Actor 部署到单片机执行。** 本项目已跑通真实 MATLAB TD3 训练与独立评估，并在实际 **STM32G431** 上完成 Actor 的 **RAM 部署及推理验证（PIL）**：40 组测试通过，原 Flash 内容保持不变。电机闭环训练和 TD3 Actor 的永久 Flash 部署仍待验证。
+**Codex 可以管理 TD3 训练、分析训练结果，并将经过数据门槛和独立评估的 Actor 部署到单片机执行。** 本项目已跑通 mock MATLAB TD3、独立评估和 STM32G431 RAM 推理验证；这不等于已经用用户电机数据训练。当前 `17.SpeedLoop` 的真实试转仍是基线遥测，未应用 TD3 增益。真实 Actor 必须先通过 [真实数据门槛](docs/td3-actor-real-data-gate.md)，再接入 SpeedLoop。
 
 **最新工程进展：现有 CAN 协议已接入用户 `17.SpeedLoop` 的真实速度 PI。** Codex 解决模糊增益覆盖问题，把参数提交放到原生成模型的 1ms 边界，保持积分输出连续，并连接实际生效序号/时间的反馈。主机上的 10 项 CAN→真实模型检查、19 项 CAN 运行器回归通过，49 单元 Cortex-M4 工程编译成功；此前 30 项 PI 检查和 2000 步基准对照保持通过。**既有物理 CAN 验证直接复用，本阶段没有重测连线或操作板子。** 新复核镜像仍禁止运动，运行固件保护/启动接入与 Actor 尚待完成。[CAN→PI 实现与验证](docs/speedloop-can-pi-integration.md) · [此前 PI 接入](docs/speedloop-pi-integration-validation.md)
 
@@ -12,7 +12,7 @@
 
 | 工作 | Codex 的具体作用 | 本项目证据 |
 |---|---|---|
-| 管理训练 | 检查接口、配置实验、启动串口桥接与 MATLAB；MATLAB 执行 TD3 梯度更新 | [20 轮真实 TD3 更新](examples/mock-validation/training-summary.json) |
+| 管理训练 | 检查接口、配置实验、启动桥接与 MATLAB；MATLAB 执行 TD3 梯度更新 | [20 轮 mock TD3 更新](examples/mock-validation/training-summary.json) |
 | 审计训练数据 | 检查实际生效的参数、动作序号、时间和下一状态能否对应 | [780 条经验审计](examples/mock-validation/experience-audit.json) |
 | **分析训练好坏** | 比较固定 PI 与固定 TD3 的误差、超调、电流、饱和和故障；解释候选是否值得使用 | [独立评估](examples/mock-validation/evaluation-summary.json)：改进 TD3 在 mock 工况优于 PI，但仍未批准电机闭环部署 |
 | **部署到单片机** | 导出 Actor C、目标编译、核对芯片、加载到 MCU RAM、读取并分析推理结果 | [G431 板上验证](docs/stm32g431-validation.md)：40 组通过，Kp/Ki 与 MATLAB 一致 |

@@ -96,6 +96,8 @@ int motor_actor_predict(const float raw[10], float action[2], float gains[2]) {
     hashes = {name: hashlib.sha256((output / name).read_bytes()).hexdigest()
               for name in ('motor_actor.c', 'motor_actor.h')}
     manifest = {k: m[k] for k in ('policy_version', 'profile_id', 'normalization_id', 'action_mapping_id', 'simulation_only')}
+    if 'training_data' in m:
+        manifest['training_data'] = m['training_data']
     manifest.update(schema_version=1, files_sha256=hashes, parameter_count=482,
                     weight_bytes=1928, workspace_float_bytes=168,
                     dynamic_allocation=False, hardware_deployment_approved=False,
@@ -153,7 +155,15 @@ def main():
     parser.add_argument('--output', required=True)
     parser.add_argument('--reference', help='MATLAB reference JSON; enables host verification')
     parser.add_argument('--compiler', default='gcc')
+    parser.add_argument('--require-real-motor-data', action='store_true',
+                        help='reject mock/simulation Actors and require real-motor provenance')
     args = parser.parse_args()
+    if args.require_real_motor_data:
+        from actor_provenance import validate_real_motor_provenance
+        model = load_json(args.model)
+        errors = validate_real_motor_provenance(model)
+        if errors:
+            raise ValueError('Real-motor Actor gate failed: ' + '; '.join(errors))
     report = export(args.model,args.output)
     if args.reference:
         report['verification'] = verify(args.output,args.reference,args.compiler)

@@ -1,6 +1,7 @@
 {
   "schema_version": 1,
   "simulation_only": true,
+  "data_source": "mock_plant_not_user_motor",
   "matlab_release": "2024b",
   "rounds": 20,
   "replay_experiences": 600,
