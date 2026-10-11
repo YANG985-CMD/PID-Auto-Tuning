@@ -24,13 +24,14 @@ CAN_FILES=('motor_td3_speedloop_can.c','motor_td3_speedloop_can.h',
            'motor_td3_guard.c','motor_td3_guard.h','motor_td3_protocol.h',
            'motor_td3_g431_adapter.c','motor_td3_g431_adapter.h','motor_td3_g431_off.h')
 CAN_BUILD_ID='g431-speedloop-pi-can-review-v1'
+MOTION_BUILD_ID='g431-speedloop-pi-motion-v1'
 
 
-def patch_copy(copy,can_pi=False):
+def patch_copy(copy,can_pi=False,motion=False):
     main=copy/'Core/Src/main.c';text=main.read_text(encoding='utf-8')
     text=replace_once(text,'#include "FOC_Model.h"',
         '#include "FOC_Model.h"\n#include "motor_td3_speedloop_pi_bind.h"\n'
-        'const char motor_td3_speedloop_pi_build_id[]="'+(CAN_BUILD_ID if can_pi else BUILD_ID)+'";')
+        'const char motor_td3_speedloop_pi_build_id[]="'+(MOTION_BUILD_ID if motion else (CAN_BUILD_ID if can_pi else BUILD_ID))+'";')
     init='\tFuzzyPID_Init(&fuzzy_speed_pid, 0.003389f, 0.00144f, 0.0f, 500.0f, 100.0f);'
     text=replace_once(text,init,'')
     text=replace_once(text,'\tHAL_ADCEx_InjectedStart_IT(&hadc1);',
@@ -45,8 +46,18 @@ def patch_copy(copy,can_pi=False):
     text=replace_once(text,'uint8_t TxData[8] = {NULL};','uint8_t TxData[8] = {0};')
     # Review build retains real FOC code and its CH4 sampling setup, but removes
     # all phase-output enable calls. It must not be mistaken for a motion release.
+    stop_call=('motor_td3_g431_button_stop();' if motion else
+               'motor_td3_speedloop_pi_stop(); /* Review build: stop only. */')
     text=function(text,'HAL_GPIO_EXTI_Callback',
-        '  if(GPIO_Pin==Button3_Pin) motor_td3_speedloop_pi_stop(); /* Review build: stop only. */')
+        '  if(GPIO_Pin==Button3_Pin) '+stop_call)
+    if motion:
+        text=replace_once(text,'  UNUSED(hadc);\n\tif(hadc == &hadc1)',
+            '  UNUSED(hadc);\n\tmotor_td3_g431_adc_sample();\n\tif(hadc == &hadc1)')
+        text=replace_once(text,
+            '\t\tHallReadTemp |= HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_6)<<2;\n\t\tif(HallReadTemp==0x05)',
+            '\t\tHallReadTemp |= HAL_GPIO_ReadPin(GPIOB,GPIO_PIN_6)<<2;\n'
+            '\t\tif(!motor_td3_g431_hall_capture((uint32_t)HallTemp,(uint8_t)HallReadTemp)) return;\n'
+            '\t\tif(HallReadTemp==0x05)')
     text=replace_once(text,'  __disable_irq();','  motor_td3_speedloop_pi_stop();\n  __disable_irq();')
     main.write_text(text,encoding='utf-8',newline='\n')
     if 'HAL_TIMEx_PWMN_Start' in text or 'Motor_OnOff = 1' in text:
@@ -108,24 +119,39 @@ def patch_copy(copy,can_pi=False):
         fdcan.write_text(text,encoding='utf-8',newline='\n')
 
 
-def patch_can_port(path):
+def patch_can_port(path,motion=False):
     """Reuse the existing HAL/ring/serialized-Tx port. Keep motion locked."""
     text=path.read_text(encoding='utf-8')
     text=replace_once(text,'#include "motor_td3_can_control.h"',
         '#include "motor_td3_can_control.h"\n#include "motor_td3_speedloop_can.h"\n#include "motor_td3_speedloop_pi_bind.h"')
     text=replace_once(text,'static motor_td3_can_control endpoint;',
         'static motor_td3_can_control endpoint;\nstatic motor_td3_speedloop_can pi_link;')
-    text=replace_once(text,'#define LOCKED_FIRMWARE "g431-speedloop-diag-v1"',
-        '#define LOCKED_FIRMWARE "'+CAN_BUILD_ID+'"')
-    text=replace_once(text,'#define LOCKED_PROFILE "g431-speedloop-diag-v1"',
-        '#define LOCKED_PROFILE "'+CAN_BUILD_ID+'"')
+    if not motion:
+        text=replace_once(text,'#define LOCKED_FIRMWARE "g431-speedloop-diag-v1"',
+            '#define LOCKED_FIRMWARE "'+CAN_BUILD_ID+'"')
+        text=replace_once(text,'#define LOCKED_PROFILE "g431-speedloop-diag-v1"',
+            '#define LOCKED_PROFILE "'+CAN_BUILD_ID+'"')
     text=replace_once(text,'static uint64_t clock_us(void) { uint32_t p=lock(); uint64_t n=now_us; unlock(p); return n; }',
         'static uint64_t clock_us(void) { return motor_td3_speedloop_pi_time_us(); }')
     text=replace_once(text,'    now_us+=1000U;','    now_us=clock_us();')
     text=replace_once(text,'ring_time[ring_write%RX_CAPACITY]=now_us;',
         'ring_time[ring_write%RX_CAPACITY]=clock_us();')
-    text=replace_once(text,'motor_td3_can_control_tick(&endpoint,now_us,1); /* Permanently inhibited. */',
-        'motor_td3_can_control_tick_ready(&endpoint,now_us,1,0); /* HELLO/STOP only; gains belong to PI boundary. */')
+    legacy_tick='motor_td3_can_control_tick(&endpoint,now_us,1); /* Permanently inhibited. */'
+    motion_aware_tick='''motor_td3_can_control_tick(&endpoint,now_us,
+            irq_fault||motor_td3_g431_break_seen()||!ADC_offset||
+            (now_us>adc_seen_us && now_us-adc_seen_us>5000U));'''
+    if motion:
+        # The motion adapter owns the live estop predicate and control-task
+        # tick. Keep the review transform out of this explicit build.
+        pass
+    elif legacy_tick in text:
+        text=replace_once(text,legacy_tick,
+            'motor_td3_can_control_tick_ready(&endpoint,now_us,1,0); /* HELLO/STOP only; gains belong to PI boundary. */')
+    elif motion_aware_tick in text:
+        text=replace_once(text,motion_aware_tick,
+            'motor_td3_can_control_tick_ready(&endpoint,now_us,1,0); /* Review image remains motion inhibited. */')
+    elif not motion:
+        raise ValueError('SpeedLoop CAN tick anchor missing')
     old='''        const motor_td3_can_hooks h={0,disable_hook,reject_begin,reject_apply,actual_snapshot};
         endpoint_ready=motor_td3_can_control_init_locked(&endpoint,&h,motor_td3_g431_debugger_boot_token,
             LOCKED_FIRMWARE,LOCKED_PROFILE);'''
@@ -181,10 +207,10 @@ def build(a):
     copy=out/'private-copy';copy.mkdir()
     for folder in ('Core','Drivers','MATLAB','Middlewares/ST/ARM/DSP/Inc'):
         shutil.copytree(source/folder,copy/folder,ignore=shutil.ignore_patterns('*.o','*.d','*.axf','*.hex','*.bak'))
-    patch_copy(copy,a.can_pi)
+    patch_copy(copy,a.can_pi,a.motion_can)
     own=copy/'codex-pi';own.mkdir();files=FILES+(CAN_FILES if a.can_pi else ())
     for name in files: shutil.copy2(SKILL/'firmware'/name,own/name)
-    if a.can_pi: patch_can_port(own/'motor_td3_g431_adapter.c')
+    if a.can_pi: patch_can_port(own/'motor_td3_g431_adapter.c',a.motion_can)
     env=os.environ.copy();env.update(TEMP=str(out),TMP=str(out),TMPDIR=str(out))
     logs=[]
     def run(argv,record_stdout=True):
@@ -245,6 +271,7 @@ def build(a):
         '-O2','-g','-pipe','-ffunction-sections','-fdata-sections','-ffp-contract=off','-fno-fast-math',
         '-DSTM32G431xx','-DUSE_HAL_DRIVER','-DARM_MATH_CM4','-Wall','-Wextra']
     if a.can_pi:flags+=['-DMOTOR_TD3_SPEEDLOOP_DIAGNOSTIC','-DMOTOR_TD3_SPEEDLOOP_PI_CAN']
+    if a.motion_can:flags+=['-DMOTOR_TD3_SPEEDLOOP_PI_MOTION']
     objects=[]
     for i,p in enumerate(sources):
         obj=out/(f'{i:02d}_'+p.stem+'.o');objects.append(obj)
@@ -270,7 +297,7 @@ def build(a):
     if a.can_pi:required.update(('motor_td3_speedloop_can_attach','motor_td3_g431_poll',
         'motor_td3_can_make_telemetry','HAL_FDCAN_RxFifo0Callback'))
     if not required.issubset(symbols): raise ValueError('PI integration hooks not linked')
-    if 'HAL_TIMEx_PWMN_Start' in symbols: raise ValueError('Phase enable survived review link')
+    if not a.motion_can and 'HAL_TIMEx_PWMN_Start' in symbols: raise ValueError('Phase enable survived review link')
     blob=(out/'speedloop-pi-review.bin').read_bytes();sp,entry=struct.unpack('<II',blob[:8])
     if sp!=0x20008000 or not (entry&1 and 0x08000000<=entry<0x08020000) or len(blob)>0x20000:
         raise ValueError('Unexpected Cortex-M4 image layout')
@@ -286,14 +313,14 @@ def build(a):
         temperature_sensor_in_example=False,validated_thermal_limits=None,
         fuzzy_gain_envelope=dict(kp=[.003389*.4,.003389*1.6],ki=[.00144*.5,.00144*1.5]),
         fuzzy_envelope_is_verified_td3_safety_domain=False)
-    summary=dict(schema_version=1,build_id=CAN_BUILD_ID if a.can_pi else BUILD_ID,passed=core['passed'] and model['passed'],
+    summary=dict(schema_version=1,build_id=(MOTION_BUILD_ID if a.motion_can else (CAN_BUILD_ID if a.can_pi else BUILD_ID)),passed=core['passed'] and model['passed'],
         core_checks=core,actual_model_checks=model,translation_units=len(sources),
         compiler=version,binary_bytes=len(blob),bin_sha256=digest(out/'speedloop-pi-review.bin'),
         hex_sha256=digest(out/'speedloop-pi-review.hex'),model_input_sha256=MODEL_SHA256,
         own_source_sha256={name:digest(own/name) for name in files},
         image_sections_bytes=dict(text=int(size_fields[0]),data=int(size_fields[1]),bss=int(size_fields[2])),
         source_unchanged=True,reference_profile=profile,phase_start_calls_removed=True,
-        hardware_accessed=False,flash_programmed=False,motion_approved=False,
+        hardware_accessed=False,flash_programmed=False,motion_capable=bool(a.motion_can),motion_approved=False,
         transport_gain_commands_connected=bool(connected),board_can_hal_connected=bool(a.can_pi),
         connected_can_model_checks=connected,td3_actor_connected=False,
         remaining=('integrate verified motion enable, independent motion progress/stop protection and approved thermal policy; connect Actor'
@@ -309,5 +336,9 @@ if __name__=='__main__':
     p.add_argument('--source',required=True);p.add_argument('--output',required=True)
     p.add_argument('--arm-bin',required=True);p.add_argument('--compiler',default='gcc')
     p.add_argument('--can-pi',action='store_true',help='Check and link existing CAN protocol to the actual PI boundary')
+    p.add_argument('--motion-can',action='store_true',help='Build the explicitly bounded CAN motion adapter; never flashes or authorizes a run')
     p.add_argument('--temp-root',default='E:/simulink/_codex_tmp')
-    build(p.parse_args())
+    args=p.parse_args()
+    if args.motion_can and not args.can_pi:
+        p.error('--motion-can requires --can-pi')
+    build(args)

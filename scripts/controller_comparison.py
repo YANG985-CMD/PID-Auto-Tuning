@@ -18,12 +18,27 @@ import numpy as np
 KP_BASE, KI_BASE = 0.003389, 0.00144
 KP_LO, KP_HI = 0.0025, 0.0043
 KI_LO, KI_HI = 0.0008, 0.0022
+MAX_PEAK_CURRENT = 3.0
+MAX_OVERSHOOT_RPM = 120.0
 SPEED_REFS = (500.0, 800.0, 1100.0)
 TEST_SEEDS = (101, 202, 303)
 TRAIN_SEEDS = (11, 22, 33, 44, 55, 66)
 WINDOWS = 30
 INNER_STEPS = 20
 DT = 0.005
+FUZZY_CENTERS = np.linspace(-1.0, 1.0, 7)
+
+
+def _make_fuzzy_rules():
+    """Build symmetric gain-increment surfaces for the 7x7 fuzzy scheduler."""
+    e, de = np.meshgrid(FUZZY_CENTERS, FUZZY_CENTERS, indexing='ij')
+    magnitude = np.clip(0.7 * np.abs(e) + 0.3 * np.abs(de), 0.0, 1.0)
+    delta_kp = 0.6 * magnitude
+    delta_ki = 0.5 * (1.0 - 2.0 * np.abs(e)) - 0.2 * np.abs(de)
+    return delta_kp, np.clip(delta_ki, -0.5, 0.5)
+
+
+FUZZY_DKP_RULE, FUZZY_DKI_RULE = _make_fuzzy_rules()
 
 
 def clip(value, lo, hi):
@@ -36,16 +51,38 @@ def fixed_policy(kp, ki):
     return policy
 
 
+def _membership_vector(value):
+    """Seven overlapping triangular/trapezoidal memberships on [-1, 1]."""
+    x = clip(value, -1.0, 1.0)
+    memberships = np.zeros(7, dtype=float)
+    for index, center in enumerate(FUZZY_CENTERS):
+        if index == 0:
+            memberships[index] = 1.0 if x <= center else max(0.0, (FUZZY_CENTERS[1] - x) /
+                                                               (FUZZY_CENTERS[1] - center))
+        elif index == len(FUZZY_CENTERS) - 1:
+            memberships[index] = 1.0 if x >= center else max(0.0, (x - FUZZY_CENTERS[-2]) /
+                                                               (center - FUZZY_CENTERS[-2]))
+        else:
+            left, right = FUZZY_CENTERS[index - 1], FUZZY_CENTERS[index + 1]
+            memberships[index] = max(0.0, min((x - left) / (center - left),
+                                              (right - x) / (right - center)))
+    total = float(memberships.sum())
+    return memberships / total if total > 0.0 else np.array([0, 0, 0, 1, 0, 0, 0], dtype=float)
+
+
 def fuzzy_gains(ctx):
+    """Mamdani-like 7x7 fuzzy gain scheduler with weighted-centroid outputs."""
     ref = max(abs(ctx['ref']), 1.0)
     error = ctx['ref'] - ctx['speed']
     de = error - ctx['previous_error']
     e_norm = clip(error / max(ref, 1000.0), -1.0, 1.0)
     de_norm = clip(de / max(ref, 1000.0), -1.0, 1.0)
-    # A compact Mamdani-like schedule: high proportional action for large
-    # error, more integral action near the reference, with bounded output.
-    kp = KP_BASE + 0.0009 * abs(e_norm) + 0.00025 * abs(de_norm)
-    ki = KI_BASE + 0.00045 * (1.0 - abs(e_norm)) - 0.00012 * abs(de_norm)
+    activation = np.outer(_membership_vector(e_norm), _membership_vector(de_norm))
+    denominator = float(activation.sum())
+    delta_kp = float((activation * FUZZY_DKP_RULE).sum() / denominator)
+    delta_ki = float((activation * FUZZY_DKI_RULE).sum() / denominator)
+    kp = KP_BASE * (1.0 + delta_kp)
+    ki = KI_BASE * (1.0 + delta_ki)
     return clip(kp, KP_LO, KP_HI), clip(ki, KI_LO, KI_HI)
 
 
@@ -60,6 +97,7 @@ class NnPid:
         self.w3 = self.rng.normal(0, 0.15, (16, 2))
         self.b3 = np.zeros(2)
         self.loss = None
+        self.validation_loss = None
 
     @staticmethod
     def features(ref, speed, previous_error, integral):
@@ -74,7 +112,7 @@ class NnPid:
         y = np.tanh(z2 @ self.w3 + self.b3)
         return y, (x, z1, z2, y)
 
-    def fit(self, samples, epochs=900, lr=0.02):
+    def fit(self, samples, validation_samples=None, epochs=900, lr=0.02):
         x = np.vstack([s[0] for s in samples])
         target = np.vstack([s[1] for s in samples])
         for _ in range(epochs):
@@ -92,8 +130,18 @@ class NnPid:
             self.w2 -= lr * dw2; self.b2 -= lr * db2
             self.w1 -= lr * dw1; self.b1 -= lr * db1
         self.loss = float(np.mean((self.forward(x)[0] - target) ** 2))
+        if validation_samples:
+            vx = np.vstack([s[0] for s in validation_samples])
+            vy = np.vstack([s[1] for s in validation_samples])
+            self.validation_loss = float(np.mean((self.forward(vx)[0] - vy) ** 2))
 
     def gains(self, ctx):
+        # Fall back to the interpretable fuzzy scheduler outside the training
+        # envelope instead of extrapolating an unconstrained neural surface.
+        if not (-100.0 <= ctx['speed'] <= 1300.0 and
+                -1100.0 <= ctx['previous_error'] <= 1100.0 and
+                -2.0 <= ctx['integral'] <= 2.0):
+            return fuzzy_gains(ctx)
         x = self.features(ctx['ref'], ctx['speed'], ctx['previous_error'], ctx['integral'])
         y, _ = self.forward(x)
         kp = KP_LO + (float(y[0, 0]) + 1.0) * 0.5 * (KP_HI - KP_LO)
@@ -114,8 +162,9 @@ def train_nn():
         target = np.array([[2 * (kp - KP_LO) / (KP_HI - KP_LO) - 1,
                             2 * (ki - KI_LO) / (KI_HI - KI_LO) - 1]])
         samples.append((NnPid.features(ref, speed, prev, integral), target))
+    split = int(0.8 * len(samples))
     model = NnPid()
-    model.fit(samples)
+    model.fit(samples[:split], validation_samples=samples[split:])
     return model
 
 
@@ -152,20 +201,56 @@ def simulate(seed, ref, policy):
 
 
 def objective(rows):
-    return float(np.mean([r['rmse_normalized'] ** 2 + 0.05 * (r['peak_current_a'] / 4) ** 2
-                          + 0.04 * r['saturation_fraction'] for r in rows]))
+    return float(np.mean([r['rmse_normalized'] ** 2
+                          + 0.05 * (r['peak_current_a'] / 4) ** 2
+                          + 0.02 * (r['overshoot_rpm'] / 1000.0) ** 2
+                          + 0.04 * r['saturation_fraction']
+                          + 0.25 * r['fault_count'] for r in rows]))
+
+
+def _candidate_is_safe(rows):
+    return all(row['fault_count'] == 0 and
+               row['peak_current_a'] <= MAX_PEAK_CURRENT and
+               row['overshoot_rpm'] <= MAX_OVERSHOOT_RPM for row in rows)
 
 
 def tune_skill():
+    """Use safe coarse-to-fine bounded search instead of one giant grid."""
     best = None
-    for kp in np.linspace(KP_LO, KP_HI, 9):
-        for ki in np.linspace(KI_LO, KI_HI, 9):
+    evaluated = 0
+    safe_candidates = 0
+    ranges = [(KP_LO, KP_HI, KI_LO, KI_HI, 5)]
+    for kp_lo, kp_hi, ki_lo, ki_hi, count in ranges:
+        for kp in np.linspace(kp_lo, kp_hi, count):
+            for ki in np.linspace(ki_lo, ki_hi, count):
+                rows = [simulate(seed, ref, fixed_policy(kp, ki))
+                        for seed in TRAIN_SEEDS for ref in SPEED_REFS]
+                evaluated += 1
+                if not _candidate_is_safe(rows):
+                    continue
+                safe_candidates += 1
+                score = objective(rows)
+                if best is None or score < best['score']:
+                    best = {'kp': float(kp), 'ki': float(ki), 'score': score}
+    if best is None:
+        raise RuntimeError('No safe AI-skill candidate in the bounded search region')
+    # Refine only around the safe coarse winner; this keeps the search bounded
+    # and makes every tested candidate auditable.
+    kp_step = (KP_HI - KP_LO) / 4.0
+    ki_step = (KI_HI - KI_LO) / 4.0
+    for kp in np.linspace(max(KP_LO, best['kp'] - kp_step), min(KP_HI, best['kp'] + kp_step), 5):
+        for ki in np.linspace(max(KI_LO, best['ki'] - ki_step), min(KI_HI, best['ki'] + ki_step), 5):
             rows = [simulate(seed, ref, fixed_policy(kp, ki))
                     for seed in TRAIN_SEEDS for ref in SPEED_REFS]
+            evaluated += 1
+            if not _candidate_is_safe(rows):
+                continue
+            safe_candidates += 1
             score = objective(rows)
-            if best is None or score < best['score']:
-                best = {'kp': float(kp), 'ki': float(ki), 'score': score,
-                        'candidates_evaluated': 81}
+            if score < best['score']:
+                best.update(kp=float(kp), ki=float(ki), score=score)
+    best['candidates_evaluated'] = evaluated
+    best['safe_candidates'] = safe_candidates
     return best
 
 
@@ -185,6 +270,10 @@ def aggregate(name, rows, extra=None):
 
 def load_td3(path):
     data = json.loads(Path(path).read_text(encoding='utf-8'))
+    if not data.get('simulation_only', False):
+        raise ValueError('TD3 comparison input must be marked simulation_only')
+    if data.get('exploration_enabled', False):
+        raise ValueError('TD3 comparison input must be a fixed-policy evaluation')
     rows = []
     for row in data['fixtures']:
         if row['policy'] == 'baseline':
@@ -197,6 +286,8 @@ def load_td3(path):
                      'fault_count': row['fault_count']})
     if len(rows) != 3:
         raise ValueError('TD3 evaluation must contain three candidate fixtures')
+    if not _candidate_is_safe(rows):
+        raise ValueError('TD3 candidate fails the comparison safety gate')
     return rows, data
 
 
@@ -234,17 +325,25 @@ def run(args):
     methods = [
         aggregate('fixed PI baseline', baseline_rows),
         aggregate('AI skill bounded search', skill_rows, {'selected_kp': skill['kp'], 'selected_ki': skill['ki'],
-                                                          'candidate_count': skill['candidates_evaluated']}),
+                                                          'candidate_count': skill['candidates_evaluated'],
+                                                          'safe_candidate_count': skill['safe_candidates']}),
         aggregate('fuzzy PID', fuzzy_rows),
-        aggregate('neural-network PID', nn_rows, {'supervised_target': 'fuzzy PID', 'training_loss': nn.loss}),
+        aggregate('neural-network PID', nn_rows, {'supervised_target': 'fuzzy PID',
+                                                  'training_loss': nn.loss,
+                                                  'validation_loss': nn.validation_loss}),
         aggregate('TD3 Actor', td3_rows, {'td3_source': 'MATLAB TD3', 'td3_simulation_only': td3_source.get('simulation_only', True)})]
     baseline_rmse = methods[0]['mean_rmse_normalized']
     for m in methods:
         m['rmse_change_vs_baseline_pct'] = 100.0 * (m['mean_rmse_normalized'] / baseline_rmse - 1.0)
-    report = {'schema_version': 1, 'simulation_only': True,
+    report = {'schema_version': 2, 'simulation_only': True,
               'plant': 'motor_runtime.MockDevice-compatible deterministic speed PI plant',
               'speed_refs_rpm': list(SPEED_REFS), 'test_seeds': list(TEST_SEEDS),
               'training_seeds_for_skill_and_nn': list(TRAIN_SEEDS),
+              'improvements': {
+                  'ai_skill': 'coarse-to-fine bounded search with multi-objective safety gate',
+                  'fuzzy_pid': '7x7 triangular/trapezoidal memberships with weighted-centroid defuzzification',
+                  'neural_network_pid': 'supervised fuzzy-schedule imitation with validation split and OOD fallback',
+                  'td3_actor': 'simulation-only source gate; external TD3 report must pass safety metrics'},
               'methods': methods, 'td3_evaluation_source': str(Path(args.td3_evaluation).name),
               'td3_training_note': 'MATLAB TD3 candidate is from a 20-round, 600-experience mock run; no hardware access.',
               'winner_by_rmse': min(methods, key=lambda x: x['mean_rmse_normalized'])['method'],

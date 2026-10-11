@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "simulation_only": true,
   "plant": "motor_runtime.MockDevice-compatible deterministic speed PI plant",
   "speed_refs_rpm": [
@@ -20,6 +20,12 @@
     55,
     66
   ],
+  "improvements": {
+    "ai_skill": "coarse-to-fine bounded search with multi-objective safety gate",
+    "fuzzy_pid": "7x7 triangular/trapezoidal memberships with weighted-centroid defuzzification",
+    "neural_network_pid": "supervised fuzzy-schedule imitation with validation split and OOD fallback",
+    "td3_actor": "simulation-only source gate; external TD3 report must pass safety metrics"
+  },
   "methods": [
     {
       "method": "fixed PI baseline",
@@ -72,7 +78,7 @@
           "speed_ref_rpm": 500.0,
           "reward": -0.01339996036575747,
           "rmse_normalized": 0.10374903194380045,
-          "peak_current_a": 1.593,
+          "peak_current_a": 1.5930000000000002,
           "overshoot_rpm": 0.0,
           "saturation_fraction": 0.0,
           "fault_count": 0
@@ -105,9 +111,10 @@
       "mean_overshoot_rpm": 0.798833546976463,
       "mean_saturation_fraction": 0.007222222222222223,
       "fault_count": 0,
-      "selected_kp": 0.003175,
+      "selected_kp": 0.0031750000000000003,
       "selected_ki": 0.0022,
-      "candidate_count": 81,
+      "candidate_count": 50,
+      "safe_candidate_count": 50,
       "rmse_change_vs_baseline_pct": -1.6454893921500457
     },
     {
@@ -116,9 +123,9 @@
         {
           "seed": 101,
           "speed_ref_rpm": 500.0,
-          "reward": -0.013441786435129747,
-          "rmse_normalized": 0.09855432648358295,
-          "peak_current_a": 1.9860124999999997,
+          "reward": -0.013560420093939332,
+          "rmse_normalized": 0.0963788155230937,
+          "peak_current_a": 2.15324,
           "overshoot_rpm": 0.0,
           "saturation_fraction": 0.0,
           "fault_count": 0
@@ -126,8 +133,8 @@
         {
           "seed": 202,
           "speed_ref_rpm": 800.0,
-          "reward": -0.03476323509624558,
-          "rmse_normalized": 0.15960949083103002,
+          "reward": -0.035023151921865406,
+          "rmse_normalized": 0.16043791614588618,
           "peak_current_a": 3.0,
           "overshoot_rpm": 0.0,
           "saturation_fraction": 0.011666666666666667,
@@ -136,22 +143,22 @@
         {
           "seed": 303,
           "speed_ref_rpm": 1100.0,
-          "reward": -0.06877477501183435,
-          "rmse_normalized": 0.23811591488619505,
+          "reward": -0.06965080091184786,
+          "rmse_normalized": 0.23956617186594367,
           "peak_current_a": 3.0,
           "overshoot_rpm": 0.0,
-          "saturation_fraction": 0.041666666666666664,
+          "saturation_fraction": 0.04666666666666667,
           "fault_count": 0
         }
       ],
-      "mean_reward": -0.03899326551440322,
-      "mean_rmse_normalized": 0.16542657740026934,
-      "mean_peak_current_a": 2.6620041666666663,
+      "mean_reward": -0.039411457642550864,
+      "mean_rmse_normalized": 0.16546096784497452,
+      "mean_peak_current_a": 2.7177466666666668,
       "max_peak_current_a": 3.0,
       "mean_overshoot_rpm": 0.0,
-      "mean_saturation_fraction": 0.017777777777777778,
+      "mean_saturation_fraction": 0.019444444444444445,
       "fault_count": 0,
-      "rmse_change_vs_baseline_pct": -5.347965782506114
+      "rmse_change_vs_baseline_pct": -5.328288620588461
     },
     {
       "method": "neural-network PID",
@@ -159,9 +166,9 @@
         {
           "seed": 101,
           "speed_ref_rpm": 500.0,
-          "reward": -0.013271042808910925,
-          "rmse_normalized": 0.09763963679155001,
-          "peak_current_a": 1.9871340497402148,
+          "reward": -0.013445966022903627,
+          "rmse_normalized": 0.09708069211295654,
+          "peak_current_a": 2.0775388527706316,
           "overshoot_rpm": 0.0,
           "saturation_fraction": 0.0,
           "fault_count": 0
@@ -169,34 +176,35 @@
         {
           "seed": 202,
           "speed_ref_rpm": 800.0,
-          "reward": -0.0346582163758575,
-          "rmse_normalized": 0.1599632525934539,
+          "reward": -0.03473895518957132,
+          "rmse_normalized": 0.15977089205085152,
           "peak_current_a": 3.0,
           "overshoot_rpm": 0.0,
-          "saturation_fraction": 0.006666666666666667,
+          "saturation_fraction": 0.01,
           "fault_count": 0
         },
         {
           "seed": 303,
           "speed_ref_rpm": 1100.0,
-          "reward": -0.06806528112740068,
-          "rmse_normalized": 0.23657155070512764,
+          "reward": -0.06859518634672725,
+          "rmse_normalized": 0.23759086998987586,
           "peak_current_a": 3.0,
           "overshoot_rpm": 0.0,
-          "saturation_fraction": 0.041666666666666664,
+          "saturation_fraction": 0.043333333333333335,
           "fault_count": 0
         }
       ],
-      "mean_reward": -0.03866484677072304,
-      "mean_rmse_normalized": 0.1647248133633772,
-      "mean_peak_current_a": 2.6623780165800714,
+      "mean_reward": -0.03892670251973406,
+      "mean_rmse_normalized": 0.16481415138456132,
+      "mean_peak_current_a": 2.6925129509235437,
       "max_peak_current_a": 3.0,
       "mean_overshoot_rpm": 0.0,
-      "mean_saturation_fraction": 0.01611111111111111,
+      "mean_saturation_fraction": 0.017777777777777778,
       "fault_count": 0,
       "supervised_target": "fuzzy PID",
-      "training_loss": 0.045171561143705456,
-      "rmse_change_vs_baseline_pct": -5.749493727267996
+      "training_loss": 0.11186222671399633,
+      "validation_loss": 0.11552000684471783,
+      "rmse_change_vs_baseline_pct": -5.698377240601027
     },
     {
       "method": "TD3 Actor",
@@ -204,9 +212,9 @@
         {
           "seed": 101,
           "speed_ref_rpm": 500.0,
-          "reward": -0.3375622639574594,
-          "rmse_normalized": 0.100525266413492,
-          "peak_current_a": 1.7301124980440363,
+          "reward": -0.3484737971683318,
+          "rmse_normalized": 0.10037031510130254,
+          "peak_current_a": 1.7319440763094462,
           "overshoot_rpm": 0,
           "saturation_fraction": 0,
           "fault_count": 0
@@ -214,9 +222,9 @@
         {
           "seed": 202,
           "speed_ref_rpm": 800.0,
-          "reward": -0.8834535092432029,
-          "rmse_normalized": 0.16451461637153011,
-          "peak_current_a": 2.7729881163686514,
+          "reward": -0.9039316405329376,
+          "rmse_normalized": 0.1643392116137846,
+          "peak_current_a": 2.7749019521288574,
           "overshoot_rpm": 0,
           "saturation_fraction": 0,
           "fault_count": 0
@@ -224,24 +232,24 @@
         {
           "seed": 303,
           "speed_ref_rpm": 1100.0,
-          "reward": -1.795465341076334,
-          "rmse_normalized": 0.23618852639721052,
+          "reward": -1.863783116383623,
+          "rmse_normalized": 0.23605909234530728,
           "peak_current_a": 3,
           "overshoot_rpm": 0,
-          "saturation_fraction": 0.028333333333333332,
+          "saturation_fraction": 0.030000000000000002,
           "fault_count": 0
         }
       ],
-      "mean_reward": -1.005493704758999,
-      "mean_rmse_normalized": 0.16707613639407756,
-      "mean_peak_current_a": 2.5010335381375626,
+      "mean_reward": -1.0387295180282974,
+      "mean_rmse_normalized": 0.16692287302013145,
+      "mean_peak_current_a": 2.5022820094794347,
       "max_peak_current_a": 3.0,
       "mean_overshoot_rpm": 0.0,
-      "mean_saturation_fraction": 0.009444444444444445,
+      "mean_saturation_fraction": 0.01,
       "fault_count": 0,
       "td3_source": "MATLAB TD3",
       "td3_simulation_only": true,
-      "rmse_change_vs_baseline_pct": -4.404138516178014
+      "rmse_change_vs_baseline_pct": -4.491831136934687
     }
   ],
   "td3_evaluation_source": "evaluation-summary.json",

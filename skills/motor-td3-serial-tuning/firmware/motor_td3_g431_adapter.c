@@ -1,16 +1,22 @@
-/* Integration adapter for audited G431 examples. LOCKED BUILD.
- * No start/PWM-enable/gain-write operation exists in this translation unit.
- * Raw diagnostic IDs 622..625 are never TD3 training telemetry (621).
- * Default source: PID/NNSMC. SPEEDLOOP diagnostic: fuzzy PI, no FOC step. */
+/* Integration adapter for audited G431 examples.
+ * The default build is motion-inhibited. MOTOR_TD3_SPEEDLOOP_PI_MOTION adds
+ * an explicitly bounded CAN BEGIN/GAINS path; the hardware COMP/TIM1 Break,
+ * Hall validation, ADC freshness, lease and link watchdog remain independent
+ * stop paths. Raw diagnostic IDs 622..625 are never TD3 training telemetry. */
 #include "motor_td3_g431_adapter.h"
 #include "motor_td3_g431_off.h"
 #include "motor_td3_can_control.h"
+#include "motor_td3_speedloop_can.h"
 #include "main.h"
+#include "tim.h"
 #include "fdcan.h"
 #include "FOC_Model.h"
 #include <math.h>
 #include <string.h>
-#ifdef MOTOR_TD3_SPEEDLOOP_WATCHDOG
+#if defined(MOTOR_TD3_SPEEDLOOP_PI_MOTION)
+#define LOCKED_FIRMWARE "g431-speedloop-pi-motion-v1"
+#define LOCKED_PROFILE "g431-speedloop-pi-motion-v1"
+#elif defined(MOTOR_TD3_SPEEDLOOP_WATCHDOG)
 #include "motor_td3_g431_watchdog.h"
 #endif
 
@@ -18,13 +24,13 @@
 #define MAIN_DEADLINE_US 5000U
 #define TX_DEADLINE_US 50000U
 #define DIAG_PERIOD_US 100000U
-#ifdef MOTOR_TD3_SPEEDLOOP_WATCHDOG
+#if !defined(MOTOR_TD3_SPEEDLOOP_PI_MOTION) && defined(MOTOR_TD3_SPEEDLOOP_WATCHDOG)
 #define LOCKED_FIRMWARE "g431-speedloop-wdog-v1"
 #define LOCKED_PROFILE "g431-speedloop-wdog-v1"
-#elif defined(MOTOR_TD3_SPEEDLOOP_DIAGNOSTIC)
+#elif !defined(MOTOR_TD3_SPEEDLOOP_PI_MOTION) && defined(MOTOR_TD3_SPEEDLOOP_DIAGNOSTIC)
 #define LOCKED_FIRMWARE "g431-speedloop-diag-v1"
 #define LOCKED_PROFILE "g431-speedloop-diag-v1"
-#else
+#elif !defined(MOTOR_TD3_SPEEDLOOP_PI_MOTION)
 #define LOCKED_FIRMWARE "g431-foc-can-locked-v1"
 #define LOCKED_PROFILE "g431-foc-locked-v1"
 #endif
@@ -41,6 +47,17 @@ static uint64_t ring_time[RX_CAPACITY];
 static uint32_t tx_length,tx_index,diag_index;
 static uint8_t tx_transfer;
 static int endpoint_ready;
+#ifdef MOTOR_TD3_SPEEDLOOP_PI_MOTION
+static volatile uint8_t motion_enabled;
+static const float live_refs[] = {200.0f,400.0f,600.0f,800.0f,1000.0f,1200.0f,1400.0f,1600.0f,1800.0f,2000.0f};
+static const motor_td3_limits live_limits = {
+    .kp_min=0.0013556f,.kp_max=0.0054224f,.ki_min=0.00072f,.ki_max=0.00216f,
+    .kp_step=0.00027112f,.ki_step=0.000144f,.kp_baseline=0.003389f,.ki_baseline=0.00144f,
+    .current_limit=2.0f,.speed_limit=1800.0f,.vbus_min=18.0f,.vbus_max=30.0f,
+    .temperature_limit=-1.0f, /* no sensor on this board; thermal guard disabled */
+    .lease_max_us=250000U,.link_timeout_us=100000U,.trial_max_us=10000000U,.command_max=500U
+};
+#endif
 #ifdef MOTOR_TD3_SPEEDLOOP_WATCHDOG
 static uint32_t tx_inflight,tx_frame_id;
 static uint8_t tx_marker;
@@ -54,14 +71,43 @@ static void unlock(uint32_t p) { __set_PRIMASK(p); }
 static uint64_t clock_us(void) { uint32_t p=lock(); uint64_t n=now_us; unlock(p); return n; }
 void motor_td3_g431_disable(void) {
     motor_td3_g431_outputs_off(); Motor_state=0; rtU.Motor_OnOff=0.0F;
+#ifdef MOTOR_TD3_SPEEDLOOP_PI_MOTION
+    motion_enabled=0;
+#endif
 }
 static void disable_hook(void *u) { (void)u; motor_td3_g431_disable(); }
+#ifdef MOTOR_TD3_SPEEDLOOP_PI_MOTION
+static uint8_t hall_code(void) {
+    return (uint8_t)(((GPIOB->IDR>>8)&1U)|((GPIOB->IDR>>6)&2U)|((GPIOB->IDR>>4)&4U));
+}
+static int motion_begin(void *u,float ref,float kp,float ki) {
+    (void)u;(void)kp;(void)ki;
+    if(irq_fault||motor_td3_g431_break_seen()||!ADC_offset||Vbus<18.0f||Vbus>30.0f||
+       hall_code()==0U||hall_code()>=7U) { motor_td3_g431_disable(); return 0; }
+    rtU.SpeedRef=ref;
+    if(HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_1)!=HAL_OK ||
+       HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_2)!=HAL_OK ||
+       HAL_TIM_PWM_Start(&htim1,TIM_CHANNEL_3)!=HAL_OK ||
+       HAL_TIMEx_PWMN_Start(&htim1,TIM_CHANNEL_1)!=HAL_OK ||
+       HAL_TIMEx_PWMN_Start(&htim1,TIM_CHANNEL_2)!=HAL_OK ||
+       HAL_TIMEx_PWMN_Start(&htim1,TIM_CHANNEL_3)!=HAL_OK) {
+        motor_td3_g431_disable(); return 0;
+    }
+    Motor_state=1;rtU.Motor_OnOff=1.0F;motion_enabled=1;return 1;
+}
+static int motion_apply(void *u,float kp,float ki) {
+    (void)u;(void)kp;(void)ki;
+    return motion_enabled && motor_td3_g431_outputs_enabled() && !motor_td3_g431_break_seen();
+}
+#endif
+#ifndef MOTOR_TD3_SPEEDLOOP_PI_MOTION
 static int reject_begin(void *u,float ref,float kp,float ki) {
     (void)u;(void)ref;(void)kp;(void)ki;motor_td3_g431_disable();return 0;
 }
 static int reject_apply(void *u,float kp,float ki) {
     (void)u;(void)kp;(void)ki;motor_td3_g431_disable();return 0;
 }
+#endif
 static int actual_snapshot(void *u,motor_td3_telemetry *t) {
     uint32_t p=lock(); (void)u;
     memset(t,0,sizeof(*t));
@@ -92,6 +138,18 @@ void motor_td3_g431_init(void) {
        HAL_FDCAN_ActivateNotification(&hfdcan1,FDCAN_IT_RX_FIFO0_NEW_MESSAGE|FDCAN_IT_RX_FIFO0_MESSAGE_LOST|
            FDCAN_IT_BUS_OFF|FDCAN_IT_ERROR_PASSIVE|FDCAN_IT_ARB_PROTOCOL_ERROR|FDCAN_IT_DATA_PROTOCOL_ERROR,0)!=HAL_OK ||
        HAL_FDCAN_Start(&hfdcan1)!=HAL_OK) irq_fault=1;
+#ifdef MOTOR_TD3_SPEEDLOOP_PI_MOTION
+    {
+        const motor_td3_can_hooks board={0,disable_hook,motion_begin,motion_apply,actual_snapshot};
+        motor_td3_can_hooks hooks;
+        if(!motor_td3_speedloop_can_attach(&pi_link,&endpoint,&board,&hooks) ||
+           !motor_td3_can_control_init(&endpoint,&live_limits,&hooks,
+               0x4734333100000001ULL,LOCKED_FIRMWARE,LOCKED_PROFILE,live_refs,
+               sizeof(live_refs)/sizeof(live_refs[0]),100000U,TD3_CAN_CAPABILITIES_ALL))
+            irq_fault=1;
+        else endpoint_ready=1;
+    }
+#endif
 #ifdef MOTOR_TD3_SPEEDLOOP_WATCHDOG
     if(!motor_td3_g431_wd_init(clock_us())) motor_td3_g431_fault_irq();
 #endif
@@ -100,16 +158,24 @@ void motor_td3_g431_init(void) {
 void motor_td3_g431_tick_1ms(void) {
     now_us+=1000U;
     if(motor_td3_g431_break_seen()) motor_td3_g431_fault_irq();
-    motor_td3_g431_disable(); /* Independent of CAN, ADC and foreground polling. */
     if(initialized && now_us-main_seen_us>=MAIN_DEADLINE_US) irq_fault=1;
     if(endpoint_ready) {
         if(irq_fault) endpoint.rx_fault=1;
-        motor_td3_can_control_tick(&endpoint,now_us,1); /* Permanently inhibited. */
+        {
+            int estop=irq_fault||motor_td3_g431_break_seen()||!ADC_offset||
+                (now_us>adc_seen_us && now_us-adc_seen_us>5000U);
+#ifdef MOTOR_TD3_SPEEDLOOP_PI_MOTION
+            /* BEGIN/GAINS are only legal at the generated 1 ms PI boundary;
+             * HELLO/STOP and expired commands remain serviced here. */
+            motor_td3_can_control_tick_ready(&endpoint,now_us,estop,0);
+#else
+            motor_td3_can_control_tick(&endpoint,now_us,estop);
+#endif
+        }
     }
 }
 void motor_td3_g431_adc_sample(void) {
     uint32_t p=lock(); adc_seen_us=now_us; ++adc_samples; unlock(p);
-    motor_td3_g431_disable();
 }
 int motor_td3_g431_hall_capture(uint32_t ticks,uint8_t code) {
     if(!ticks||code==0||code>6) {
@@ -193,12 +259,16 @@ void motor_td3_g431_poll(void) {
     if(!motor_td3_g431_wd_service(n,adc,owner,seq,bad)) motor_td3_g431_fault_irq();
 #endif
     p=lock();main_seen_us=n;
+#ifdef MOTOR_TD3_SPEEDLOOP_PI_MOTION
+    (void)p;
+#else
     if(!endpoint_ready && motor_td3_g431_debugger_boot_token) {
         const motor_td3_can_hooks h={0,disable_hook,reject_begin,reject_apply,actual_snapshot};
         endpoint_ready=motor_td3_can_control_init_locked(&endpoint,&h,motor_td3_g431_debugger_boot_token,
             LOCKED_FIRMWARE,LOCKED_PROFILE);
         motor_td3_g431_debugger_boot_token=0; /* Consumed, no rearm path. */
     }
+#endif
     unlock(p);
     while(endpoint_ready && ring_read!=ring_write && budget--) {
         uint64_t arrived;

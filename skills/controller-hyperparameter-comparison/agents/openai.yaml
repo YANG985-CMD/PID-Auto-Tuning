@@ -1,0 +1,4 @@
+interface:
+  display_name: "四种控制器超参数调优对比"
+  short_description: "比较并移植 AI 搜索、模糊 PID、神经网络 PID 和 TD3 Actor"
+  default_prompt: "使用 $controller-hyperparameter-comparison，在相同工况下比较四种控制器超参数调优方法，并根据目标设备移植和验证选定方法。"

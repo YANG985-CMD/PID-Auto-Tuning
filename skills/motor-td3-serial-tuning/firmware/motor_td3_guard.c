@@ -40,12 +40,18 @@ int motor_td3_apply(motor_td3_guard *g,uint64_t now,uint32_t seq,float kp,float 
     g->last_rx_us=now; g->deadline_us=now+lease; g->commands++; return 1;
 }
 void motor_td3_tick(motor_td3_guard *g,uint64_t now,float current,float speed,float vbus,float temperature,int estop) {
+    int thermal_enabled;
     if(!g) return;
     if(now<g->last_tick_us) { trip(g,MOTOR_TD3_TIME); return; }
     g->last_tick_us=now;
     if(!g->enabled) return;
-    if(estop||!isfinite(current)||!isfinite(speed)||!isfinite(vbus)||!isfinite(temperature)||
-       vbus<g->limits.vbus_min||vbus>g->limits.vbus_max||temperature>=g->limits.temperature_limit)
+    /* A negative temperature limit explicitly means that this board has no
+     * temperature channel. The live profile still keeps voltage, Hall/speed,
+     * lease, link, software current and hardware comparator protection. */
+    thermal_enabled=g->limits.temperature_limit>=0.0f;
+    if(estop||!isfinite(current)||!isfinite(speed)||!isfinite(vbus)||
+       (thermal_enabled&&(!isfinite(temperature)||temperature>=g->limits.temperature_limit))||
+       vbus<g->limits.vbus_min||vbus>g->limits.vbus_max)
         trip(g,MOTOR_TD3_SENSOR);
     else if(fabsf(current)>=g->limits.current_limit) trip(g,MOTOR_TD3_OVERCURRENT);
     else if(fabsf(speed)>=g->limits.speed_limit) trip(g,MOTOR_TD3_OVERSPEED);
