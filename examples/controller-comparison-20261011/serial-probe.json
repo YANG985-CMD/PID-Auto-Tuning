@@ -5,11 +5,15 @@
   "port_identity": "STMicroelectronics STLink Virtual COM Port",
   "protocol_source": "17.SpeedLoop USART3 PB10/PB11, 921600 8N1, 24-byte legacy packet",
   "duration_s_per_baud": 3,
+  "followup_921600_duration_s": 5,
+  "user3_followup_duration_s": 10,
   "bauds_tested": [921600, 230400, 115200],
   "results": [
     {"baud": 921600, "bytes": 0, "valid_frames": 0},
     {"baud": 230400, "bytes": 0, "valid_frames": 0},
-    {"baud": 115200, "bytes": 0, "valid_frames": 0}
+    {"baud": 115200, "bytes": 0, "valid_frames": 0},
+    {"baud": 921600, "duration_s": 5, "bytes": 0, "valid_frames": 0},
+    {"baud": 921600, "duration_s": 10, "operator_action": "USER3 pressed once", "bytes": 0, "valid_frames": 0}
   ],
   "write_performed": false,
   "motor_start_requested": false,
