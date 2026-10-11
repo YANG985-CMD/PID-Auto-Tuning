@@ -24,7 +24,7 @@ CAN_FILES=('motor_td3_speedloop_can.c','motor_td3_speedloop_can.h',
            'motor_td3_guard.c','motor_td3_guard.h','motor_td3_protocol.h',
            'motor_td3_g431_adapter.c','motor_td3_g431_adapter.h','motor_td3_g431_off.h')
 CAN_BUILD_ID='g431-speedloop-pi-can-review-v1'
-MOTION_BUILD_ID='g431-speedloop-pi-motion-v3'
+MOTION_BUILD_ID='g431-speedloop-pi-motion-v4'
 
 
 def patch_copy(copy,can_pi=False,motion=False):
@@ -237,6 +237,13 @@ def build(a):
         shutil.copytree(source/folder,copy/folder,ignore=shutil.ignore_patterns('*.o','*.d','*.axf','*.hex','*.bak'))
     patch_copy(copy,a.can_pi,a.motion_can)
     own=copy/'codex-pi';own.mkdir();files=FILES+(CAN_FILES if a.can_pi else ())
+    if a.motion_can:
+        files+=('motor_td3_speedloop_hall.c','motor_td3_speedloop_hall.h')
+        # Motion observer owns full-width edge timing and signed interpolation.
+        path=copy/'Core/Src/main.c';text=path.read_text(encoding='utf-8')
+        text=replace_once(text,'\t\tHallThetaAdd = (PI/3)/(HallTemp/3200000)/10000;','')
+        text=replace_once(text,'\t\tHallSpeed = (PI/3)/(HallTemp/3200000)*30/(2*PI);','')
+        path.write_text(text,encoding='utf-8',newline='\n')
     for name in files: shutil.copy2(SKILL/'firmware'/name,own/name)
     if a.can_pi: patch_can_port(own/'motor_td3_g431_adapter.c',a.motion_can)
     env=os.environ.copy();env.update(TEMP=str(out),TMP=str(out),TMPDIR=str(out))

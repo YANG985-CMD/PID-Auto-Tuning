@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "source": "real_motor",
+  "firmware_id": "g431-speedloop-pi-motion-v3",
+  "hardware_accessed": true,
+  "matlab_release": "2024b",
+  "complete_telemetry_packets": 40,
+  "active_snapshots": 38,
+  "commanded_gain_actions": 13,
+  "actual_gain_actions": 12,
+  "actual_gain_sequences": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12
+  ],
+  "gain_pairs": [
+    0.0033889999613165855,
+    0.0014400000218302011
+  ],
+  "median_sample_interval_ms": 19.998,
+  "actual_apply_latency_ms_range": [
+    29.997,
+    48.999
+  ],
+  "observed_active_ms_range": [
+    15.791999816894531,
+    755.85797119140625
+  ],
+  "nominal_peak_current_a": 0.966796875,
+  "sampled_peak_speed_rpm": 1519.468017578125,
+  "guard_fault_after_stop": 5,
+  "post_stop_hall_speed_rpm": 5972.3779296875,
+  "chart_motor_state_after_stop": 3,
+  "closed_loop_snapshots": 0,
+  "eligible_td3_experiences": 0,
+  "td3_training_performed": false,
+  "actor_deployed": false,
+  "exclusion_reason": "Trial tripped during vendor open-loop startup; no closed-loop PI response",
+  "temperature_c": null,
+  "current_conversion_independently_calibrated": false,
+  "closed_loop_rmse_rpm": null
+}

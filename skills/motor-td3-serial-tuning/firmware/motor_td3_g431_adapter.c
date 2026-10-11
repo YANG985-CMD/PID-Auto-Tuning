@@ -10,14 +10,15 @@
 #include "main.h"
 #ifdef MOTOR_TD3_SPEEDLOOP_PI_MOTION
 #include "tim.h"
+#include "motor_td3_speedloop_hall.h"
 #endif
 #include "fdcan.h"
 #include "FOC_Model.h"
 #include <math.h>
 #include <string.h>
 #if defined(MOTOR_TD3_SPEEDLOOP_PI_MOTION)
-#define LOCKED_FIRMWARE "g431-speedloop-pi-motion-v3"
-#define LOCKED_PROFILE "g431-speedloop-pi-motion-v3"
+#define LOCKED_FIRMWARE "g431-speedloop-pi-motion-v4"
+#define LOCKED_PROFILE "g431-speedloop-pi-motion-v4"
 #elif defined(MOTOR_TD3_SPEEDLOOP_WATCHDOG)
 #include "motor_td3_g431_watchdog.h"
 #endif
@@ -56,6 +57,16 @@ static int endpoint_ready;
 #ifdef MOTOR_TD3_SPEEDLOOP_PI_MOTION
 static volatile uint8_t motion_enabled;
 static uint64_t bus_seen_us;
+static motor_td3_speedloop_hall hall_clock;
+/* Post-stop evidence, frozen when outputs disable. Not training observations. */
+typedef struct {
+    uint64_t t_us;
+    uint32_t raw_ticks,period_us;
+    float rpm;
+    uint8_t code,previous_code,model_stage,valid;
+} hall_edge_record;
+volatile hall_edge_record motor_td3_g431_hall_edges[32];
+volatile uint32_t motor_td3_g431_hall_edge_count;
 /* The first board trial uses only the already observed 1000 rpm baseline. */
 static const float live_refs[] = {1000.0f};
 static const motor_td3_limits live_limits = {
@@ -231,11 +242,27 @@ void motor_td3_g431_bus_sample(void) {
 #endif
 }
 int motor_td3_g431_hall_capture(uint32_t ticks,uint8_t code) {
+#ifdef MOTOR_TD3_SPEEDLOOP_PI_MOTION
+    uint32_t p=lock();uint64_t n=clock_us();
+    float rpm=0,step=0;uint8_t previous=hall_clock.previous_code;
+    uint32_t period=hall_clock.edges?(uint32_t)(n-hall_clock.previous_us):0;
+    int ok;
+    if(!motion_enabled) { unlock(p);return 0; } /* Preserve last motion evidence. */
+    ok=motor_td3_speedloop_hall_edge(&hall_clock,n,code,&rpm,&step);
+    motor_td3_g431_hall_edges[motor_td3_g431_hall_edge_count%32U]=
+        (hall_edge_record){n,ticks,period,rpm,code,previous,(uint8_t)rtDW.Motor_state,(uint8_t)ok};
+    ++motor_td3_g431_hall_edge_count;
+    if(!ok) {
+        hall_bad=1;motor_td3_g431_fault_irq();unlock(p);return 0;
+    }
+    HallSpeed=rpm;HallThetaAdd=step;unlock(p);return 1;
+#else
     if(!ticks||code==0||code>6) {
         hall_bad=1; HallSpeed=0.0F;HallThetaAdd=0.0F;
         motor_td3_g431_fault_irq();return 0;
     }
     return 1;
+#endif
 }
 void motor_td3_g431_button_stop(void) { motor_td3_g431_fault_irq(); }
 void motor_td3_g431_fault_irq(void) { irq_fault=1;motor_td3_g431_disable(); }

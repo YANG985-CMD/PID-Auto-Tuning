@@ -1,0 +1,17 @@
+{
+  "source": "post-stop MCU RAM readback, not reconstructed telemetry",
+  "utc": "2026-10-11T10:37:54.412304+00:00",
+  "hardware_accessed": true,
+  "core_state": "State.HALTED",
+  "guard_fault": 5,
+  "guard_applied_seq": 12,
+  "guard_t_apply_us": 1282684,
+  "chart_motor_state": 3.0,
+  "Hall_period_counter": 2679.0,
+  "Vbus": 24.31977653503418,
+  "Ia": -0.8349609375,
+  "Ib": 0.81298828125,
+  "Ic": 0.02197265625,
+  "HallSpeed": 5972.3779296875,
+  "HallThetaAdd": 0.12508518993854523
+}

@@ -134,7 +134,8 @@ def run(build, output, compiler):
     (output / 'adapter_host.c').write_text(host, encoding='utf-8')
     (output / 'startup_test.c').write_text(HARNESS, encoding='utf-8')
     files = [own / name for name in ('motor_td3_can.c','motor_td3_can_control.c','motor_td3_guard.c',
-             'motor_td3_speedloop_pi.c','motor_td3_speedloop_pi_bind.c','motor_td3_speedloop_can.c')]
+             'motor_td3_speedloop_pi.c','motor_td3_speedloop_pi_bind.c','motor_td3_speedloop_can.c',
+             'motor_td3_speedloop_hall.c')]
     flags = ['-std=c99','-O2','-Wall','-Wextra','-ffp-contract=off','-fno-fast-math',
              '-DMOTOR_TD3_SPEEDLOOP_PI_HOST','-DMOTOR_TD3_SPEEDLOOP_DIAGNOSTIC',
              '-DMOTOR_TD3_SPEEDLOOP_PI_CAN','-DMOTOR_TD3_SPEEDLOOP_PI_MOTION',

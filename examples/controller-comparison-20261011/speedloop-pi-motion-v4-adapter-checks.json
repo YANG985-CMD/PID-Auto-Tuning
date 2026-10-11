@@ -1,0 +1,7 @@
+{
+  "passed": true,
+  "adapter_checks": 10,
+  "codec_checks": 3,
+  "hardware_accessed": false,
+  "scope": "actual motion adapter and actual generated model with host HAL substitutes"
+}

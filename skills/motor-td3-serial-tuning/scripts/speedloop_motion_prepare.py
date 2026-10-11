@@ -1,9 +1,9 @@
-"""Prepare one motion-v3 identity, normally with motor power disconnected.
+"""Prepare one motion-v4 identity, normally with motor power disconnected.
 
 Does not flash or start the motor. Verifies the full image, resets with explicit
 SYSRESETREQ, stops at main AFTER C initialization, writes one unique token,
 observes phase-inhibited ADC startup, and leaves the core halted.
-The explicit energized exception is restricted to the exact reviewed v3 image
+The explicit energized exception is restricted to the exact reviewed v4 image
 and phase-pin inhibition verified before halt/reset; it cannot flash or BEGIN.
 """
 import argparse
@@ -16,7 +16,7 @@ import subprocess
 import time
 
 from speedloop_motion_handshake import IDENTITY,PHASE_MASK,REGS,RAM
-ENERGIZED_IMAGE_SHA='7128a27aad687c31a3bc26c2734eb6ea3d79cc96922addf0b2f6319d25fd3c93'
+ENERGIZED_IMAGE_SHA='902b5dd09f9873a1143798852e55414102e131fa0ab16ad983e145cde0e45ef2'
 
 
 def prepare(a):
@@ -42,7 +42,7 @@ def prepare(a):
             'energized_preparation_exception':a.energized_phase_inhibited_confirmed,
             'begin_sent':False,'gains_sent':False}
     session=ConnectHelper.session_with_chosen_probe(unique_id=a.uid,target_override='cortex_m',
-        connect_mode='attach',frequency=1000000,options={'resume_on_disconnect':False},no_config=True)
+        connect_mode='attach',frequency=1000000,options={'resume_on_disconnect':False},no_config=True,blocking=False)
     if session is None:raise RuntimeError('No selected debug probe')
     mutation_started=False
     with session:
@@ -107,5 +107,5 @@ if __name__=='__main__':
     p.add_argument('--uid',default='0674FF554850715087183841')
     p.add_argument('--power-disconnected-confirmed',action='store_true')
     p.add_argument('--energized-phase-inhibited-confirmed',action='store_true',
-                   help='Explicit operator exception; exact v3 image and six GPIO-low phases required')
+                   help='Explicit operator exception; exact v4 image and six GPIO-low phases required')
     args=p.parse_args();raise SystemExit(0 if prepare(args)['passed'] else 1)

@@ -1,4 +1,4 @@
-"""One bounded HELLO/STOP capture for the explicitly prepared motion-v3 image.
+"""One bounded HELLO/STOP capture for the explicitly prepared motion-v4 image.
 
 Never sends BEGIN or GAINS, writes RAM, resets, or flashes. Requires a powered
 CAN transceiver and the operator's power confirmation. Unknown temperature is
@@ -17,7 +17,7 @@ import time
 
 import can_transport as wire
 
-IDENTITY='g431-speedloop-pi-motion-v3'
+IDENTITY='g431-speedloop-pi-motion-v4'
 PHASE_MASK=0x555
 REGS={'tim1_ccer':0x40012c20,'tim1_bdtr':0x40012c44,
       'gpioa_moder':0x48000000,'gpiob_moder':0x48000400,
