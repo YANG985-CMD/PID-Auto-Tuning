@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "build_id": "g431-speedloop-pi-can-review-v1",
+  "passed": true,
+  "translation_units": 49,
+  "compiler": "arm-none-eabi-gcc.exe (GNU Tools for STM32 14.3.rel1.20251027-0700) 14.3.1 20250623",
+  "binary_bytes": 47980,
+  "bin_sha256": "0c7ee05cf35548d90ce1cdf790cf4187bd0937a213c66d358efe0677e24592f7",
+  "hex_sha256": "a4b5eade2832d0af68c9c58c2677f157e9fafa29fe44a024980a24c017b81fef",
+  "source_unchanged": true,
+  "phase_start_calls_removed": true,
+  "hardware_accessed": false,
+  "flash_programmed": false,
+  "motion_approved": false,
+  "transport_gain_commands_connected": true,
+  "board_can_hal_connected": true,
+  "connected_can_model_checks": {
+    "schema_version": 1,
+    "tests": 10,
+    "passed": true,
+    "scope": "existing Python CAN protocol with actual generated SpeedLoop PI and software board hooks",
+    "hardware_accessed": false,
+    "physical_can_retested": false,
+    "motion_approved": false
+  },
+  "td3_actor_connected": false,
+  "remaining": "integrate verified motion enable, independent motion progress/stop protection and approved thermal policy; connect Actor",
+  "reference_profile": {
+    "kp": 0.003389,
+    "ki": 0.00144,
+    "iq_reference_clamp": [
+      -3,
+      3
+    ],
+    "independent_current_calibration": false,
+    "temperature_sensor_in_example": false,
+    "validated_thermal_limits": null
+  }
+}
