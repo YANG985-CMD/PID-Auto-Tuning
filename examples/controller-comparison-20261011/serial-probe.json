@@ -25,5 +25,24 @@
   "motor_start_requested": false,
   "gain_write_performed": false,
   "hardware_comparison_approved": false,
-  "conclusion": "No serial telemetry was available in this session. The current 17.SpeedLoop UART stream cannot select four controllers or acknowledge applied gains."
+  "after_restore_capture": {
+    "flash_source": "17.SpeedLoop/STM32G4_GPIO.hex",
+    "power_stage_disconnected": true,
+    "motor_start_requested": false,
+    "capture_duration_s": 5,
+    "bytes_received": 405281,
+    "valid_legacy_frames": 16886,
+    "frame_format": "five little-endian float32 values + 00 00 80 7f",
+    "observed_fields": {
+      "speed_ref_rpm_min": 0.0,
+      "speed_ref_rpm_max": 1001.0699462890625,
+      "hall_speed_rpm_min": 0.0,
+      "hall_speed_rpm_max": 0.0,
+      "ia_a_min": -0.06591796875,
+      "ia_a_max": 0.06591796875
+    },
+    "hardware_telemetry_verified": true,
+    "closed_loop_training_data": false
+  },
+  "conclusion": "The COM9 stream was silent before the known 17.SpeedLoop image was restored. After reset-run with the power stage disconnected, valid legacy telemetry resumed. The legacy UART stream still cannot select four controllers or acknowledge applied gains."
 }
