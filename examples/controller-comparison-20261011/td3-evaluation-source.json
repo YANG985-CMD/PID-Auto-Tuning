@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "simulation_only": true,
+  "exploration_enabled": false,
+  "fixtures": [
+    {
+      "policy": "baseline",
+      "seed": 101,
+      "reward": -0.34319772724169556,
+      "rmse_normalized": 0.10356498627099738,
+      "peak_current_a": 1.6980999807128683,
+      "overshoot_rpm": 0,
+      "saturation_fraction": 0,
+      "fault_count": 0
+    },
+    {
+      "policy": "baseline",
+      "seed": 202,
+      "reward": -0.91926663604629244,
+      "rmse_normalized": 0.16957567772169513,
+      "peak_current_a": 2.7169599691405892,
+      "overshoot_rpm": 0,
+      "saturation_fraction": 0,
+      "fault_count": 0
+    },
+    {
+      "policy": "baseline",
+      "seed": 303,
+      "reward": -1.8610685957491748,
+      "rmse_normalized": 0.24194469966198978,
+      "peak_current_a": 3,
+      "overshoot_rpm": 0,
+      "saturation_fraction": 0.026666666666666668,
+      "fault_count": 0
+    },
+    {
+      "policy": "candidate-020",
+      "seed": 101,
+      "reward": -0.33756226395745942,
+      "rmse_normalized": 0.100525266413492,
+      "peak_current_a": 1.7301124980440363,
+      "overshoot_rpm": 0,
+      "saturation_fraction": 0,
+      "fault_count": 0
+    },
+    {
+      "policy": "candidate-020",
+      "seed": 202,
+      "reward": -0.88345350924320287,
+      "rmse_normalized": 0.16451461637153011,
+      "peak_current_a": 2.7729881163686514,
+      "overshoot_rpm": 0,
+      "saturation_fraction": 0,
+      "fault_count": 0
+    },
+    {
+      "policy": "candidate-020",
+      "seed": 303,
+      "reward": -1.7954653410763339,
+      "rmse_normalized": 0.23618852639721052,
+      "peak_current_a": 3,
+      "overshoot_rpm": 0,
+      "saturation_fraction": 0.028333333333333332,
+      "fault_count": 0
+    }
+  ],
+  "baseline_mean_rmse": 0.17169512121822741,
+  "candidate_mean_rmse": 0.16707613639407756,
+  "candidate_rmse_better": true,
+  "hardware_deployment_approved": false,
+  "scope": "Mock plant comparison; no hardware performance or stability claim"
+}

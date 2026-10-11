@@ -296,6 +296,31 @@ python -B skills/motor-td3-serial-tuning/scripts/thermal_can.py --log examples/t
 
 该入口只读已有日志。Windows 输出目录须位于 `E:\simulink\_codex_tmp\` 的独立空任务目录；`summary.json` 的 `passed` 表示日志解析一致，`motion_approved` 始终为 false。
 
+### 四种速度环方法对比：当前为可复现实验，实机四路尚未具备
+
+为回答“AI skill 调参、模糊 PID、神经网络 PID、TD3 Actor 谁更好”，仓库新增了统一工况对比入口：
+
+```text
+python -B scripts/controller_comparison.py --output OUTPUT \
+  --td3-evaluation path/to/evaluation-summary.json
+```
+
+这次使用同一个确定性速度环模型、相同的 500/800/1100 rpm 给定和 101/202/303 测试种子。AI skill 方法按 `AI-Parameter-Tuning` 的边界候选、逐个评估、回退语义实现；它不是神经网络。神经网络 PID 是监督学习去拟合模糊增益；TD3 行来自 MATLAB 的 20 轮、600 条 mock 经验评估。结果如下，数值全部是**仿真/离线比较**：
+
+| 方法 | 平均归一化 RMSE | 平均峰值电流 (A) | 平均饱和占比 | 相对固定 PI |
+|---|---:|---:|---:|---:|
+| 固定 PI 基线 | 0.174773 | 2.4717 | 0.0089 | 0.00% |
+| AI skill 有界搜索 | 0.171898 | 2.3806 | 0.0072 | -1.65% |
+| 模糊 PID | 0.165427 | 2.6620 | 0.0178 | -5.35% |
+| 神经网络 PID | 0.164725 | 2.6624 | 0.0161 | -5.75% |
+| TD3 Actor | 0.167076 | 2.5010 | 0.0094 | -4.40% |
+
+神经网络 PID 在这个模型上的 RMSE 最低，TD3 次之；这不代表实机排名。当前板端串口实测只有 ST-Link 的 COM9，但按 `17.SpeedLoop` 的 921600/8N1 监听 5 秒得到 0 字节；旧 UART 包只有 24 字节观测，没有控制器选择、原子 Kp/Ki 写入和实际应用回读，因此不能据此宣称四种控制器已经在同一台电机上完成闭环比较。串口证据见 [serial-probe.json](examples/controller-comparison-20261011/serial-probe.json)。
+
+要得到四组**实机**数据，板端必须先加入并验证：控制器模式选择、原子增益写入、应用序号回读、运行中遥测和失联停机；然后在四个独立回合中采集同一组给定、速度、电流、母线电压、故障和实际增益。当前 24V 连接状态不能用于烧录或复位这类操作，必须先物理断开功率电源，避免 SWD 操作或复位瞬间使相桥进入不可控状态。
+
+[完整对比报告](examples/controller-comparison-20261011/comparison.md) · [机器可读结果](examples/controller-comparison-20261011/comparison-report.json) · [CSV 数据](examples/controller-comparison-20261011/comparison.csv) · [TD3 评估来源](examples/controller-comparison-20261011/td3-evaluation-source.json)
+
 ### Codex 已烧录热诊断固件并分析板上拒绝原因
 
 用户确认 24V 物理断开后，Codex 完成设备识别、128KB 本地恢复备份、固定 **43580 B** 热诊断固件烧录及完整回读。600ms 实际运行取得 **60 次 ADC 采样、60 次正常喂狗，故障为 0**；热接入报告 `calibration`、热 guard 报告 `config`，初始热状态与三相预算保持未知。运行时 PWM 全禁能，收尾复位暂停，选项字节未变。

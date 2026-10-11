@@ -1,0 +1,251 @@
+{
+  "schema_version": 1,
+  "simulation_only": true,
+  "plant": "motor_runtime.MockDevice-compatible deterministic speed PI plant",
+  "speed_refs_rpm": [
+    500.0,
+    800.0,
+    1100.0
+  ],
+  "test_seeds": [
+    101,
+    202,
+    303
+  ],
+  "training_seeds_for_skill_and_nn": [
+    11,
+    22,
+    33,
+    44,
+    55,
+    66
+  ],
+  "methods": [
+    {
+      "method": "fixed PI baseline",
+      "fixtures": [
+        {
+          "seed": 101,
+          "speed_ref_rpm": 500.0,
+          "reward": -0.014018836517478778,
+          "rmse_normalized": 0.10555548752862665,
+          "peak_current_a": 1.6981000000000002,
+          "overshoot_rpm": 0.0,
+          "saturation_fraction": 0.0,
+          "fault_count": 0
+        },
+        {
+          "seed": 202,
+          "speed_ref_rpm": 800.0,
+          "reward": -0.037244439686005965,
+          "rmse_normalized": 0.17268967896573595,
+          "peak_current_a": 2.7169600000000003,
+          "overshoot_rpm": 0.0,
+          "saturation_fraction": 0.0,
+          "fault_count": 0
+        },
+        {
+          "seed": 303,
+          "speed_ref_rpm": 1100.0,
+          "reward": -0.07186796943631017,
+          "rmse_normalized": 0.24607503042865717,
+          "peak_current_a": 3.0,
+          "overshoot_rpm": 0.0,
+          "saturation_fraction": 0.02666666666666667,
+          "fault_count": 0
+        }
+      ],
+      "mean_reward": -0.041043748546598306,
+      "mean_rmse_normalized": 0.17477339897433994,
+      "mean_peak_current_a": 2.471686666666667,
+      "max_peak_current_a": 3.0,
+      "mean_overshoot_rpm": 0.0,
+      "mean_saturation_fraction": 0.008888888888888889,
+      "fault_count": 0,
+      "rmse_change_vs_baseline_pct": 0.0
+    },
+    {
+      "method": "AI skill bounded search",
+      "fixtures": [
+        {
+          "seed": 101,
+          "speed_ref_rpm": 500.0,
+          "reward": -0.01339996036575747,
+          "rmse_normalized": 0.10374903194380045,
+          "peak_current_a": 1.593,
+          "overshoot_rpm": 0.0,
+          "saturation_fraction": 0.0,
+          "fault_count": 0
+        },
+        {
+          "seed": 202,
+          "speed_ref_rpm": 800.0,
+          "reward": -0.03579345831233385,
+          "rmse_normalized": 0.17024561999111593,
+          "peak_current_a": 2.5488,
+          "overshoot_rpm": 0.0,
+          "saturation_fraction": 0.0,
+          "fault_count": 0
+        },
+        {
+          "seed": 303,
+          "speed_ref_rpm": 1100.0,
+          "reward": -0.06967009790074778,
+          "rmse_normalized": 0.24169791176683494,
+          "peak_current_a": 3.0,
+          "overshoot_rpm": 2.396500640929389,
+          "saturation_fraction": 0.021666666666666667,
+          "fault_count": 0
+        }
+      ],
+      "mean_reward": -0.03962117219294637,
+      "mean_rmse_normalized": 0.1718975212339171,
+      "mean_peak_current_a": 2.3806,
+      "max_peak_current_a": 3.0,
+      "mean_overshoot_rpm": 0.798833546976463,
+      "mean_saturation_fraction": 0.007222222222222223,
+      "fault_count": 0,
+      "selected_kp": 0.003175,
+      "selected_ki": 0.0022,
+      "candidate_count": 81,
+      "rmse_change_vs_baseline_pct": -1.6454893921500457
+    },
+    {
+      "method": "fuzzy PID",
+      "fixtures": [
+        {
+          "seed": 101,
+          "speed_ref_rpm": 500.0,
+          "reward": -0.013441786435129747,
+          "rmse_normalized": 0.09855432648358295,
+          "peak_current_a": 1.9860124999999997,
+          "overshoot_rpm": 0.0,
+          "saturation_fraction": 0.0,
+          "fault_count": 0
+        },
+        {
+          "seed": 202,
+          "speed_ref_rpm": 800.0,
+          "reward": -0.03476323509624558,
+          "rmse_normalized": 0.15960949083103002,
+          "peak_current_a": 3.0,
+          "overshoot_rpm": 0.0,
+          "saturation_fraction": 0.011666666666666667,
+          "fault_count": 0
+        },
+        {
+          "seed": 303,
+          "speed_ref_rpm": 1100.0,
+          "reward": -0.06877477501183435,
+          "rmse_normalized": 0.23811591488619505,
+          "peak_current_a": 3.0,
+          "overshoot_rpm": 0.0,
+          "saturation_fraction": 0.041666666666666664,
+          "fault_count": 0
+        }
+      ],
+      "mean_reward": -0.03899326551440322,
+      "mean_rmse_normalized": 0.16542657740026934,
+      "mean_peak_current_a": 2.6620041666666663,
+      "max_peak_current_a": 3.0,
+      "mean_overshoot_rpm": 0.0,
+      "mean_saturation_fraction": 0.017777777777777778,
+      "fault_count": 0,
+      "rmse_change_vs_baseline_pct": -5.347965782506114
+    },
+    {
+      "method": "neural-network PID",
+      "fixtures": [
+        {
+          "seed": 101,
+          "speed_ref_rpm": 500.0,
+          "reward": -0.013271042808910925,
+          "rmse_normalized": 0.09763963679155001,
+          "peak_current_a": 1.9871340497402148,
+          "overshoot_rpm": 0.0,
+          "saturation_fraction": 0.0,
+          "fault_count": 0
+        },
+        {
+          "seed": 202,
+          "speed_ref_rpm": 800.0,
+          "reward": -0.0346582163758575,
+          "rmse_normalized": 0.1599632525934539,
+          "peak_current_a": 3.0,
+          "overshoot_rpm": 0.0,
+          "saturation_fraction": 0.006666666666666667,
+          "fault_count": 0
+        },
+        {
+          "seed": 303,
+          "speed_ref_rpm": 1100.0,
+          "reward": -0.06806528112740068,
+          "rmse_normalized": 0.23657155070512764,
+          "peak_current_a": 3.0,
+          "overshoot_rpm": 0.0,
+          "saturation_fraction": 0.041666666666666664,
+          "fault_count": 0
+        }
+      ],
+      "mean_reward": -0.03866484677072304,
+      "mean_rmse_normalized": 0.1647248133633772,
+      "mean_peak_current_a": 2.6623780165800714,
+      "max_peak_current_a": 3.0,
+      "mean_overshoot_rpm": 0.0,
+      "mean_saturation_fraction": 0.01611111111111111,
+      "fault_count": 0,
+      "supervised_target": "fuzzy PID",
+      "training_loss": 0.045171561143705456,
+      "rmse_change_vs_baseline_pct": -5.749493727267996
+    },
+    {
+      "method": "TD3 Actor",
+      "fixtures": [
+        {
+          "seed": 101,
+          "speed_ref_rpm": 500.0,
+          "reward": -0.3375622639574594,
+          "rmse_normalized": 0.100525266413492,
+          "peak_current_a": 1.7301124980440363,
+          "overshoot_rpm": 0,
+          "saturation_fraction": 0,
+          "fault_count": 0
+        },
+        {
+          "seed": 202,
+          "speed_ref_rpm": 800.0,
+          "reward": -0.8834535092432029,
+          "rmse_normalized": 0.16451461637153011,
+          "peak_current_a": 2.7729881163686514,
+          "overshoot_rpm": 0,
+          "saturation_fraction": 0,
+          "fault_count": 0
+        },
+        {
+          "seed": 303,
+          "speed_ref_rpm": 1100.0,
+          "reward": -1.795465341076334,
+          "rmse_normalized": 0.23618852639721052,
+          "peak_current_a": 3,
+          "overshoot_rpm": 0,
+          "saturation_fraction": 0.028333333333333332,
+          "fault_count": 0
+        }
+      ],
+      "mean_reward": -1.005493704758999,
+      "mean_rmse_normalized": 0.16707613639407756,
+      "mean_peak_current_a": 2.5010335381375626,
+      "max_peak_current_a": 3.0,
+      "mean_overshoot_rpm": 0.0,
+      "mean_saturation_fraction": 0.009444444444444445,
+      "fault_count": 0,
+      "td3_source": "MATLAB TD3",
+      "td3_simulation_only": true,
+      "rmse_change_vs_baseline_pct": -4.404138516178014
+    }
+  ],
+  "td3_evaluation_source": "evaluation-summary.json",
+  "td3_training_note": "MATLAB TD3 candidate is from a 20-round, 600-experience mock run; no hardware access.",
+  "winner_by_rmse": "neural-network PID",
+  "deployment_approved": false
+}
