@@ -242,6 +242,8 @@ MATLAB 使用真实 `rlTD3Agent.ExperienceBuffer`，检查重复试验、实际�
 
 这次 3 秒试验的原始遥测、MATLAB 建议、命令、Hall 边沿和哈希清单见 [`realtime-shadow-20261012`](examples/speedloop-v5-real-20261012/realtime-shadow-20261012/)，说明见[实时旁路记录](docs/speedloop-v5-realtime-shadow-20261012.md)。这是链路和实时预算验证，不是 Actor 性能优于 PI 的结论；下一步若要比较固定 Actor，必须另行授权并使用未参与训练的工况。
 
+对这 148 条实时建议又做了独立的动作审计：148 条全部与原始 `boot_id/seq/t_us` 对齐，全部在增益范围和单步范围内，Ki 掩码保持基线值。这个审计没有把建议写回电机，因此没有生成 Actor 的反事实性能分数；报告见 [`actor-shadow-audit.json`](examples/speedloop-v5-real-20261012/realtime-shadow-20261012/actor-shadow-audit.json)。
+
 - [运动版构建和烧录回读记录](examples/controller-comparison-20261011/speedloop-pi-motion-flash.json)
 - [v2 修正与板上启动采样记录](examples/controller-comparison-20261011/speedloop-pi-motion-v2-startup.json)
 - [v2 HELLO 与时间故障实测记录](examples/controller-comparison-20261011/speedloop-pi-motion-v2-handshake.json)

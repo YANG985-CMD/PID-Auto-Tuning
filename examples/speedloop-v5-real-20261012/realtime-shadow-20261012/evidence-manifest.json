@@ -2,6 +2,7 @@
   "schema_version": 1,
   "source": "physical-3s-shadow-trial",
   "files": {
+    "actor-shadow-audit.json": "8a8b6674e8372ad5a48bccc88a7e3f634bbcd276563c4eb4a4f30959290428bf",
     "commands.jsonl": "9527d078b49e0fe9fe6594e9e2a6f20ae282ee5a0d64ccde447f8094c4e58610",
     "hall-edges.json": "8c9188f6c0f8925aafe8f79531d01efd14ea0dac184cc3df6204dc3c2c11ac8c",
     "matlab-protocol-checks.json": "caca0882e01d48360f2b17cc8805376de09f04844ee626552a2a3c511780c2db",

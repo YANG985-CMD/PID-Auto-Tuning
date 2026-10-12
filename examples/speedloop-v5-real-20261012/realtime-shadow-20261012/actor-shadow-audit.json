@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "source": "real_motor_shadow_audit",
+  "hardware_accessed": false,
+  "motor_motion_started": false,
+  "actor_applied": false,
+  "counterfactual_performance_evaluated": false,
+  "reason": "Actor proposals were not applied to the plant",
+  "telemetry_rows": 148,
+  "prediction_rows": 148,
+  "aligned_accepted_predictions": 148,
+  "rejected_predictions": 0,
+  "actor_policy_version": "experimental-shadow-20261012-kp-only",
+  "checkpoint_sha256": "2d9516d757ad8e9784da9171afe48f5dc60f809666639084c691bbc10b23efab",
+  "ki_masked_all_rows": true,
+  "baseline_metrics": {
+    "active_snapshots": 140,
+    "speed_rmse_rpm": 653.0122694601766,
+    "peak_abs_speed_rpm": 1782.53125,
+    "peak_nominal_current_a": 1.03271484375
+  },
+  "baseline_metrics_include_startup_transient": true,
+  "ki_fixed_baseline": true,
+  "actor_kp_delta": {
+    "min": 2.153683453798294e-07,
+    "max": 3.4740660339593887e-06,
+    "mean": 2.4564183518491887e-06
+  },
+  "actor_ki_delta": {
+    "min": 0.0,
+    "max": 0.00028799998108297586,
+    "mean": 3.8918916362564304e-06
+  },
+  "unmasked_actor_ki_delta": {
+    "min": 2.8545036911964417e-07,
+    "max": 1.173233613371849e-06,
+    "mean": 9.759253746754414e-07
+  },
+  "source_telemetry_sha256": "bd3578ba7463ea1fd7fb0d3bdd8807f8b96a6b9b92762c680cb3c98f667204af",
+  "source_predictions_sha256": "d0c064447e5b9243b06b06185db74afe2b99a606737fc38b986365b80a622234",
+  "passed": true
+}

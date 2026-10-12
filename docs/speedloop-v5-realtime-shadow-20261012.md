@@ -39,4 +39,6 @@ MATLAB 中可用 `startSpeedLoopShadowServer(checkpoint, tokenFile, 59631)` 启�
 
 实时数据链路和时限验证通过。Actor 尚未写入增益，不能用这次结果声称 TD3 优于固定 PI，也不能称为 Actor 的闭环性能测试。要做固定 Actor A/B，需要新的实机预算、未参与训练的工况和独立回退规则。
 
+之后对 148 条建议执行了离线动作审计：全部与原始板端帧对齐，增益范围和单步范围通过，Ki 掩码保持 `0.00144`。审计明确标记 `counterfactual_performance_evaluated=false`，没有把基准 PI 的响应冒充 Actor 响应。
+
 完整原始文件见 [`examples/speedloop-v5-real-20261012/realtime-shadow-20261012`](../examples/speedloop-v5-real-20261012/realtime-shadow-20261012/)。
