@@ -1,0 +1,121 @@
+{
+  "schema_version": 1,
+  "source": "real_motor_repeated_ab",
+  "hardware_accessed": false,
+  "requested_rounds": 6,
+  "completed_rounds": 6,
+  "reserved_motion_seconds": 18.0,
+  "statistics": {
+    "baseline": {
+      "n": 3,
+      "metrics": {
+        "rmse_rpm": {
+          "values": [
+            136.8974429875739,
+            141.0533117813778,
+            156.2524480251699
+          ],
+          "mean": 144.73440093137387,
+          "std_population": 8.319329620388327
+        },
+        "peak_current_a": {
+          "values": [
+            1.03271484375,
+            1.03271484375,
+            1.0546875
+          ],
+          "mean": 1.0400390625,
+          "std_population": 0.010358009490037318
+        },
+        "peak_speed_rpm": {
+          "values": [
+            1624.431396484375,
+            1642.0361328125,
+            1745.20068359375
+          ],
+          "mean": 1670.5560709635417,
+          "std_population": 53.268785927790105
+        }
+      },
+      "faults": [
+        0,
+        0,
+        0
+      ],
+      "stop_all_acknowledged": true
+    },
+    "actor_kp": {
+      "n": 3,
+      "metrics": {
+        "rmse_rpm": {
+          "values": [
+            133.90131557273634,
+            158.84645809900957,
+            156.1612203403228
+          ],
+          "mean": 149.63633133735624,
+          "std_population": 11.180210680477565
+        },
+        "peak_current_a": {
+          "values": [
+            1.03271484375,
+            1.07666015625,
+            1.0546875
+          ],
+          "mean": 1.0546875,
+          "std_population": 0.01794059870202523
+        },
+        "peak_speed_rpm": {
+          "values": [
+            1617.0762939453125,
+            1778.7264404296875,
+            1782.53125
+          ],
+          "mean": 1726.111328125,
+          "std_population": 77.11505755640205
+        }
+      },
+      "faults": [
+        0,
+        0,
+        0
+      ],
+      "stop_all_acknowledged": true
+    }
+  },
+  "paired_differences": {
+    "rmse_rpm": {
+      "values": [
+        -2.9961274148375594,
+        17.793146317631766,
+        -0.09122768484709809
+      ],
+      "mean_actor_minus_baseline": 4.90193040598237,
+      "std_population": 9.192286489983385
+    },
+    "peak_current_a": {
+      "values": [
+        0.0,
+        0.0439453125,
+        0.0
+      ],
+      "mean_actor_minus_baseline": 0.0146484375,
+      "std_population": 0.020716018980074635
+    },
+    "peak_speed_rpm": {
+      "values": [
+        -7.3551025390625,
+        136.6903076171875,
+        37.33056640625
+      ],
+      "mean_actor_minus_baseline": 55.555257161458336,
+      "std_population": 60.2017417334571
+    }
+  },
+  "all_trials_passed": true,
+  "performance_claim_allowed": false,
+  "reason": "Three paired trials per policy; no unseen-condition validation and no independent current calibration",
+  "deployment_recommendation": "hold_baseline_PI",
+  "temperature_c": null,
+  "current_conversion_independently_calibrated": false
+}

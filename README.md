@@ -258,6 +258,16 @@ MATLAB 使用真实 `rlTD3Agent.ExperienceBuffer`，检查重复试验、实际�
 
 这两组各只有一次试验，窗口仍包含启动和切换过程，电流也没有独立标定。因此这些是观察到的单次结果，不能作为 TD3 已优于 PI 的结论；完整对比报告见 comparison.json，原始文件见 realtime-actor-kp-20261012 目录。
 
+随后完成了 3 组基准 PI 与 3 组 Actor Kp 交替重复试验，总运动预算 18 秒、每轮间隔 30 秒，全部正常停机：
+
+| 三组配对均值 | 基准 PI | Actor Kp | Actor−基准 |
+|---|---:|---:|---:|
+| 末段窗口 RMSE | 144.734 rpm | 149.636 rpm | +4.902 rpm |
+| 峰值名义电流 | 1.040 A | 1.055 A | +0.0146 A |
+| 峰值 Hall 转速 | 1670.556 rpm | 1726.111 rpm | +55.555 rpm |
+
+重复结果没有显示 Actor Kp 的稳定改善，当前部署建议保持基准 PI。详细统计和每轮原始数据见 repeated-ab-20261012 目录；该报告仍将 performance_claim_allowed 设为 false。
+
 - [运动版构建和烧录回读记录](examples/controller-comparison-20261011/speedloop-pi-motion-flash.json)
 - [v2 修正与板上启动采样记录](examples/controller-comparison-20261011/speedloop-pi-motion-v2-startup.json)
 - [v2 HELLO 与时间故障实测记录](examples/controller-comparison-20261011/speedloop-pi-motion-v2-handshake.json)

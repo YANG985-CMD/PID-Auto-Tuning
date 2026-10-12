@@ -1,0 +1,92 @@
+{
+  "schema_version": 1,
+  "source": "real_motor_repeated_ab",
+  "utc": "2026-10-12T04:51:03.167237+00:00",
+  "order": [
+    "baseline",
+    "actor_kp",
+    "baseline",
+    "actor_kp",
+    "baseline",
+    "actor_kp"
+  ],
+  "completed_rounds": 6,
+  "requested_rounds": 6,
+  "reserved_motion_seconds": 18.0,
+  "cooldown_seconds": 30.0,
+  "elapsed_host_seconds": 197.84640709999985,
+  "hardware_accessed": true,
+  "td3_training_performed": false,
+  "actor_flash_written": false,
+  "thermal_gate_modified": false,
+  "failure": null,
+  "passed": true,
+  "rounds": [
+    {
+      "round_index": 1,
+      "policy": "baseline",
+      "passed": true,
+      "rmse_rpm": 136.8974429875739,
+      "peak_current_a": 1.03271484375,
+      "peak_speed_rpm": 1624.431396484375,
+      "actor_gain_commands": 0,
+      "fault": 0,
+      "stop_acknowledged": true
+    },
+    {
+      "round_index": 2,
+      "policy": "actor_kp",
+      "passed": true,
+      "rmse_rpm": 133.90131557273634,
+      "peak_current_a": 1.03271484375,
+      "peak_speed_rpm": 1617.0762939453125,
+      "actor_gain_commands": 52,
+      "fault": 0,
+      "stop_acknowledged": true
+    },
+    {
+      "round_index": 3,
+      "policy": "baseline",
+      "passed": true,
+      "rmse_rpm": 141.0533117813778,
+      "peak_current_a": 1.03271484375,
+      "peak_speed_rpm": 1642.0361328125,
+      "actor_gain_commands": 0,
+      "fault": 0,
+      "stop_acknowledged": true
+    },
+    {
+      "round_index": 4,
+      "policy": "actor_kp",
+      "passed": true,
+      "rmse_rpm": 158.84645809900957,
+      "peak_current_a": 1.07666015625,
+      "peak_speed_rpm": 1778.7264404296875,
+      "actor_gain_commands": 52,
+      "fault": 0,
+      "stop_acknowledged": true
+    },
+    {
+      "round_index": 5,
+      "policy": "baseline",
+      "passed": true,
+      "rmse_rpm": 156.2524480251699,
+      "peak_current_a": 1.0546875,
+      "peak_speed_rpm": 1745.20068359375,
+      "actor_gain_commands": 0,
+      "fault": 0,
+      "stop_acknowledged": true
+    },
+    {
+      "round_index": 6,
+      "policy": "actor_kp",
+      "passed": true,
+      "rmse_rpm": 156.1612203403228,
+      "peak_current_a": 1.0546875,
+      "peak_speed_rpm": 1782.53125,
+      "actor_gain_commands": 53,
+      "fault": 0,
+      "stop_acknowledged": true
+    }
+  ]
+}
