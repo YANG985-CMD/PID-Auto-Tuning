@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "source": "td3-candidate-admission",
+  "candidate_status": "rejected",
+  "selected_seed": null,
+  "deployment_allowed": false,
+  "performance_claim_allowed": false,
+  "hold_baseline_pi": true,
+  "training_summary": "reweighted-training-summary.json",
+  "repeated_comparison": "../repeated-ab-20261012/aggregate-comparison.json",
+  "rmse_improvement_fraction_actor_minus_baseline": -0.03386845404021557,
+  "peak_nominal_current_change_a_actor_minus_baseline": 0.0146484375,
+  "peak_speed_change_rpm_actor_minus_baseline": 55.55525716145826,
+  "reasons": [
+    "Offline performance is not plant validation",
+    "Training seeds disagree on Kp action direction",
+    "Repeated real-motor RMSE improvement is below 5 percent",
+    "Repeated real-motor peak nominal current increased",
+    "Repeated real-motor peak speed increased"
+  ],
+  "next_required_evidence": [
+    "Collect Ki action coverage or keep Ki permanently fixed",
+    "Validate a retrained candidate on unseen real-motor conditions",
+    "Independently calibrate current conversion before ordinary deployment admission"
+  ]
+}

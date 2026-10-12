@@ -35,4 +35,6 @@ Thumbs.db
 !examples/speedloop-v5-real-20261012/realtime-actor-kp-20261012/*
 !examples/speedloop-v5-real-20261012/repeated-ab-20261012/
 !examples/speedloop-v5-real-20261012/repeated-ab-20261012/*
+!examples/speedloop-v5-real-20261012/reweighted-td3-20261012/
+!examples/speedloop-v5-real-20261012/reweighted-td3-20261012/*
 

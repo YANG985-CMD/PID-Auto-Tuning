@@ -268,6 +268,12 @@ MATLAB 使用真实 `rlTD3Agent.ExperienceBuffer`，检查重复试验、实际�
 
 重复结果没有显示 Actor Kp 的稳定改善，当前部署建议保持基准 PI。详细统计和每轮原始数据见 repeated-ab-20261012 目录；该报告仍将 performance_claim_allowed 设为 false。
 
+### 2026-10-12：增强惩罚 TD3 离线重训与准入结果
+
+6 轮 A/B 数据与原有 17 次真实试验合并后，审计得到 194 个真实动作窗口，其中 150 个用于训练、44 个作为固定验证集。新训练同时保留旧奖励，新增电流、接近速度保护上限和饱和惩罚；Ki 动作掩码为 0，Ki 固定 0.00144。MATLAB R2024b 使用随机种子 7、17、27 分别训练 80 个 step，三组都通过动作和增益范围检查。
+
+三个种子的 Kp 动作方向不一致，且没有任何离线方法能证明 Actor 的真实闭环性能。结合重复实机结果，候选准入报告将当前候选拒绝，保持基准 PI；没有生成部署许可，也没有烧录 Actor。完整报告见 reweighted-td3-20261012 目录。
+
 - [运动版构建和烧录回读记录](examples/controller-comparison-20261011/speedloop-pi-motion-flash.json)
 - [v2 修正与板上启动采样记录](examples/controller-comparison-20261011/speedloop-pi-motion-v2-startup.json)
 - [v2 HELLO 与时间故障实测记录](examples/controller-comparison-20261011/speedloop-pi-motion-v2-handshake.json)

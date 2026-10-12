@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "source": "reweighted-td3-offline-training",
+  "files": {
+    "audit-summary.json": "33861489076e95f1c3d4d6938b1946eabf81c0def07a8edf0df8c88820581fec",
+    "candidate-selection.json": "1357a30ad2d3cf13623bb429c72bfcdeb4b732e76422e8f12369accbcdabbbe0",
+    "reweighted-training-summary.json": "b2895272ba8fb43d08673612dbafc796c8e708aa59d5644c7c8b130dd758891a",
+    "reweighted-transitions.jsonl": "6e3a1b7b45982d5695448036332b1544b80ec83ef4a1a87de997df4a6939e58c"
+  }
+}
