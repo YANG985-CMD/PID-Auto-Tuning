@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "source": "real_motor_fixed_replay_noise_ablation",
+  "hardware_accessed": false,
+  "configs": [
+    {
+      "name": "default-noise-bc2p5",
+      "std": 0.44721359549995793,
+      "clip": 0.5,
+      "bc": 2.5
+    },
+    {
+      "name": "small-noise-bc2p5",
+      "std": 0.05,
+      "clip": 0.1,
+      "bc": 2.5
+    },
+    {
+      "name": "default-noise-bc0p25",
+      "std": 0.44721359549995793,
+      "clip": 0.5,
+      "bc": 0.25
+    },
+    {
+      "name": "small-noise-bc0p25",
+      "std": 0.05,
+      "clip": 0.1,
+      "bc": 0.25
+    }
+  ],
+  "seeds": [
+    7,
+    17,
+    27
+  ],
+  "training_steps_per_seed": 80,
+  "dataset_sha256": "72498d168394a91f3de07e11d86cfbc2b9a56e039f3061bc199e8d42c087f1cf",
+  "window_profile": "strict",
+  "exploratory_only": false,
+  "training_experiences": 128,
+  "validation_experiences": 39,
+  "validation_run_indices": [
+    5,
+    10,
+    15,
+    20,
+    23,
+    25,
+    29,
+    31,
+    35,
+    41,
+    47
+  ],
+  "action_mask": [
+    1,
+    1
+  ],
+  "td3_training_performed": false,
+  "total_gradient_steps": 0,
+  "performance_claim_allowed": false,
+  "deployment_allowed": false,
+  "ordinary_live_admission": false,
+  "thermal_gate_modified": false,
+  "reports": []
+}

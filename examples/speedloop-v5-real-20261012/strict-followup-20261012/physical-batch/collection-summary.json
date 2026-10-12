@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "source": "real_motor_ki_coverage",
+  "utc": "2026-10-12T10:15:11.492640+00:00",
+  "order": [
+    "baseline",
+    "ki_plus",
+    "baseline",
+    "ki_minus",
+    "ki_plus",
+    "ki_minus"
+  ],
+  "completed_rounds": 6,
+  "requested_rounds": 6,
+  "reserved_motion_seconds": 18.0,
+  "cooldown_seconds": 30.0,
+  "hardware_accessed": true,
+  "td3_training_performed": false,
+  "actor_flash_written": false,
+  "thermal_gate_modified": false,
+  "failure": null,
+  "passed": true,
+  "rounds": [
+    {
+      "round_index": 1,
+      "policy": "baseline",
+      "ki_probe_sign": 0,
+      "passed": true,
+      "rmse_rpm": 136.3465219940563,
+      "peak_current_a": 1.0546875,
+      "peak_speed_rpm": 1621.7969970703125,
+      "fault": 0,
+      "stop_acknowledged": true
+    },
+    {
+      "round_index": 2,
+      "policy": "ki_plus",
+      "ki_probe_sign": 1,
+      "passed": true,
+      "rmse_rpm": 139.5298411214437,
+      "peak_current_a": 1.07666015625,
+      "peak_speed_rpm": 1639.34423828125,
+      "fault": 0,
+      "stop_acknowledged": true
+    },
+    {
+      "round_index": 3,
+      "policy": "baseline",
+      "ki_probe_sign": 0,
+      "passed": true,
+      "rmse_rpm": 159.84702270862243,
+      "peak_current_a": 1.0546875,
+      "peak_speed_rpm": 1769.28515625,
+      "fault": 0,
+      "stop_acknowledged": true
+    },
+    {
+      "round_index": 4,
+      "policy": "ki_minus",
+      "ki_probe_sign": -1,
+      "passed": true,
+      "rmse_rpm": 135.87558953413728,
+      "peak_current_a": 1.0546875,
+      "peak_speed_rpm": 1623.90380859375,
+      "fault": 0,
+      "stop_acknowledged": true
+    },
+    {
+      "round_index": 5,
+      "policy": "ki_plus",
+      "ki_probe_sign": 1,
+      "passed": true,
+      "rmse_rpm": 158.47968009552542,
+      "peak_current_a": 1.0546875,
+      "peak_speed_rpm": 1785.0767822265625,
+      "fault": 0,
+      "stop_acknowledged": true
+    },
+    {
+      "round_index": 6,
+      "policy": "ki_minus",
+      "ki_probe_sign": -1,
+      "passed": true,
+      "rmse_rpm": 137.8843470075975,
+      "peak_current_a": 1.03271484375,
+      "peak_speed_rpm": 1634.5211181640625,
+      "fault": 0,
+      "stop_acknowledged": true
+    }
+  ]
+}

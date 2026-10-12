@@ -1,0 +1,9 @@
+{
+  "rows": 540,
+  "prediction_mode": "post_training_offline_replay",
+  "during_physical_collection": false,
+  "hardware_accessed": false,
+  "hardware_writeback": false,
+  "performance_verified": false,
+  "deployment_allowed": false
+}

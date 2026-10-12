@@ -1,0 +1,181 @@
+{
+  "schema_version": 1,
+  "hardware_accessed": false,
+  "training_windows": 128,
+  "ki_nonzero_delta_training_windows": 12,
+  "ki_zero_delta_training_fraction": 0.90625,
+  "default_target_noise_std": 0.4472135954999579,
+  "small_target_noise_std": 0.05,
+  "default_noise_probability_outside_ki_logged_global_interval_at_zero_actor": 0.5761501220305789,
+  "small_noise_probability_outside_ki_logged_global_interval_at_zero_actor": 0,
+  "noise_probability_assumptions": "Actor centered at zero; logged Ki range +/-0.25, Gaussian clipped at +/-0.5 or +/-0.1. This is not conditional action support.",
+  "configs": {
+    "default-noise-bc0p25": {
+      "critic_disagreement_mean": 0.017047428104103136,
+      "critic1_residual_mean": 0.021982058517944103,
+      "critic2_residual_mean": 0.010073424516898313,
+      "kp_mean_actions": [
+        0.00821027627740151,
+        -0.0152011587977027,
+        -0.0115861679690006
+      ],
+      "kp_seed_spread": 0.02341143507510421,
+      "kp_direction_consistent": false,
+      "kp_mean_delta_as_baseline_fraction": [
+        0.0006568221021921208,
+        -0.001216092703816216,
+        -0.000926893437520048
+      ]
+    },
+    "default-noise-bc2p5": {
+      "critic_disagreement_mean": 0.017049791339116195,
+      "critic1_residual_mean": 0.021936879322016916,
+      "critic2_residual_mean": 0.01004329357639835,
+      "kp_mean_actions": [
+        0.00815437071455213,
+        -0.0159546345090255,
+        -0.0138214164628432
+      ],
+      "kp_seed_spread": 0.02410900522357763,
+      "kp_direction_consistent": false,
+      "kp_mean_delta_as_baseline_fraction": [
+        0.0006523496571641705,
+        -0.0012763707607220402,
+        -0.001105713317027456
+      ]
+    },
+    "small-noise-bc0p25": {
+      "critic_disagreement_mean": 0.006559128244208473,
+      "critic1_residual_mean": 0.01063853474886639,
+      "critic2_residual_mean": 0.00818662009543642,
+      "kp_mean_actions": [
+        0.0107953251840977,
+        -0.0144127214279694,
+        -0.0103411063169822
+      ],
+      "kp_seed_spread": 0.0252080466120671,
+      "kp_direction_consistent": false,
+      "kp_mean_delta_as_baseline_fraction": [
+        0.0008636260147278161,
+        -0.001153017714237552,
+        -0.0008272885053585761
+      ]
+    },
+    "small-noise-bc2p5": {
+      "critic_disagreement_mean": 0.006558373315721493,
+      "critic1_residual_mean": 0.01061001952250427,
+      "critic2_residual_mean": 0.008161874039280164,
+      "kp_mean_actions": [
+        0.0107218929303762,
+        -0.0170268618191282,
+        -0.0127339898011623
+      ],
+      "kp_seed_spread": 0.0277487547495044,
+      "kp_direction_consistent": false,
+      "kp_mean_delta_as_baseline_fraction": [
+        0.0008577514344300961,
+        -0.0013621489455302562,
+        -0.001018719184092984
+      ]
+    }
+  },
+  "small_noise_critic_disagreement_reduction_fraction": 0.6153399660279093,
+  "baseline_stage_rmse_values_rpm": [
+    136.3465219940563,
+    159.84702270862243
+  ],
+  "baseline_stage_rmse_relative_range": 0.15868340910775827,
+  "bootstrapped_next_states_without_exact_logged_successor": 57,
+  "truncated_training_prefixes": 34,
+  "median_transition_duration_ms": 100.7985,
+  "discount_half_life_decisions": 68.96756393652842,
+  "trials": [
+    {
+      "round": "round-01-baseline",
+      "policy": "baseline",
+      "stage_proven_rmse_rpm": 136.3465219940563,
+      "nominal_peak_current_a": 1.0546875,
+      "peak_speed_rpm": 1621.7969970703125,
+      "signed_extra_integrator_term_replay": 5.29134302569824e-11,
+      "absolute_extra_integrator_term_replay": 7.257639299128769e-10,
+      "replay_term_is_counterfactual_response": false
+    },
+    {
+      "round": "round-02-ki_plus",
+      "policy": "ki_plus",
+      "stage_proven_rmse_rpm": 139.5298411214437,
+      "nominal_peak_current_a": 1.07666015625,
+      "peak_speed_rpm": 1639.34423828125,
+      "signed_extra_integrator_term_replay": 0.0005941905693636735,
+      "absolute_extra_integrator_term_replay": 0.0006406094424527633,
+      "replay_term_is_counterfactual_response": false
+    },
+    {
+      "round": "round-03-baseline",
+      "policy": "baseline",
+      "stage_proven_rmse_rpm": 159.84702270862243,
+      "nominal_peak_current_a": 1.0546875,
+      "peak_speed_rpm": 1769.28515625,
+      "signed_extra_integrator_term_replay": 1.3055841322848995e-11,
+      "absolute_extra_integrator_term_replay": 7.508281776649419e-10,
+      "replay_term_is_counterfactual_response": false
+    },
+    {
+      "round": "round-04-ki_minus",
+      "policy": "ki_minus",
+      "stage_proven_rmse_rpm": 135.87558953413728,
+      "nominal_peak_current_a": 1.0546875,
+      "peak_speed_rpm": 1623.90380859375,
+      "signed_extra_integrator_term_replay": -0.0006191065538853177,
+      "absolute_extra_integrator_term_replay": 0.0006523988941969683,
+      "replay_term_is_counterfactual_response": false
+    },
+    {
+      "round": "round-05-ki_plus",
+      "policy": "ki_plus",
+      "stage_proven_rmse_rpm": 160.9891601094035,
+      "nominal_peak_current_a": 1.0546875,
+      "peak_speed_rpm": 1785.0767822265625,
+      "signed_extra_integrator_term_replay": 0.0005581241198926198,
+      "absolute_extra_integrator_term_replay": 0.0006183754450049652,
+      "replay_term_is_counterfactual_response": false
+    },
+    {
+      "round": "round-06-ki_minus",
+      "policy": "ki_minus",
+      "stage_proven_rmse_rpm": 137.8843470075975,
+      "nominal_peak_current_a": 1.03271484375,
+      "peak_speed_rpm": 1634.5211181640625,
+      "signed_extra_integrator_term_replay": -0.0006100065196924927,
+      "absolute_extra_integrator_term_replay": 0.0006272010209894618,
+      "replay_term_is_counterfactual_response": false
+    }
+  ],
+  "performance_claim_allowed": false,
+  "deployment_allowed": false,
+  "direct_integrator_diagnostic": "Trapezoidal replay of (actual Ki-baseline Ki)*observed error using 20ms snapshots. Not a simulated counterfactual, full 1ms integral or measured current change.",
+  "limitations": [
+    "128 replay windows are not 128 independent motor experiments",
+    "Only 12 nonzero Ki training decisions; most actions hold existing gains",
+    "All four configurations still have inconsistent Kp signs across seeds",
+    "Critic agreement improvement does not imply speed RMSE improvement",
+    "Only startup-end RunStage observed at 1000 rpm, no new-policy physical evidence"
+  ],
+  "longer_fitting": {
+    "steps_per_seed": 400,
+    "total_gradient_steps": 1200,
+    "kp_direction_consistent": false,
+    "kp_action_means": [
+      0.039432402700185776,
+      0.003113890630909457,
+      -0.0006142408536293376
+    ],
+    "logged_critic1_q_means": [
+      -0.06447966043383647,
+      -0.0609594297905763,
+      -0.1881510921013661
+    ],
+    "critic_disagreement_mean": 0.004804030283648744,
+    "physical_performance_verified": false
+  }
+}

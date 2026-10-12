@@ -1,0 +1,14 @@
+{
+  "config": "small-noise-bc0p25",
+  "seeds": [
+    7,
+    17,
+    27
+  ],
+  "steps_per_seed": 400,
+  "independent_fresh_seed_initialization": true,
+  "added_motor_trials": 0,
+  "selection_permission": false,
+  "reason": "Check fixed longer fitting; not adaptive until unanimous signs",
+  "deployment_allowed": false
+}

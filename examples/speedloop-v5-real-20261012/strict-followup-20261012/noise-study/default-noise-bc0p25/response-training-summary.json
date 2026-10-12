@@ -1,0 +1,343 @@
+{
+  "schema_version": 2,
+  "source": "real_motor",
+  "hardware_accessed": false,
+  "mode": "experimental-held-gain-response",
+  "window_profile": "strict",
+  "exploratory_only": false,
+  "action_mask": [
+    1,
+    1
+  ],
+  "physical_trials": 47,
+  "replay_experiences": 167,
+  "training_experiences": 128,
+  "validation_experiences": 39,
+  "replay_warmup_required": 128,
+  "training_ready": true,
+  "training_action_coverage": {
+    "positive": [
+      18,
+      8
+    ],
+    "negative": [
+      15,
+      4
+    ],
+    "zero": [
+      95,
+      116
+    ]
+  },
+  "remaining_training_windows": 0,
+  "validation_run_indices": [
+    5,
+    10,
+    15,
+    20,
+    23,
+    25,
+    29,
+    31,
+    35,
+    41,
+    47
+  ],
+  "dataset_sha256": "72498d168394a91f3de07e11d86cfbc2b9a56e039f3061bc199e8d42c087f1cf",
+  "discount_contract": "gamma 0.99 per grouped decision; state contains elapsed time",
+  "discount_factor": 0.99,
+  "behavior_cloning_weight": 0.25,
+  "target_noise_standard_deviation": [
+    0.4472135954999579,
+    0.4472135954999579
+  ],
+  "target_noise_clip": 0.5,
+  "epochs": 2,
+  "steps_per_epoch": 40,
+  "algorithm": "TD3-with-behavior-cloning",
+  "ki_exploration_performed": true,
+  "temperature_c": null,
+  "current_conversion_independently_calibrated": false,
+  "td3_training_performed": true,
+  "seed_reports": [
+    {
+      "seed": 7,
+      "training_steps_total": 80,
+      "actor_weight_change_l2": 0.07391197428054895,
+      "critic_weight_change_l2": [
+        1.8441978822524812,
+        2.0451667215947245
+      ],
+      "validation_before": {
+        "action_mean": [
+          0.0018101367108428325,
+          0.002913085055740502
+        ],
+        "action_std": [
+          0.0008633873491919296,
+          0.001049388892762366
+        ],
+        "behavior_action_mse": [
+          0.03848269833037836,
+          0.012860726463579964
+        ],
+        "zero_action_mse": [
+          0.03846156597137943,
+          0.01282051186534249
+        ],
+        "logged_q_mean": [
+          0.04513720364477008,
+          -0.05409893973802145
+        ],
+        "policy_q_mean": [
+          0.04876623617915007,
+          -0.04910379409407958
+        ],
+        "critic_disagreement_mean": 0.09923614338279152,
+        "online_bellman_residual_rmse": [
+          0.11194127427872329,
+          0.026240132240278897
+        ],
+        "observed_reward_mean": -0.004559375795397374,
+        "metrics_are_physical_performance": false,
+        "residual_basis": "Current critics + deterministic next Actor; no target noise or target-network access"
+      },
+      "validation_after": {
+        "action_mean": [
+          0.008210276277401509,
+          0.0035340808158835922
+        ],
+        "action_std": [
+          0.0009723633754747426,
+          0.0008974607127470215
+        ],
+        "behavior_action_mse": [
+          0.03857054852987932,
+          0.012887615817803844
+        ],
+        "zero_action_mse": [
+          0.03846156597137943,
+          0.01282051186534249
+        ],
+        "logged_q_mean": [
+          -0.06452689100152408,
+          -0.07577074901797833
+        ],
+        "policy_q_mean": [
+          -0.06376476585865021,
+          -0.07386259362101555
+        ],
+        "critic_disagreement_mean": 0.011826701653309358,
+        "online_bellman_residual_rmse": [
+          0.018698071530680642,
+          0.009937069870212893
+        ],
+        "observed_reward_mean": -0.004559375795397374,
+        "metrics_are_physical_performance": false,
+        "residual_basis": "Current critics + deterministic next Actor; no target noise or target-network access"
+      },
+      "epoch_q_value": [
+        -0.019275333732366562,
+        -0.018527988344430923
+      ],
+      "action_bounds_passed": true,
+      "gain_bounds_passed": true,
+      "ki_masked": false,
+      "deployment_allowed": false,
+      "performance_claim_allowed": false,
+      "checkpoint_sha256": "1c2137b80145b84cba3084723d3100bc4c749099cdbc704088a486afd5f1a626"
+    },
+    {
+      "seed": 17,
+      "training_steps_total": 80,
+      "actor_weight_change_l2": 0.061844787446668624,
+      "critic_weight_change_l2": [
+        1.7832828811992858,
+        1.8224269111894777
+      ],
+      "validation_before": {
+        "action_mean": [
+          -0.010089064064698342,
+          -0.005749912204173131
+        ],
+        "action_std": [
+          0.0007212591328371671,
+          0.000394455986672427
+        ],
+        "behavior_action_mse": [
+          0.03854062703499628,
+          0.012718789668438273
+        ],
+        "zero_action_mse": [
+          0.03846156597137943,
+          0.01282051186534249
+        ],
+        "logged_q_mean": [
+          0.42408067522904813,
+          -0.04949024615761561
+        ],
+        "policy_q_mean": [
+          0.42339925659008515,
+          -0.048417204847702615
+        ],
+        "critic_disagreement_mean": 0.47357092138666373,
+        "online_bellman_residual_rmse": [
+          0.46837099984507424,
+          0.02178572992028579
+        ],
+        "observed_reward_mean": -0.004559375795397374,
+        "metrics_are_physical_performance": false,
+        "residual_basis": "Current critics + deterministic next Actor; no target noise or target-network access"
+      },
+      "validation_after": {
+        "action_mean": [
+          -0.015201158797702728,
+          -0.002181221432506274
+        ],
+        "action_std": [
+          0.0008161029386904527,
+          8.29605873972153e-05
+        ],
+        "behavior_action_mse": [
+          0.03866170817491828,
+          0.012765861106551177
+        ],
+        "zero_action_mse": [
+          0.03846156597137943,
+          0.01282051186534249
+        ],
+        "logged_q_mean": [
+          -0.06895634952263954,
+          -0.06727463178909741
+        ],
+        "policy_q_mean": [
+          -0.0691534104064489,
+          -0.06773491480793709
+        ],
+        "critic_disagreement_mean": 0.006841622675076509,
+        "online_bellman_residual_rmse": [
+          0.0093365172947298,
+          0.007829356172249651
+        ],
+        "observed_reward_mean": -0.004559375795397374,
+        "metrics_are_physical_performance": false,
+        "residual_basis": "Current critics + deterministic next Actor; no target noise or target-network access"
+      },
+      "epoch_q_value": [
+        -0.030352415516972542,
+        -0.034037843346595764
+      ],
+      "action_bounds_passed": true,
+      "gain_bounds_passed": true,
+      "ki_masked": false,
+      "deployment_allowed": false,
+      "performance_claim_allowed": false,
+      "checkpoint_sha256": "c03c42fa2a9e583f8c8bce041b1494e518de7c9f27d6349b3ff7371e98bd560e"
+    },
+    {
+      "seed": 27,
+      "training_steps_total": 80,
+      "actor_weight_change_l2": 0.0697848945824841,
+      "critic_weight_change_l2": [
+        2.039976693310382,
+        1.736411055213417
+      ],
+      "validation_before": {
+        "action_mean": [
+          -0.004581608403569613,
+          -0.002361887719673224
+        ],
+        "action_std": [
+          0.0006160114601995885,
+          0.0002969143455707674
+        ],
+        "behavior_action_mse": [
+          0.03848172135701546,
+          0.012754416378618854
+        ],
+        "zero_action_mse": [
+          0.03846156597137943,
+          0.01282051186534249
+        ],
+        "logged_q_mean": [
+          -0.07656767610938121,
+          -0.20663934449354807
+        ],
+        "policy_q_mean": [
+          -0.07285090621847373,
+          -0.20860954889884362
+        ],
+        "critic_disagreement_mean": 0.13007166838416687,
+        "online_bellman_residual_rmse": [
+          0.11784516443955345,
+          0.046164094062346075
+        ],
+        "observed_reward_mean": -0.004559375795397374,
+        "metrics_are_physical_performance": false,
+        "residual_basis": "Current critics + deterministic next Actor; no target noise or target-network access"
+      },
+      "validation_after": {
+        "action_mean": [
+          -0.011586167969000645,
+          -0.01456001596764112
+        ],
+        "action_std": [
+          0.0013237438710019883,
+          0.0006420552952249679
+        ],
+        "behavior_action_mse": [
+          0.03857352253664817,
+          0.012685185520058848
+        ],
+        "zero_action_mse": [
+          0.03846156597137943,
+          0.01282051186534249
+        ],
+        "logged_q_mean": [
+          -0.14026194237745726,
+          -0.1713449897674414
+        ],
+        "policy_q_mean": [
+          -0.1369740000137916,
+          -0.17561815526240912
+        ],
+        "critic_disagreement_mean": 0.032473959983923495,
+        "online_bellman_residual_rmse": [
+          0.03791158672842189,
+          0.01245384750823237
+        ],
+        "observed_reward_mean": -0.004559375795397374,
+        "metrics_are_physical_performance": false,
+        "residual_basis": "Current critics + deterministic next Actor; no target noise or target-network access"
+      },
+      "epoch_q_value": [
+        -0.03129901364445686,
+        -0.01515864860266447
+      ],
+      "action_bounds_passed": true,
+      "gain_bounds_passed": true,
+      "ki_masked": false,
+      "deployment_allowed": false,
+      "performance_claim_allowed": false,
+      "checkpoint_sha256": "251fcabc658f8e2d33901addabe93db483f831219e1508c3a495cfb6271d461d"
+    }
+  ],
+  "candidate_files": [
+    "models/strict-followup-20261012/default-noise-bc0p25/response-candidate-seed-7.mat",
+    "models/strict-followup-20261012/default-noise-bc0p25/response-candidate-seed-17.mat",
+    "models/strict-followup-20261012/default-noise-bc0p25/response-candidate-seed-27.mat"
+  ],
+  "deployment_allowed": false,
+  "ordinary_live_admission": false,
+  "thermal_gate_modified": false,
+  "performance_claim_allowed": false,
+  "offline_performance_verified": false,
+  "seed_kp_action_means": [
+    0.008210276277401509,
+    -0.015201158797702728,
+    -0.011586167969000645
+  ],
+  "seed_kp_action_direction_consistent": false,
+  "total_gradient_steps": 240,
+  "reason": "Experimental held-response fitting; no physical performance admission"
+}

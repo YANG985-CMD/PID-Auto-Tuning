@@ -1,0 +1,59 @@
+{
+  "schema_version": 2,
+  "source": "td3-candidate-admission",
+  "candidate_status": "rejected",
+  "selected_seed": null,
+  "candidates": [
+    {
+      "seed": 7,
+      "checkpoint_sha256": "ed3cf713029c89222ebbadcdbc1b5fc80d8f8672df0db684539916dac1537bed",
+      "candidate_status": "rejected",
+      "physical_metrics": null,
+      "physical_evaluation_matched": false,
+      "deployment_allowed": false,
+      "performance_claim_allowed": false,
+      "reasons": [
+        "No physical evaluation for this checkpoint and action mask",
+        "Seed direction inconsistency; experimental screening remains closed"
+      ]
+    },
+    {
+      "seed": 17,
+      "checkpoint_sha256": "025048c1e7935d98709c5cb8445b9617451da0866a3a49b61c0a541f9375dbc3",
+      "candidate_status": "rejected",
+      "physical_metrics": null,
+      "physical_evaluation_matched": false,
+      "deployment_allowed": false,
+      "performance_claim_allowed": false,
+      "reasons": [
+        "No physical evaluation for this checkpoint and action mask",
+        "Seed direction inconsistency; experimental screening remains closed"
+      ]
+    },
+    {
+      "seed": 27,
+      "checkpoint_sha256": "5c65b50c65da28b06a5a90f7c68955ae38268f0069af9fdc1c0648ffa0fab42e",
+      "candidate_status": "rejected",
+      "physical_metrics": null,
+      "physical_evaluation_matched": false,
+      "deployment_allowed": false,
+      "performance_claim_allowed": false,
+      "reasons": [
+        "No physical evaluation for this checkpoint and action mask",
+        "Seed direction inconsistency; experimental screening remains closed"
+      ]
+    }
+  ],
+  "reasons": [],
+  "deployment_allowed": false,
+  "performance_claim_allowed": false,
+  "hold_baseline_pi": true,
+  "thermal_gate_modified": false,
+  "training_summary": "response-training-summary.json",
+  "repeated_comparison": "../../../offline-study-20261012/bound-old-policy-comparison.json",
+  "next_required_evidence": [
+    "Exact-policy repeated physical RMSE improvement >=5 percent, no current or speed increase",
+    "Untrained-condition evaluation with the same fixed policy",
+    "Existing thermal gate and independent current calibration for ordinary deployment"
+  ]
+}

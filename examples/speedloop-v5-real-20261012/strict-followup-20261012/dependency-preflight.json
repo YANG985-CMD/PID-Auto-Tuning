@@ -1,0 +1,10 @@
+{
+  "can_version": "4.6.1",
+  "pyocd_version": "0.45.1",
+  "pcan_status": 0,
+  "pcan_available": true,
+  "stlink_match": true,
+  "can_initialized": false,
+  "motion_started": false,
+  "passed": true
+}

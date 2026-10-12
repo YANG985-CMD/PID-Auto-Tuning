@@ -1,12 +1,18 @@
-function agent = createMotorTD3(seed, actionMask, behaviorCloningWeight)
+function agent = createMotorTD3(seed, actionMask, behaviorCloningWeight, options)
 % Small exportable actor: 10 -> 16 ReLU -> 16 ReLU -> 2 tanh.
 arguments
     seed (1,1) double
     actionMask (2,1) double = [1;1]
     behaviorCloningWeight (1,1) double = 0
+    options.TargetNoiseStandardDeviation (2,1) double = sqrt(.2)*ones(2,1)
+    options.TargetNoiseClip (1,1) double = .5
 end
 assert(all(ismember(actionMask,[0 1])) && actionMask(1)==1);
 assert(isfinite(behaviorCloningWeight) && behaviorCloningWeight>=0);
+assert(all(isfinite(options.TargetNoiseStandardDeviation)) && ...
+    all(options.TargetNoiseStandardDeviation>=0), 'MotorTD3:Noise', 'Invalid target noise');
+assert(isfinite(options.TargetNoiseClip) && options.TargetNoiseClip>0 && ...
+    options.TargetNoiseClip<=1, 'MotorTD3:Noise', 'Invalid target noise clip');
 rng(seed, 'twister');
 obs = rlNumericSpec([10 1]);
 act = rlNumericSpec([2 1], 'LowerLimit',-ones(2,1), 'UpperLimit',ones(2,1));
@@ -37,14 +43,18 @@ end
 actor = rlContinuousDeterministicActor(actorNet,obs,act, 'ObservationInputNames','state');
 critic1 = makeCritic(obs,act);
 critic2 = makeCritic(obs,act);
+noiseStd=options.TargetNoiseStandardDeviation;
+noiseClip=options.TargetNoiseClip;
 options = rlTD3AgentOptions('MiniBatchSize',32, 'ExperienceBufferLength',10000, ...
     'NumWarmStartSteps',32, 'DiscountFactor',.99, 'PolicyUpdateFrequency',2, ...
     'TargetSmoothFactor',.005, 'ResetExperienceBufferBeforeTraining',false);
 options.ActorOptimizerOptions.LearnRate = 1e-4;
 options.CriticOptimizerOptions(1).LearnRate = 1e-3;
 options.CriticOptimizerOptions(2).LearnRate = 1e-3;
-options.TargetPolicySmoothModel.StandardDeviationMin=options.TargetPolicySmoothModel.StandardDeviationMin.*actionMask;
-options.TargetPolicySmoothModel.StandardDeviation=options.TargetPolicySmoothModel.StandardDeviation.*actionMask;
+options.TargetPolicySmoothModel.StandardDeviationMin=min(.1,noiseStd/2).*actionMask;
+options.TargetPolicySmoothModel.StandardDeviation=noiseStd.*actionMask;
+options.TargetPolicySmoothModel.LowerLimit=-noiseClip;
+options.TargetPolicySmoothModel.UpperLimit=noiseClip;
 options.ExplorationModel.StandardDeviationMin=options.ExplorationModel.StandardDeviationMin.*actionMask;
 options.ExplorationModel.StandardDeviation=options.ExplorationModel.StandardDeviation.*actionMask;
 if behaviorCloningWeight>0

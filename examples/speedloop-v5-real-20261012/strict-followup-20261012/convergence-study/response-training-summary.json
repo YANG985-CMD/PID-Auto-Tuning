@@ -1,0 +1,367 @@
+{
+  "schema_version": 2,
+  "source": "real_motor",
+  "hardware_accessed": false,
+  "mode": "experimental-held-gain-response",
+  "window_profile": "strict",
+  "exploratory_only": false,
+  "action_mask": [
+    1,
+    1
+  ],
+  "physical_trials": 47,
+  "replay_experiences": 167,
+  "training_experiences": 128,
+  "validation_experiences": 39,
+  "replay_warmup_required": 128,
+  "training_ready": true,
+  "training_action_coverage": {
+    "positive": [
+      18,
+      8
+    ],
+    "negative": [
+      15,
+      4
+    ],
+    "zero": [
+      95,
+      116
+    ]
+  },
+  "remaining_training_windows": 0,
+  "validation_run_indices": [
+    5,
+    10,
+    15,
+    20,
+    23,
+    25,
+    29,
+    31,
+    35,
+    41,
+    47
+  ],
+  "dataset_sha256": "72498d168394a91f3de07e11d86cfbc2b9a56e039f3061bc199e8d42c087f1cf",
+  "discount_contract": "gamma 0.99 per grouped decision; state contains elapsed time",
+  "discount_factor": 0.99,
+  "behavior_cloning_weight": 0.25,
+  "target_noise_standard_deviation": [
+    0.05,
+    0.05
+  ],
+  "target_noise_clip": 0.1,
+  "epochs": 10,
+  "steps_per_epoch": 40,
+  "algorithm": "TD3-with-behavior-cloning",
+  "ki_exploration_performed": true,
+  "temperature_c": null,
+  "current_conversion_independently_calibrated": false,
+  "td3_training_performed": true,
+  "seed_reports": [
+    {
+      "seed": 7,
+      "training_steps_total": 400,
+      "actor_weight_change_l2": 0.3670040150337226,
+      "critic_weight_change_l2": [
+        5.062742457289452,
+        5.506261907067427
+      ],
+      "validation_before": {
+        "action_mean": [
+          0.0018101367108428325,
+          0.002913085055740502
+        ],
+        "action_std": [
+          0.0008633873491919296,
+          0.001049388892762366
+        ],
+        "behavior_action_mse": [
+          0.03848269833037836,
+          0.012860726463579964
+        ],
+        "zero_action_mse": [
+          0.03846156597137943,
+          0.01282051186534249
+        ],
+        "logged_q_mean": [
+          0.04513720364477008,
+          -0.05409893973802145
+        ],
+        "policy_q_mean": [
+          0.04876623617915007,
+          -0.04910379409407958
+        ],
+        "critic_disagreement_mean": 0.09923614338279152,
+        "online_bellman_residual_rmse": [
+          0.11194127427872329,
+          0.026240132240278897
+        ],
+        "observed_reward_mean": -0.004559375795397374,
+        "metrics_are_physical_performance": false,
+        "residual_basis": "Current critics + deterministic next Actor; no target noise or target-network access"
+      },
+      "validation_after": {
+        "action_mean": [
+          0.039432402700185776,
+          -0.010677394087020403
+        ],
+        "action_std": [
+          0.0005884661663918676,
+          0.0015463726952900357
+        ],
+        "behavior_action_mse": [
+          0.040043458091838714,
+          0.012720357026865907
+        ],
+        "zero_action_mse": [
+          0.03846156597137943,
+          0.01282051186534249
+        ],
+        "logged_q_mean": [
+          -0.06447966043383647,
+          -0.0628164111612699
+        ],
+        "policy_q_mean": [
+          -0.062071047914333835,
+          -0.06260018728864498
+        ],
+        "critic_disagreement_mean": 0.0025625949104626975,
+        "online_bellman_residual_rmse": [
+          0.005762648739418189,
+          0.007578982710337917
+        ],
+        "observed_reward_mean": -0.004559375795397374,
+        "metrics_are_physical_performance": false,
+        "residual_basis": "Current critics + deterministic next Actor; no target noise or target-network access"
+      },
+      "epoch_q_value": [
+        -0.017027603462338448,
+        -0.01987772434949875,
+        -0.01904366724193096,
+        -0.019731102511286736,
+        -0.018996678292751312,
+        -0.019794553518295288,
+        -0.019751813262701035,
+        -0.02060144767165184,
+        -0.021139170974493027,
+        -0.020573046058416367
+      ],
+      "action_bounds_passed": true,
+      "gain_bounds_passed": true,
+      "ki_masked": false,
+      "deployment_allowed": false,
+      "performance_claim_allowed": false,
+      "checkpoint_sha256": "228ee86467b1896a8220826d48908f4fd8afcb7112926465cc241be75f1dae11"
+    },
+    {
+      "seed": 17,
+      "training_steps_total": 400,
+      "actor_weight_change_l2": 0.3148659521418616,
+      "critic_weight_change_l2": [
+        4.587584401774686,
+        5.213246779979925
+      ],
+      "validation_before": {
+        "action_mean": [
+          -0.010089064064698342,
+          -0.005749912204173131
+        ],
+        "action_std": [
+          0.0007212591328371671,
+          0.000394455986672427
+        ],
+        "behavior_action_mse": [
+          0.03854062703499628,
+          0.012718789668438273
+        ],
+        "zero_action_mse": [
+          0.03846156597137943,
+          0.01282051186534249
+        ],
+        "logged_q_mean": [
+          0.42408067522904813,
+          -0.04949024615761561
+        ],
+        "policy_q_mean": [
+          0.42339925659008515,
+          -0.048417204847702615
+        ],
+        "critic_disagreement_mean": 0.47357092138666373,
+        "online_bellman_residual_rmse": [
+          0.46837099984507424,
+          0.02178572992028579
+        ],
+        "observed_reward_mean": -0.004559375795397374,
+        "metrics_are_physical_performance": false,
+        "residual_basis": "Current critics + deterministic next Actor; no target noise or target-network access"
+      },
+      "validation_after": {
+        "action_mean": [
+          0.003113890630909457,
+          -0.05109864922288137
+        ],
+        "action_std": [
+          0.0007340443706935388,
+          0.0011795580159722477
+        ],
+        "behavior_action_mse": [
+          0.03847417388998342,
+          0.01416339599791955
+        ],
+        "zero_action_mse": [
+          0.03846156597137943,
+          0.01282051186534249
+        ],
+        "logged_q_mean": [
+          -0.0609594297905763,
+          -0.0585461281813108
+        ],
+        "policy_q_mean": [
+          -0.06130006957130554,
+          -0.057974378841045573
+        ],
+        "critic_disagreement_mean": 0.004896920174360275,
+        "online_bellman_residual_rmse": [
+          0.0059637888143356495,
+          0.008841477527030631
+        ],
+        "observed_reward_mean": -0.004559375795397374,
+        "metrics_are_physical_performance": false,
+        "residual_basis": "Current critics + deterministic next Actor; no target noise or target-network access"
+      },
+      "epoch_q_value": [
+        -0.03022480569779873,
+        -0.03339274972677231,
+        -0.03342805057764053,
+        -0.03339490294456482,
+        -0.03374624252319336,
+        -0.03374256566166878,
+        -0.03389431908726692,
+        -0.03424224257469177,
+        -0.03424515202641487,
+        -0.034609343856573105
+      ],
+      "action_bounds_passed": true,
+      "gain_bounds_passed": true,
+      "ki_masked": false,
+      "deployment_allowed": false,
+      "performance_claim_allowed": false,
+      "checkpoint_sha256": "042b1e24797a3d0c8f407dee13c59c6d27a032cc394184fa9f47f91e8c45de41"
+    },
+    {
+      "seed": 27,
+      "training_steps_total": 400,
+      "actor_weight_change_l2": 0.30712828219148247,
+      "critic_weight_change_l2": [
+        5.453797697449932,
+        4.759826621733371
+      ],
+      "validation_before": {
+        "action_mean": [
+          -0.004581608403569613,
+          -0.002361887719673224
+        ],
+        "action_std": [
+          0.0006160114601995885,
+          0.0002969143455707674
+        ],
+        "behavior_action_mse": [
+          0.03848172135701546,
+          0.012754416378618854
+        ],
+        "zero_action_mse": [
+          0.03846156597137943,
+          0.01282051186534249
+        ],
+        "logged_q_mean": [
+          -0.07656767610938121,
+          -0.20663934449354807
+        ],
+        "policy_q_mean": [
+          -0.07285090621847373,
+          -0.20860954889884362
+        ],
+        "critic_disagreement_mean": 0.13007166838416687,
+        "online_bellman_residual_rmse": [
+          0.11784516443955345,
+          0.046164094062346075
+        ],
+        "observed_reward_mean": -0.004559375795397374,
+        "metrics_are_physical_performance": false,
+        "residual_basis": "Current critics + deterministic next Actor; no target noise or target-network access"
+      },
+      "validation_after": {
+        "action_mean": [
+          -0.0006142408536293376,
+          -0.026239749235220444
+        ],
+        "action_std": [
+          0.0035863289481145194,
+          0.0015039015923343031
+        ],
+        "behavior_action_mse": [
+          0.03837503747711722,
+          0.012899098979039061
+        ],
+        "zero_action_mse": [
+          0.03846156597137943,
+          0.01282051186534249
+        ],
+        "logged_q_mean": [
+          -0.1881510921013661,
+          -0.19510366786748934
+        ],
+        "policy_q_mean": [
+          -0.18791360771044707,
+          -0.1944041011425165
+        ],
+        "critic_disagreement_mean": 0.0069525757661232585,
+        "online_bellman_residual_rmse": [
+          0.009079409506975587,
+          0.0034231436761669467
+        ],
+        "observed_reward_mean": -0.004559375795397374,
+        "metrics_are_physical_performance": false,
+        "residual_basis": "Current critics + deterministic next Actor; no target noise or target-network access"
+      },
+      "epoch_q_value": [
+        -0.025719495490193367,
+        -0.026828322559595108,
+        -0.027591563761234283,
+        -0.0281362421810627,
+        -0.027349788695573807,
+        -0.02928674779832363,
+        -0.027938146144151688,
+        -0.02687082067131996,
+        -0.028043491765856743,
+        -0.028556715697050095
+      ],
+      "action_bounds_passed": true,
+      "gain_bounds_passed": true,
+      "ki_masked": false,
+      "deployment_allowed": false,
+      "performance_claim_allowed": false,
+      "checkpoint_sha256": "541bcda0f5860e3de6bb6b7a5e0a474b68439d99e7a813be78a6313d3fec98b0"
+    }
+  ],
+  "candidate_files": [
+    "models/strict-followup-20261012/convergence-study/response-candidate-seed-7.mat",
+    "models/strict-followup-20261012/convergence-study/response-candidate-seed-17.mat",
+    "models/strict-followup-20261012/convergence-study/response-candidate-seed-27.mat"
+  ],
+  "deployment_allowed": false,
+  "ordinary_live_admission": false,
+  "thermal_gate_modified": false,
+  "performance_claim_allowed": false,
+  "offline_performance_verified": false,
+  "seed_kp_action_means": [
+    0.039432402700185776,
+    0.003113890630909457,
+    -0.0006142408536293376
+  ],
+  "seed_kp_action_direction_consistent": false,
+  "total_gradient_steps": 1200,
+  "reason": "Experimental held-response fitting; no physical performance admission"
+}
