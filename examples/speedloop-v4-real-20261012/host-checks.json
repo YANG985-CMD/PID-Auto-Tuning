@@ -1,0 +1,8 @@
+{
+  "passed": true,
+  "tests": 9,
+  "failures": 0,
+  "errors": 0,
+  "hardware_accessed": false,
+  "scope": "actual action identity and physical output shutdown; includes gated GPIO regression"
+}

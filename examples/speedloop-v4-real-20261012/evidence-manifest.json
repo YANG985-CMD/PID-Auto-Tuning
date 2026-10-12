@@ -1,0 +1,95 @@
+{
+  "schema_version": 1,
+  "source": "real_motor",
+  "trial_utc": "2026-10-12T02:02:53.579166+00:00",
+  "firmware_id": "g431-speedloop-pi-motion-v4",
+  "firmware_sha256": "902b5dd09f9873a1143798852e55414102e131fa0ab16ad983e145cde0e45ef2",
+  "matlab_release": "2024b",
+  "records": [
+    {
+      "path": "trial-summary.json",
+      "bytes": 1641,
+      "sha256": "077bd177fb5327f5512d84dca3b566c99d60f7c737547558e3574f0272c84af9",
+      "pre_normalization_sha256": "fcbe3dfbcfba81d953e063e112968390ed01dd1983f6d390014cb440030babac"
+    },
+    {
+      "path": "telemetry.jsonl",
+      "bytes": 71548,
+      "sha256": "52dd4c0bd0ebe32511bc2a70546df422e2c9322cb291c858f310090896867fcb",
+      "pre_normalization_sha256": "959d6b1660dcccca121d9d250014cf369a443631e537a586de4fb97bb8f916ee"
+    },
+    {
+      "path": "commands.jsonl",
+      "bytes": 9719,
+      "sha256": "aea342020252ad079121d9b9da24cd05e2cc1adc9f6ef981b14bfc949599ae83",
+      "pre_normalization_sha256": "ad6f4ff63b76bea2b275b7537f85f1c32ff8142f68480d25442d5e600a1cc699"
+    },
+    {
+      "path": "hall-edges.json",
+      "bytes": 7586,
+      "sha256": "9b6e2677cecc6c835fdf40a683b3f55e3e3298267bad37eed89001c817ccc77f",
+      "pre_normalization_sha256": "f3b2d67f66e6c0fb9766df0349c61ab4bd2662bf80d63b9429e746baa841b6dd"
+    },
+    {
+      "path": "flash-summary-original.json",
+      "bytes": 807,
+      "sha256": "cfe4f2691aa9a8b6ef4822b39ca6bde1e802dd25d67700876dc7692c715138df",
+      "pre_normalization_sha256": "e8e8bb16490e1e6f11bd6fdfc29299693c928c84b0e34915ee53ff20aade1491"
+    },
+    {
+      "path": "gate-verification.json",
+      "bytes": 576,
+      "sha256": "36192b3d180cc5bafd282af04800c10f47948718f4b1f9bacedec420a6a2b23c",
+      "pre_normalization_sha256": "066604b9411662ba28776feb6cbe07b143170a962b5a1f09f06183bd03c2a668"
+    },
+    {
+      "path": "startup-summary.json",
+      "bytes": 1020,
+      "sha256": "e3622336ede05694f304f0b562fac2b29b729b01256ef42e7a3df40d36179729",
+      "pre_normalization_sha256": "fc9f126f4a87656a6ce59e014f9888845a1272ad2e865299c383f419ab2d2ff0"
+    },
+    {
+      "path": "analysis.json",
+      "bytes": 2283,
+      "sha256": "b7b7022d1f8664400e42e8e3d243d2089f7e9bf6974f7203307a696efc04def1",
+      "pre_normalization_sha256": "b7b7022d1f8664400e42e8e3d243d2089f7e9bf6974f7203307a696efc04def1"
+    },
+    {
+      "path": "experience-candidates.jsonl",
+      "bytes": 13823,
+      "sha256": "e175a2572fd7cd4d604478a4e7cb27ba6b6fd133c31de29264d6754093b3a958",
+      "pre_normalization_sha256": "e175a2572fd7cd4d604478a4e7cb27ba6b6fd133c31de29264d6754093b3a958"
+    },
+    {
+      "path": "telemetry.csv",
+      "bytes": 24726,
+      "sha256": "6e7710dea8027d2e9101e04b8009a763e924b5840ea6182df48fa122f02ea004",
+      "pre_normalization_sha256": "fb3e7e34322e8ea5906e1dc3d2b6e1776a089ad3d395620894190e186d12cd2c"
+    },
+    {
+      "path": "audit-checks.json",
+      "bytes": 384,
+      "sha256": "f9ac7757b5f9fe91bb2267be3b5d8a172deb181b4156408bc834c071dce78bd4",
+      "pre_normalization_sha256": "f9ac7757b5f9fe91bb2267be3b5d8a172deb181b4156408bc834c071dce78bd4"
+    },
+    {
+      "path": "../../docs/images/speedloop-v4-closed-loop-trial.png",
+      "bytes": 72321,
+      "sha256": "2aa77b0a280a3598c04d51350c99b1fb37253a735b18fa53bce7a6c753058547",
+      "pre_normalization_sha256": "2aa77b0a280a3598c04d51350c99b1fb37253a735b18fa53bce7a6c753058547"
+    },
+    {
+      "path": "host-checks.json",
+      "pre_normalization_sha256": "a5f7a140e8558803598d82ba09890dc331ee453e8f4615265a05ddc5a8bfedf0",
+      "bytes": 195,
+      "sha256": "5007b73d9d0fbccb74a63364860a1ffad4b884d32fbc691cfe7a761ad9e0a2e0"
+    }
+  ],
+  "td3_training_performed": false,
+  "actor_deployed": false,
+  "raw_flash_note": "Original flash-summary GPIO values are invalid because GPIO clocks were off. Image readback hash is valid; later gate-verification.json establishes actual pin state.",
+  "raw_trial_note": "Legacy settled_snapshots/settled_rmse_rpm names in raw trial summary mean elapsed>=2200ms, not proven steady-state performance. See audited analysis.json.",
+  "data_admission_note": "Experience candidates are not admitted ordinary TD3 replay transitions. 10 causal candidates, 2 with retained raw-stage proof, 0 admitted.",
+  "proprietary_firmware_uploaded": false,
+  "text_line_endings": "LF for published artifacts; JSON field content unchanged from raw collection"
+}

@@ -42,7 +42,8 @@ def prepare(a):
             'energized_preparation_exception':a.energized_phase_inhibited_confirmed,
             'begin_sent':False,'gains_sent':False}
     session=ConnectHelper.session_with_chosen_probe(unique_id=a.uid,target_override='cortex_m',
-        connect_mode='attach',frequency=1000000,options={'resume_on_disconnect':False},no_config=True,blocking=False)
+        connect_mode='attach',frequency=1000000,options={'resume_on_disconnect':False,
+        'cache.enable_memory':False,'cache.enable_register':False},no_config=True,blocking=False)
     if session is None:raise RuntimeError('No selected debug probe')
     mutation_started=False
     with session:

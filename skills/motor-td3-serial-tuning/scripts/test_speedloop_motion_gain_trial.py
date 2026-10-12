@@ -55,6 +55,7 @@ class Checks(unittest.TestCase):
                 self.reg[addr] = value
                 if addr in (0x48000018, 0x48000418): self.reg[addr-4] &= ~(value >> 16)
             def write8(self, addr, value): self.reg[addr] = value
+            def flush(self): pass
             def halt(self):
                 assert not self.read32(REGS['tim1_bdtr']) & 0x8000
                 assert not self.read32(REGS['tim1_ccer']) & PHASE_MASK
@@ -64,6 +65,39 @@ class Checks(unittest.TestCase):
         target = Target()
         shutdown(target, {'Motor_state': 0x20000000})
         self.assertTrue(target.halted)
+
+    def test_gated_gpio_writes_cannot_prove_stop(self):
+        # Model the hardware bug: gated GPIO writes do nothing, while gated
+        # reads look harmless. GPIO clocks must come before pin inhibition;
+        # a disabled TIM1 clock must not be enabled while gates are still AF.
+        class GatedTarget:
+            def __init__(self):
+                self.reg = {0x4002104c: 0, 0x40021060: 0,
+                            REGS['gpioa_moder']: 0xaa95ffff,
+                            REGS['gpiob_moder']: 0xabaaaaaa,
+                            REGS['gpioa_odr']: 0x700, REGS['gpiob_odr']: 0xe000,
+                            REGS['tim1_bdtr']: 0x8000, REGS['tim1_ccer']: PHASE_MASK}
+            def read32(self, addr):
+                if 0x48000000 <= addr <= 0x48000418 and self.reg[0x4002104c] & 3 != 3:
+                    return 0
+                return self.reg.get(addr, 0)
+            def write32(self, addr, value):
+                if addr == 0x40021060 and value & (1 << 11):
+                    assert self.reg[REGS['gpioa_moder']] & 0x3f0000 == 0x150000
+                    assert self.reg[REGS['gpiob_moder']] & 0xfc000000 == 0x54000000
+                    assert not self.reg[REGS['gpioa_odr']] & 0x700
+                    assert not self.reg[REGS['gpiob_odr']] & 0xe000
+                if 0x48000000 <= addr <= 0x48000418 and self.reg[0x4002104c] & 3 != 3:
+                    return
+                self.reg[addr] = value
+                if addr in (0x48000018, 0x48000418):
+                    self.reg[addr-4] &= ~(value >> 16)
+            def flush(self): pass
+            def write8(self, addr, value): self.reg[addr] = value
+            def halt(self): pass
+        values = shutdown(GatedTarget(), {'Motor_state': 0x20000000})
+        self.assertFalse(values['tim1_bdtr'] & 0x8000)
+        self.assertFalse(values['tim1_ccer'] & PHASE_MASK)
 
 
 if __name__ == '__main__': unittest.main()

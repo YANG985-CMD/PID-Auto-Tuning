@@ -11,6 +11,7 @@ import subprocess
 import sys
 from speedloop_motion_handshake import REGS, PHASE_MASK, IDENTITY
 from speedloop_motion_prepare import ENERGIZED_IMAGE_SHA
+from speedloop_board_stop import inhibit
 
 OLD_SHA='7128a27aad687c31a3bc26c2734eb6ea3d79cc96922addf0b2f6319d25fd3c93'
 
@@ -30,7 +31,7 @@ def flash(a):
     def session():
         return ConnectHelper.session_with_chosen_probe(unique_id=a.uid,target_override='cortex_m',
             connect_mode='attach',frequency=1000000,no_config=True,blocking=False,
-            options={'resume_on_disconnect':False})
+            options={'resume_on_disconnect':False,'cache.enable_memory':False,'cache.enable_register':False})
     report=dict(passed=False,hardware_accessed=True,firmware_id=IDENTITY,
                 energized_update_exception=True,motion_started=False,bin_sha256=ENERGIZED_IMAGE_SHA)
     first=session()
@@ -58,16 +59,11 @@ def flash(a):
     with session() as s:
         target=s.target
         target.halt()
-        target.write32(REGS['tim1_bdtr'],target.read32(REGS['tim1_bdtr'])&~0x8000)
-        target.write32(REGS['tim1_ccer'],target.read32(REGS['tim1_ccer'])&~PHASE_MASK)
-        for base,pins,mask,mode in ((0x48000000,0x700,0x3f0000,0x150000),
-                                   (0x48000400,0xe000,0xfc000000,0x54000000)):
-            target.write32(base+0x18,pins<<16)
-            target.write32(base,(target.read32(base)&~mask)|mode)
+        final=inhibit(target)
         image=bytes(target.read_memory_block8(0x08000000,info['binary_bytes']))
         readback=hashlib.sha256(image).hexdigest()
         report.update(full_readback_sha256=readback,core_halted=True,
-                      final_state={n:target.read32(addr) for n,addr in REGS.items()},binary_bytes=len(image))
+                      final_state=final,binary_bytes=len(image))
         report['passed']=result.returncode==0 and readback==ENERGIZED_IMAGE_SHA
     (output/'summary.json').write_text(json.dumps(report,indent=2)+'\n',encoding='utf-8')
     print(json.dumps(report));return report

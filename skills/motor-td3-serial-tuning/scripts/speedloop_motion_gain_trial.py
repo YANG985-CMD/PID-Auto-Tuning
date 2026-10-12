@@ -18,6 +18,7 @@ import time
 import can_transport as wire
 from speedloop_motion_handshake import IDENTITY, PHASE_MASK, REGS, RAM
 from speedloop_motion_prepare import ENERGIZED_IMAGE_SHA
+from speedloop_board_stop import inhibit
 
 BASE_KP, BASE_KI = .003389, .00144
 STOP_SECONDS = 2.85
@@ -52,12 +53,7 @@ def check_telemetry(obj, last, sent):
 
 def shutdown(target, symbols):
     # Debug halt alone is not a stop. Drop MOE and all six phase gates first.
-    target.write32(REGS['tim1_bdtr'], target.read32(REGS['tim1_bdtr']) & ~0x8000)
-    target.write32(REGS['tim1_ccer'], target.read32(REGS['tim1_ccer']) & ~PHASE_MASK)
-    for base, pins, mask, output in ((0x48000000, 0x700, 0x3f0000, 0x150000),
-                                   (0x48000400, 0xe000, 0xfc000000, 0x54000000)):
-        target.write32(base + 0x18, pins << 16)
-        target.write32(base, (target.read32(base) & ~mask) | output)
+    inhibit(target)
     target.write8(symbols['Motor_state'], 0)
     target.halt()
     values = {name: target.read32(addr) for name, addr in REGS.items()}
@@ -103,7 +99,7 @@ def trial(a):
     begin_at = stop_at = next_gain = None
     session = ConnectHelper.session_with_chosen_probe(unique_id=a.uid, target_override='cortex_m',
         connect_mode='attach', frequency=1000000, no_config=True,
-        options={'resume_on_disconnect': False}, blocking=False)
+        options={'resume_on_disconnect': False,'cache.enable_memory':False,'cache.enable_register':False}, blocking=False)
     if session is None:
         raise RuntimeError('No selected probe')
     with session:
@@ -198,13 +194,14 @@ def trial(a):
             if (not result.get('protocol_stop_acknowledged') or len(active) < 20 or
                     not sent or acked != set(sent)):
                 raise RuntimeError('Incomplete actual gain trial')
-            settled = [t for t in active if t['elapsed_ms'] >= 2200]
+            post_start = [t for t in active if t['elapsed_ms'] >= 2200]
             result.update(passed=True, complete_telemetry_packets=len(telemetry), active_snapshots=len(active),
                           actual_gain_commands=len(acked), gain_pairs=sorted({(t['kp'], t['ki']) for t in active}),
                           nominal_peak_current_a=max(t['current'] for t in active),
                           peak_speed_rpm=max(abs(t['speed']) for t in active),
-                          settled_snapshots=len(settled),
-                          settled_rmse_rpm=(sum((t['speed']-1000)**2 for t in settled)/len(settled))**.5 if settled else None)
+                          expected_post_start_snapshots=len(post_start),
+                          expected_post_start_window_rmse_rpm=(sum((t['speed']-1000)**2 for t in post_start)/len(post_start))**.5 if post_start else None,
+                          post_start_is_steady_state_score=False)
         except Exception as exc:
             result['error'] = str(exc)
         finally:

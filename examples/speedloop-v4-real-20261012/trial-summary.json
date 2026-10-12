@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "utc": "2026-10-12T02:02:53.579166+00:00",
+  "passed": true,
+  "firmware_id": "g431-speedloop-pi-motion-v4",
+  "bin_sha256": "902b5dd09f9873a1143798852e55414102e131fa0ab16ad983e145cde0e45ef2",
+  "hardware_accessed": true,
+  "motion_command_sent": true,
+  "td3_training_performed": false,
+  "temperature_c": null,
+  "thermal_exception": "user authorized this bounded trial only",
+  "current_conversion_independently_calibrated": false,
+  "independent_cpu_stall_watchdog_integrated": false,
+  "speed_ref_rpm": 1000,
+  "maximum_motion_seconds": 3,
+  "host_stop_seconds": 2.85,
+  "preflight_nominal_bus_v": 24.466405868530273,
+  "preflight_state": {
+    "tim1_ccer": 4096,
+    "tim1_bdtr": 33730680,
+    "gpioa_moder": 2861957119,
+    "gpiob_moder": 1471065791,
+    "gpioa_odr": 0,
+    "gpiob_odr": 0,
+    "device_id": 537093224
+  },
+  "protocol_stop_acknowledged": true,
+  "complete_telemetry_packets": 151,
+  "active_snapshots": 143,
+  "actual_gain_commands": 46,
+  "gain_pairs": [
+    [
+      0.0033889999613165855,
+      0.0014400000218302011
+    ],
+    [
+      0.0035245600156486034,
+      0.0014400000218302011
+    ]
+  ],
+  "nominal_peak_current_a": 1.0546875,
+  "peak_speed_rpm": 1748.251708984375,
+  "settled_snapshots": 33,
+  "settled_rmse_rpm": 148.57420859586205,
+  "final_board_state": {
+    "tim1_ccer": 4096,
+    "tim1_bdtr": 33697912,
+    "gpioa_moder": 2861957119,
+    "gpiob_moder": 1471065791,
+    "gpioa_odr": 0,
+    "gpiob_odr": 0,
+    "device_id": 537093224
+  },
+  "core_halted_after_physical_shutdown": true,
+  "final_irq_fault": 0,
+  "final_tx_fault": 0,
+  "can_released_after_shutdown": true
+}

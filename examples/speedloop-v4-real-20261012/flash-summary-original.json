@@ -1,0 +1,29 @@
+{
+  "passed": true,
+  "hardware_accessed": true,
+  "firmware_id": "g431-speedloop-pi-motion-v4",
+  "energized_update_exception": true,
+  "motion_started": false,
+  "bin_sha256": "902b5dd09f9873a1143798852e55414102e131fa0ab16ad983e145cde0e45ef2",
+  "pre_reset_state": {
+    "tim1_ccer": 4096,
+    "tim1_bdtr": 33697912,
+    "gpioa_moder": 2861957119,
+    "gpiob_moder": 1471065791,
+    "gpioa_odr": 0,
+    "gpiob_odr": 0,
+    "device_id": 537093224
+  },
+  "full_readback_sha256": "902b5dd09f9873a1143798852e55414102e131fa0ab16ad983e145cde0e45ef2",
+  "core_halted": true,
+  "final_state": {
+    "tim1_ccer": 0,
+    "tim1_bdtr": 0,
+    "gpioa_moder": 2885681151,
+    "gpiob_moder": 4294966975,
+    "gpioa_odr": 2885681151,
+    "gpiob_odr": 4294966975,
+    "device_id": 537093224
+  },
+  "binary_bytes": 49628
+}

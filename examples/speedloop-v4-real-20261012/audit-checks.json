@@ -1,0 +1,21 @@
+{
+  "passed": true,
+  "tests": 4,
+  "valid_real_dataset_accepted": true,
+  "invalid_cases": [
+    "bad-gain",
+    "bad-hall-stage",
+    "missing-stop"
+  ],
+  "rejected": [
+    true,
+    true,
+    true
+  ],
+  "errors": [
+    "Missing actual gain acknowledgement",
+    "Retained edge window does not prove continuous RunStage",
+    "断言失败。"
+  ],
+  "hardware_accessed": false
+}

@@ -1,0 +1,21 @@
+{
+  "passed": true,
+  "hardware_accessed": true,
+  "flash_programmed": false,
+  "motion_started": false,
+  "full_readback_sha256": "902b5dd09f9873a1143798852e55414102e131fa0ab16ad983e145cde0e45ef2",
+  "gpio_clock_before": 0,
+  "gpio_clock_after": 3,
+  "tim1_clock_after": 2048,
+  "final_state": {
+    "tim1_ccer": 0,
+    "tim1_bdtr": 0,
+    "gpioa_moder": 2882928639,
+    "gpiob_moder": 1476394687,
+    "gpioa_odr": 0,
+    "gpiob_odr": 0,
+    "device_id": 537093224
+  },
+  "core_halted": true,
+  "reason": "Post-Flash GPIO clocks must be enabled before pin writes/readback"
+}
