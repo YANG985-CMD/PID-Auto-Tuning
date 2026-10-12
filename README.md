@@ -224,6 +224,24 @@ MATLAB 使用真实 `rlTD3Agent.ExperienceBuffer`，检查重复试验、实际�
 
 初次 v5 完整闭环窗口包含切换瞬态，31 个点的 RMSE 为 145.682 rpm。它比 v4 图中只取末段约 0.14 秒的 26.601 rpm 窗口更长，不能将二者直接排序。这些是采集行为的响应，不是新 Actor 的实机成绩。[v5 实测与训练说明](docs/speedloop-v5-experimental-replay-20261012.md)、[MATLAB 训练摘要](examples/speedloop-v5-real-20261012/training-summary.json)、[Actor C 计算文件](examples/speedloop-v5-real-20261012/actor-calculation-only/motor_actor.c)、[数据清单](examples/speedloop-v5-real-20261012/evidence-manifest.json)。
 
+### 2026-10-12：MATLAB 实时旁路已在真实电机上跑通
+
+这一步把 MATLAB 固定 Actor 接到真实板端遥测的旁路通道。桥接线程接收 STM32G431 的完整状态，MATLAB 返回版本化、限幅后的 Kp 建议；建议绑定到原始 `boot_id/seq/t_us`，超时、重复帧、跨会话帧和错误令牌都会被拒绝。桥接线程与采样、停机线程分离，MATLAB 卡顿不会阻塞停机。
+
+实机验证只让原有基准 PI 控制电机，**没有把 Actor 建议写回 MCU，也没有在线训练或改变 `SKILL.md` 的普通门槛**。由于真实数据没有 Ki 探测，实时旁路固定 Ki=0.00144，并明确标记为受限的 Kp-only 建议。
+
+| 实时旁路实测 | 结果 |
+|---|---:|
+| 完整板端遥测 / MATLAB 返回 | 148 / 148 |
+| 45 ms 决策期限内接受 | 148 |
+| MATLAB 往返延迟 p50 / p95 / 最大 | 6.17 / 7.83 / 13.68 ms |
+| 实际下发 Actor 增益 | 0 次（基准 PI 保持） |
+| 基准 PI 的名义峰值电流 | 1.032715 A |
+| 峰值 Hall 转速 | 1782.531 rpm（1800 rpm 保护上限未提高） |
+| 故障 / STOP / 六路输出 | 0 / 已确认 / 已关闭 |
+
+这次 3 秒试验的原始遥测、MATLAB 建议、命令、Hall 边沿和哈希清单见 [`realtime-shadow-20261012`](examples/speedloop-v5-real-20261012/realtime-shadow-20261012/)，说明见[实时旁路记录](docs/speedloop-v5-realtime-shadow-20261012.md)。这是链路和实时预算验证，不是 Actor 性能优于 PI 的结论；下一步若要比较固定 Actor，必须另行授权并使用未参与训练的工况。
+
 - [运动版构建和烧录回读记录](examples/controller-comparison-20261011/speedloop-pi-motion-flash.json)
 - [v2 修正与板上启动采样记录](examples/controller-comparison-20261011/speedloop-pi-motion-v2-startup.json)
 - [v2 HELLO 与时间故障实测记录](examples/controller-comparison-20261011/speedloop-pi-motion-v2-handshake.json)

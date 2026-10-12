@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "utc": "2026-10-12T04:20:17.257220+00:00",
+  "passed": true,
+  "firmware_id": "g431-speedloop-pi-motion-v5",
+  "bin_sha256": "45ad8fcd5039822741d888cb54eaea909cfc55d3e13dc8da0cdfcfc98703cce5",
+  "hardware_accessed": true,
+  "motion_command_sent": true,
+  "td3_training_performed": false,
+  "temperature_c": null,
+  "thermal_exception": "user authorized this bounded trial only",
+  "current_conversion_independently_calibrated": false,
+  "independent_cpu_stall_watchdog_integrated": false,
+  "speed_ref_rpm": 1000,
+  "maximum_motion_seconds": 3,
+  "host_stop_seconds": 2.8,
+  "gain_interval_ms": 50.0,
+  "host_clock": "QueryPerformanceCounter via perf_counter",
+  "host_script_sha256": "28ac45518b084fa0777c41ce2971adc85a4c5e967703baa3ed4b2e04bf5d4fdf",
+  "shadow_mode": "fixed-baseline-PI; MATLAB suggestions recorded only",
+  "actor_gain_commands_sent": 0,
+  "preflight_nominal_bus_v": 24.152196884155273,
+  "preflight_state": {
+    "tim1_ccer": 4096,
+    "tim1_bdtr": 33730680,
+    "gpioa_moder": 2861957119,
+    "gpiob_moder": 1471065791,
+    "gpioa_odr": 0,
+    "gpiob_odr": 0,
+    "device_id": 537093224
+  },
+  "protocol_stop_acknowledged": true,
+  "complete_telemetry_packets": 148,
+  "active_snapshots": 140,
+  "actual_gain_commands": 54,
+  "gain_pairs": [
+    [
+      0.0033889999613165855,
+      0.0014400000218302011
+    ]
+  ],
+  "nominal_peak_current_a": 1.03271484375,
+  "peak_speed_rpm": 1782.53125,
+  "expected_post_start_snapshots": 30,
+  "expected_post_start_window_rmse_rpm": 160.78800361556804,
+  "post_start_is_steady_state_score": false,
+  "final_board_state": {
+    "tim1_ccer": 4096,
+    "tim1_bdtr": 33697912,
+    "gpioa_moder": 2861957119,
+    "gpiob_moder": 1471065791,
+    "gpioa_odr": 0,
+    "gpiob_odr": 0,
+    "device_id": 537093224
+  },
+  "core_halted_after_physical_shutdown": true,
+  "final_irq_fault": 0,
+  "final_tx_fault": 0,
+  "can_released_after_shutdown": true,
+  "shadow_worker_closed": true,
+  "shadow": {
+    "policy_version": "experimental-shadow-20261012-kp-only",
+    "checkpoint_sha256": "2d9516d757ad8e9784da9171afe48f5dc60f809666639084c691bbc10b23efab",
+    "shadow_only": true,
+    "hardware_writeback": false,
+    "td3_training_performed": false,
+    "submitted": 148,
+    "pending_replaced": 0,
+    "records_dropped": 0,
+    "returned": 148,
+    "accepted": 148,
+    "rejected": 0,
+    "deadline_ms": 45.0,
+    "roundtrip_ms": {
+      "p50": 6.167499999719439,
+      "p95": 7.8271999991557095,
+      "maximum": 13.682599999810918
+    },
+    "source_age_ms": {
+      "p50": 6.290000001172302,
+      "p95": 11.743299999579904,
+      "maximum": 13.737499999479041
+    },
+    "worker_error": null,
+    "implementation_sha256": "5be292f05eb05776ee57248a65d3dbb337e7a6707e26c2eebcbcf2c14f679816"
+  },
+  "shadow_pipeline_verified": true
+}

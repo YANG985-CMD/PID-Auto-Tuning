@@ -1,7 +1,8 @@
 """One 3 s, 1000 rpm physical PI trial on the exact reviewed motion-v5 image.
 
 Explicit experiment exception: no measured temperature channel. Does not change
-the normal training gates. No Actor, gradient updates, random exploration or flash.
+the normal training gates. Optional MATLAB shadow Actor cannot write gains.
+No gradient updates, random exploration or flash.
 Retains actual command/apply timestamps and verifies physical output shutdown.
 """
 import argparse
@@ -122,6 +123,8 @@ def trial(a):
     hello = None
     begin_at = stop_at = next_gain = None
     final_gain_sent = False
+    shadow = None
+    shadow_records = []
     session = ConnectHelper.session_with_chosen_probe(unique_id=a.uid, target_override='cortex_m',
         connect_mode='attach', frequency=1000000, no_config=True,
         options={'resume_on_disconnect': False,'cache.enable_memory':False,'cache.enable_register':False}, blocking=False)
@@ -143,6 +146,17 @@ def trial(a):
                 link.send(frame)
                 time.sleep(.001)
         try:
+            shadow_port = getattr(a, 'shadow_port', None)
+            shadow_token = getattr(a, 'shadow_token_file', None)
+            if bool(shadow_port) != bool(shadow_token):
+                raise ValueError('Both MATLAB shadow port and private token are required')
+            if shadow_port:
+                from speedloop_shadow import ShadowClient
+                shadow = ShadowClient(shadow_port, shadow_token)
+                if not shadow.ready.wait(2):
+                    raise RuntimeError('MATLAB shadow handshake failed before any board command: '+str(shadow.error))
+                result['shadow_mode'] = 'fixed-baseline-PI; MATLAB suggestions recorded only'
+                result['actor_gain_commands_sent'] = 0
             image = bytes(target.read_memory_block8(0x08000000, summary['binary_bytes']))
             if hashlib.sha256(image).hexdigest() != ENERGIZED_IMAGE_SHA:
                 raise RuntimeError('Flash mismatch; no commands sent')
@@ -168,6 +182,7 @@ def trial(a):
             send(dict(type='hello', profile_id=IDENTITY))
             due = time.perf_counter() + 5
             while time.perf_counter() < due:
+                if shadow: shadow_records.extend(shadow.drain())
                 now = time.perf_counter()
                 if begin_at and not stop_at and now-begin_at >= STOP_SECONDS:
                     send(dict(type='stop')); stop_at = time.perf_counter()
@@ -185,7 +200,8 @@ def trial(a):
                         raise RuntimeError('No fresh actual action acknowledgement')
                     if time.perf_counter()-last['host_received_monotonic'] >= .045:
                         raise RuntimeError('Telemetry stale; no gain refresh')
-                    kp, ki = (f32(BASE_KP),f32(BASE_KI)) if final_due else planned_gains(last['elapsed_ms'])
+                    kp, ki = ((f32(BASE_KP),f32(BASE_KI)) if final_due or shadow
+                              else planned_gains(last['elapsed_ms']))
                     action_seq += 1
                     send(dict(type='gains', command_seq=action_seq, kp=kp, ki=ki, lease_ms=200), last)
                     next_gain = now + GAIN_INTERVAL_SECONDS
@@ -211,6 +227,8 @@ def trial(a):
                         raise
                     obj['host_received_monotonic'] = time.perf_counter()
                     telemetry.append(obj)
+                    if shadow:
+                        shadow.submit(obj, obj['host_received_monotonic'])
                     if begin_at is None:
                         if obj['enabled']: raise RuntimeError('Unexpected pre-BEGIN motion')
                         send(dict(type='begin', profile_id=IDENTITY, speed_ref=1000, lease_ms=200), obj)
@@ -264,6 +282,16 @@ def trial(a):
                 try: link.close(); result['can_released_after_shutdown'] = True
                 except Exception as exc:
                     result['passed'] = False; result['can_release_error'] = str(exc)
+            if shadow:
+                result['shadow_worker_closed'] = shadow.close()
+                shadow_records.extend(shadow.drain())
+                result['shadow'] = shadow.summary(shadow_records)
+                result['shadow_pipeline_verified'] = bool(
+                    result.get('passed') and result['shadow_worker_closed'] and
+                    result['shadow']['accepted'] >= 20 and not result['shadow']['worker_error'] and
+                    not result['shadow']['records_dropped'])
+                with (output/'shadow-predictions.jsonl').open('w',encoding='utf-8') as f:
+                    for record in shadow_records: f.write(json.dumps(record,allow_nan=False)+'\n')
     for name, rows in (('telemetry', telemetry), ('commands', commands)):
         with (output/(name+'.jsonl')).open('w', encoding='utf-8') as f:
             for row in rows: f.write(json.dumps(row, allow_nan=False)+'\n')
@@ -278,5 +306,7 @@ if __name__ == '__main__':
     p.add_argument('--uid', default='0674FF554850715087183841')
     p.add_argument('--power-confirmed', action='store_true')
     p.add_argument('--authorized-no-thermal-trial', action='store_true')
+    p.add_argument('--shadow-port', type=int)
+    p.add_argument('--shadow-token-file')
     args = p.parse_args()
     raise SystemExit(0 if trial(args)['passed'] else 1)

@@ -28,3 +28,7 @@ bridge-token.txt
 *.map
 .DS_Store
 Thumbs.db
+
+!examples/speedloop-v5-real-20261012/realtime-shadow-20261012/
+!examples/speedloop-v5-real-20261012/realtime-shadow-20261012/*
+

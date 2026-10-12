@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "source": "physical-3s-shadow-trial",
+  "files": {
+    "commands.jsonl": "9527d078b49e0fe9fe6594e9e2a6f20ae282ee5a0d64ccde447f8094c4e58610",
+    "hall-edges.json": "8c9188f6c0f8925aafe8f79531d01efd14ea0dac184cc3df6204dc3c2c11ac8c",
+    "matlab-protocol-checks.json": "caca0882e01d48360f2b17cc8805376de09f04844ee626552a2a3c511780c2db",
+    "shadow-predictions.jsonl": "d0c064447e5b9243b06b06185db74afe2b99a606737fc38b986365b80a622234",
+    "summary.json": "01a6473d72d40083be23081bc457fd15661a9ed3e38df39349c3fe692eb7b1f0",
+    "telemetry.jsonl": "bd3578ba7463ea1fd7fb0d3bdd8807f8b96a6b9b92762c680cb3c98f667204af"
+  }
+}

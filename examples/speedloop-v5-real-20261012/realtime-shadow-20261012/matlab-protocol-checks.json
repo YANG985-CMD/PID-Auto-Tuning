@@ -1,0 +1,14 @@
+{
+  "passed": true,
+  "hardware_accessed": false,
+  "td3_training_performed": false,
+  "hardware_writeback": false,
+  "actual_matlab_server_used": true,
+  "checks": {
+    "actual_matlab_handshake": true,
+    "actual_matlab_prediction_mapping": true,
+    "duplicate_source_rejected": true,
+    "cross_boot_source_rejected": true,
+    "wrong_token_rejected": true
+  }
+}
