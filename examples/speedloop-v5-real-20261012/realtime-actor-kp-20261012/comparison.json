@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "source": "same-budget-real-motor-trial-comparison",
+  "hardware_accessed": false,
+  "baseline_summary": "examples\\speedloop-v5-real-20261012\\realtime-shadow-20261012\\summary.json",
+  "candidate_summary": "examples\\speedloop-v5-real-20261012\\realtime-actor-kp-20261012\\summary.json",
+  "baseline_policy": "fixed-baseline-PI; MATLAB suggestions recorded only",
+  "candidate_policy": "MATLAB Actor Kp applied; Ki fixed at baseline",
+  "candidate_actor_applied": true,
+  "candidate_actor_gain_commands": 52,
+  "ki_baseline": 0.00144,
+  "single_trial_per_policy": true,
+  "performance_claim_allowed": false,
+  "reason": "One trial per policy; no repeated or unseen-condition validation",
+  "metrics": {
+    "expected_post_start_window_rmse_rpm": {
+      "baseline": 160.78800361556804,
+      "candidate": 136.62428077487115,
+      "delta_candidate_minus_baseline": -24.16372284069689
+    },
+    "nominal_peak_current_a": {
+      "baseline": 1.03271484375,
+      "candidate": 1.07666015625,
+      "delta_candidate_minus_baseline": 0.0439453125
+    },
+    "peak_speed_rpm": {
+      "baseline": 1782.53125,
+      "candidate": 1630.789306640625,
+      "delta_candidate_minus_baseline": -151.741943359375
+    },
+    "active_snapshots": {
+      "baseline": 140,
+      "candidate": 140,
+      "delta_candidate_minus_baseline": 0
+    },
+    "actual_gain_commands": {
+      "baseline": 54,
+      "candidate": 53,
+      "delta_candidate_minus_baseline": -1
+    }
+  },
+  "safety": {
+    "baseline_fault": 0,
+    "candidate_fault": 0,
+    "baseline_stop_acknowledged": true,
+    "candidate_stop_acknowledged": true,
+    "baseline_outputs_off": true,
+    "candidate_outputs_off": true
+  },
+  "temperature_c": null,
+  "current_conversion_independently_calibrated": false
+}

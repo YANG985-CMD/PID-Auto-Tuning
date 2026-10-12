@@ -244,6 +244,20 @@ MATLAB 使用真实 `rlTD3Agent.ExperienceBuffer`，检查重复试验、实际�
 
 对这 148 条实时建议又做了独立的动作审计：148 条全部与原始 `boot_id/seq/t_us` 对齐，全部在增益范围和单步范围内，Ki 掩码保持基线值。这个审计没有把建议写回电机，因此没有生成 Actor 的反事实性能分数；报告见 [`actor-shadow-audit.json`](examples/speedloop-v5-real-20261012/realtime-shadow-20261012/actor-shadow-audit.json)。
 
+### 2026-10-12：固定 Actor Kp 单次实机试验
+
+在旁路链路通过后，用户授权一次最多 3 秒的固定 Actor 试验。Codex 将 MATLAB 返回的 Kp 建议按原有范围、单步限制和实际应用回读写入板端；Ki 仍固定为 0.00144，FOC、失联停机和硬件比较器保持不变。
+
+| 同预算单次试验 | 基准 PI | Actor Kp |
+|---|---:|---:|
+| 参与闭环快照 | 140 | 140 |
+| 末段窗口 RMSE（含切换过程） | 160.788 rpm | 136.624 rpm |
+| 峰值名义电流 | 1.032715 A | 1.076660 A |
+| 峰值 Hall 转速 | 1782.531 rpm | 1630.789 rpm |
+| 故障 / STOP / 输出关闭 | 0 / 通过 / 通过 | 0 / 通过 / 通过 |
+
+这两组各只有一次试验，窗口仍包含启动和切换过程，电流也没有独立标定。因此这些是观察到的单次结果，不能作为 TD3 已优于 PI 的结论；完整对比报告见 comparison.json，原始文件见 realtime-actor-kp-20261012 目录。
+
 - [运动版构建和烧录回读记录](examples/controller-comparison-20261011/speedloop-pi-motion-flash.json)
 - [v2 修正与板上启动采样记录](examples/controller-comparison-20261011/speedloop-pi-motion-v2-startup.json)
 - [v2 HELLO 与时间故障实测记录](examples/controller-comparison-20261011/speedloop-pi-motion-v2-handshake.json)

@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "source": "physical-3s-actor-kp-trial",
+  "files": {
+    "commands.jsonl": "956f5614871cf71c711a577822c3d4a919b78f63c96987ab21c52d83a4beccd7",
+    "comparison.json": "b5ff97cf4cd1c99eace7baa5ccf93c5c96d92932d5353f57c7bc5f1180e70db8",
+    "hall-edges.json": "1d353f0ded8423dad5e55db2f86a9ed88f5e551fd214dd1a8a7b1670a26ed011",
+    "shadow-predictions.jsonl": "1e3706b0ca68c422de48d777a33d880d3f8f4bdce06efdef19facff4e2583d2f",
+    "summary.json": "2d25d70e9d097c0cb4c4bfd4500e2253177eac2e272c20275039234741d02968",
+    "telemetry.jsonl": "40f49a480be2f88e1d0565e33b3041021c773a72cb38245841d0cb4e455446fb"
+  }
+}

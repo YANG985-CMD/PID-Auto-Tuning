@@ -125,6 +125,8 @@ def trial(a):
     final_gain_sent = False
     shadow = None
     shadow_records = []
+    shadow_by_seq = {}
+    apply_actor_kp = bool(getattr(a, 'apply_shadow_kp', False))
     session = ConnectHelper.session_with_chosen_probe(unique_id=a.uid, target_override='cortex_m',
         connect_mode='attach', frequency=1000000, no_config=True,
         options={'resume_on_disconnect': False,'cache.enable_memory':False,'cache.enable_register':False}, blocking=False)
@@ -150,13 +152,18 @@ def trial(a):
             shadow_token = getattr(a, 'shadow_token_file', None)
             if bool(shadow_port) != bool(shadow_token):
                 raise ValueError('Both MATLAB shadow port and private token are required')
+            if apply_actor_kp and not shadow_port:
+                raise ValueError('Actor application requires the MATLAB shadow server')
             if shadow_port:
                 from speedloop_shadow import ShadowClient
                 shadow = ShadowClient(shadow_port, shadow_token)
                 if not shadow.ready.wait(2):
                     raise RuntimeError('MATLAB shadow handshake failed before any board command: '+str(shadow.error))
-                result['shadow_mode'] = 'fixed-baseline-PI; MATLAB suggestions recorded only'
+                result['shadow_mode'] = ('MATLAB Actor Kp applied; Ki fixed at baseline'
+                                         if apply_actor_kp else
+                                         'fixed-baseline-PI; MATLAB suggestions recorded only')
                 result['actor_gain_commands_sent'] = 0
+                result['actor_applied'] = apply_actor_kp
             image = bytes(target.read_memory_block8(0x08000000, summary['binary_bytes']))
             if hashlib.sha256(image).hexdigest() != ENERGIZED_IMAGE_SHA:
                 raise RuntimeError('Flash mismatch; no commands sent')
@@ -182,7 +189,12 @@ def trial(a):
             send(dict(type='hello', profile_id=IDENTITY))
             due = time.perf_counter() + 5
             while time.perf_counter() < due:
-                if shadow: shadow_records.extend(shadow.drain())
+                if shadow:
+                    fresh_shadow = shadow.drain()
+                    shadow_records.extend(fresh_shadow)
+                    for record in fresh_shadow:
+                        if record.get('accepted') and record.get('telemetry_seq') is not None:
+                            shadow_by_seq[int(record['telemetry_seq'])] = record
                 now = time.perf_counter()
                 if begin_at and not stop_at and now-begin_at >= STOP_SECONDS:
                     send(dict(type='stop')); stop_at = time.perf_counter()
@@ -194,14 +206,27 @@ def trial(a):
                 regular_due = gain_due(now, begin_at, next_gain, stop_at)
                 if regular_due:
                     regular_due = acknowledgement_ready(telemetry[-1]['applied_seq'],action_seq,now,next_gain)
+                    if regular_due and apply_actor_kp and not shadow_by_seq.get(int(telemetry[-1]['seq'])):
+                        if now - next_gain < .025:
+                            regular_due = False
+                        else:
+                            raise RuntimeError('MATLAB Actor result missed the 25 ms action deadline')
                 if regular_due or final_due:
                     last = telemetry[-1]
                     if not last['enabled'] or now-begin_at > .15 and last['applied_seq'] != action_seq:
                         raise RuntimeError('No fresh actual action acknowledgement')
                     if time.perf_counter()-last['host_received_monotonic'] >= .045:
                         raise RuntimeError('Telemetry stale; no gain refresh')
-                    kp, ki = ((f32(BASE_KP),f32(BASE_KI)) if final_due or shadow
-                              else planned_gains(last['elapsed_ms']))
+                    if apply_actor_kp and not final_due:
+                        prediction = shadow_by_seq.get(int(last['seq']))
+                        if not prediction or 'result' not in prediction:
+                            raise RuntimeError('No accepted MATLAB Actor result for current telemetry')
+                        kp = f32(prediction['result']['kp'])
+                        ki = f32(BASE_KI)
+                        result['actor_gain_commands_sent'] += 1
+                    else:
+                        kp, ki = ((f32(BASE_KP),f32(BASE_KI)) if final_due or shadow
+                                  else planned_gains(last['elapsed_ms']))
                     action_seq += 1
                     send(dict(type='gains', command_seq=action_seq, kp=kp, ki=ki, lease_ms=200), last)
                     next_gain = now + GAIN_INTERVAL_SECONDS
@@ -308,5 +333,7 @@ if __name__ == '__main__':
     p.add_argument('--authorized-no-thermal-trial', action='store_true')
     p.add_argument('--shadow-port', type=int)
     p.add_argument('--shadow-token-file')
+    p.add_argument('--apply-shadow-kp', action='store_true',
+                   help='Experimental single-trial mode: apply MATLAB Kp only; Ki remains baseline')
     args = p.parse_args()
     raise SystemExit(0 if trial(args)['passed'] else 1)
