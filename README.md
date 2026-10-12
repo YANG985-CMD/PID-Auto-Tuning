@@ -274,6 +274,14 @@ MATLAB 使用真实 `rlTD3Agent.ExperienceBuffer`，检查重复试验、实际�
 
 三个种子的 Kp 动作方向不一致，且没有任何离线方法能证明 Actor 的真实闭环性能。结合重复实机结果，候选准入报告将当前候选拒绝，保持基准 PI；没有生成部署许可，也没有烧录 Actor。完整报告见 reweighted-td3-20261012 目录。
 
+### 2026-10-12：Ki 局部覆盖数据已采集
+
+为避免把未探索的 Ki 输出交给 Actor，新增 6 轮固定 PI 数据采集：Kp 保持基准值，Ki 在局部步长的 ±25% 范围内做小幅探测。6 轮均正常停机、故障为 0，正负 Ki 实际应用值均有回读。
+
+加入这批数据后，经验池为 253 个窗口，训练 / 验证划分为 199 / 54，TD3 训练启用双输出动作掩码 [1,1]。Ki 已有真实覆盖，但三个随机种子的 Kp 方向仍不一致，候选准入仍被拒绝；因此没有应用 Actor，也没有烧录。
+
+Ki 原始数据见 ki-coverage-20261012，双输出重训和准入结果见 reweighted-td3-ki-20261012。
+
 - [运动版构建和烧录回读记录](examples/controller-comparison-20261011/speedloop-pi-motion-flash.json)
 - [v2 修正与板上启动采样记录](examples/controller-comparison-20261011/speedloop-pi-motion-v2-startup.json)
 - [v2 HELLO 与时间故障实测记录](examples/controller-comparison-20261011/speedloop-pi-motion-v2-handshake.json)

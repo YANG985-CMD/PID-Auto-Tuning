@@ -45,6 +45,16 @@ class Checks(unittest.TestCase):
         self.assertLess(probe[0]-base[0], .00027112)
         self.assertEqual(base[1], probe[1])
 
+    def test_ki_probe_is_small_and_kp_stays_baseline(self):
+        base = planned_gains(2399, 0)
+        plus = planned_gains(2400, 1)
+        minus = planned_gains(2400, -1)
+        self.assertEqual(base[0], plus[0])
+        self.assertEqual(base[0], minus[0])
+        self.assertLessEqual(abs(plus[1]-base[1]), .25*.000144+1e-7)
+        self.assertLessEqual(abs(minus[1]-base[1]), .25*.000144+1e-7)
+        self.assertEqual(planned_gains(2600, 1), base)
+
     def test_stop_reserve_for_pending_action_ack(self):
         self.assertTrue(gain_due(2.69, 0., 2.68, None))
         self.assertFalse(gain_due(2.70, 0., 2.68, None))

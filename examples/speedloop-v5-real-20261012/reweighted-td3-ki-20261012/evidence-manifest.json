@@ -1,0 +1,10 @@
+{
+  "schema_version": 1,
+  "source": "reweighted-td3-ki-offline-training",
+  "files": {
+    "audit-summary.json": "90b9c15375374fd15cd84cdc7d538c333ffb72220e74be4a35cec1cad2898bb5",
+    "candidate-selection.json": "993631848833f802bf996905f80b03ab74c959bcb282063b2e23c554a7af1f1b",
+    "reweighted-training-summary.json": "83b7c83355daaed1ecb06f11bc309e7f4c1bf0cf45b5921d2a8160692b6f2466",
+    "reweighted-transitions.jsonl": "7727697e210a093fe79994f6c5220d23c4f41aa25d1b0a7bcb2066414bfd366c"
+  }
+}

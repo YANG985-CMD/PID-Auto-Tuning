@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "utc": "2026-10-12T05:46:39.362627+00:00",
+  "passed": true,
+  "firmware_id": "g431-speedloop-pi-motion-v5",
+  "bin_sha256": "45ad8fcd5039822741d888cb54eaea909cfc55d3e13dc8da0cdfcfc98703cce5",
+  "hardware_accessed": true,
+  "motion_command_sent": true,
+  "td3_training_performed": false,
+  "temperature_c": null,
+  "thermal_exception": "user authorized this bounded trial only",
+  "current_conversion_independently_calibrated": false,
+  "independent_cpu_stall_watchdog_integrated": false,
+  "speed_ref_rpm": 1000,
+  "maximum_motion_seconds": 3,
+  "host_stop_seconds": 2.8,
+  "gain_interval_ms": 50.0,
+  "ki_probe_sign": -1,
+  "ki_probe_fraction_of_local_step": 0.25,
+  "host_clock": "QueryPerformanceCounter via perf_counter",
+  "host_script_sha256": "18f386e128fe7615314dfb7673504309b4ae7baeec975458660602481aba1f71",
+  "preflight_nominal_bus_v": 24.52924919128418,
+  "preflight_state": {
+    "tim1_ccer": 4096,
+    "tim1_bdtr": 33730680,
+    "gpioa_moder": 2861957119,
+    "gpiob_moder": 1471065791,
+    "gpioa_odr": 0,
+    "gpiob_odr": 0,
+    "device_id": 537093224
+  },
+  "protocol_stop_acknowledged": true,
+  "complete_telemetry_packets": 148,
+  "active_snapshots": 140,
+  "actual_gain_commands": 54,
+  "gain_pairs": [
+    [
+      0.0033889999613165855,
+      0.0014039999805390835
+    ],
+    [
+      0.0033889999613165855,
+      0.0014400000218302011
+    ]
+  ],
+  "nominal_peak_current_a": 1.0546875,
+  "peak_speed_rpm": 1619.1710205078125,
+  "expected_post_start_snapshots": 30,
+  "expected_post_start_window_rmse_rpm": 135.76599734630926,
+  "post_start_is_steady_state_score": false,
+  "final_board_state": {
+    "tim1_ccer": 4096,
+    "tim1_bdtr": 33697912,
+    "gpioa_moder": 2861957119,
+    "gpiob_moder": 1471065791,
+    "gpioa_odr": 0,
+    "gpiob_odr": 0,
+    "device_id": 537093224
+  },
+  "core_halted_after_physical_shutdown": true,
+  "final_irq_fault": 0,
+  "final_tx_fault": 0,
+  "can_released_after_shutdown": true,
+  "comparison_policy": "ki_minus",
+  "round_index": 4
+}

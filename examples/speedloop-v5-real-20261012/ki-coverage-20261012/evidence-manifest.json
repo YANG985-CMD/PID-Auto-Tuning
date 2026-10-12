@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "source": "physical-ki-coverage",
+  "files": {
+    "audit-summary.json": "d95173d2f84ae052754ae22dac124d1461a909af3badb91518808639e7a82cf2",
+    "collection-summary.json": "26b95ac3829d3d7a0b83029c51b8793247459c5ce2f6df3410f441fb98262c97",
+    "round-01-baseline/commands.jsonl": "57b0e04ee20591a6127b3a1273c5228443e81888dacbfea9ae714774970c0417",
+    "round-01-baseline/hall-edges.json": "366966c4ddff5a045b17ad46f68b7b89fa396d85f50bb6c4936835047bb5feec",
+    "round-01-baseline/summary.json": "d98c89fa8cda07670a320b626d8f786ca78a3486f16b50e865aa4c4b638771b1",
+    "round-01-baseline/telemetry.jsonl": "6efb70d5e9d5af5a894e69d2e58b0e78f7bd74718d3af993ecfe5905c88ad009",
+    "round-02-ki_plus/commands.jsonl": "0335962f9955c26aba33b52f3321e32e65afe35b1f7a20b4568553193d5e3b2b",
+    "round-02-ki_plus/hall-edges.json": "d04836c6c3f14e3ac8eb288668f96b8f50375a61b6bf9eb6f36e95b68d70fc52",
+    "round-02-ki_plus/summary.json": "2e792ffb7953d51bf588fa99d755898e7d828dc256bb9b5223cfa3a182ffd51d",
+    "round-02-ki_plus/telemetry.jsonl": "67fd1ab3f007b31cd552cd2af27545c9062bed225e8eb8a571a288f198a77408",
+    "round-03-baseline/commands.jsonl": "4305fc8b35536b1a3f85417daae901d4fa0d95c1c16379112655c2ed02551a18",
+    "round-03-baseline/hall-edges.json": "39a4aa74618c9c3f292ccdb854aed3ad364202da4acacad37722704afa21088d",
+    "round-03-baseline/summary.json": "9a159c24413a48075101f0c4e1b530f2dd23e108a1feff0ca91a04c31dca2464",
+    "round-03-baseline/telemetry.jsonl": "64dc5667586b5d18b3809bcfb6753a1f4e7a3d50e8cae43710a05e51ca0a1045",
+    "round-04-ki_minus/commands.jsonl": "f4ba9e88fd176ea7e765573a977310984e5acdc597e34a5799452250112810ee",
+    "round-04-ki_minus/hall-edges.json": "ac5d642868884bd3db4a80f1a70e1d8cbe8e8ab5bb95733d3ccb5c3b16c3357c",
+    "round-04-ki_minus/summary.json": "a6f2c241665b89cf52d991bc525b2254f4215f79b7bac08ae5e02f884983ceb8",
+    "round-04-ki_minus/telemetry.jsonl": "c65ba7ee827e73c63c1f085216a7f871c51287fa67f102768a92542e97e5be76",
+    "round-05-ki_plus/commands.jsonl": "b11a0098a3dfe708e5dfe3ee04b17c953f037898bf78ededd56917aa8cde8f97",
+    "round-05-ki_plus/hall-edges.json": "f6f88b795c3b7273cd4f0c888ed7deed6016f03e2289c99984e2946b850f90ad",
+    "round-05-ki_plus/summary.json": "ecbd35697231a9bef0ef6c6763028d30ed14da5d972dd19d0659af1baf9dcae0",
+    "round-05-ki_plus/telemetry.jsonl": "4433c399c1db35c097583b4014ea8cc83fb03192944fba40ead060a1462d5e37",
+    "round-06-ki_minus/commands.jsonl": "9fe42f6b0069a750f65750dc0dd66c845d3d4c7ed0223870638f22324b510d13",
+    "round-06-ki_minus/hall-edges.json": "5ce37e85a6d604c4e6d20e7c11bc70fc6cc76a48000907512a617eae2e14e610",
+    "round-06-ki_minus/summary.json": "f0662eb8a2c760d649e01b3f740d6548e8fea7f9f3fd78cc7c2917abae258ba5",
+    "round-06-ki_minus/telemetry.jsonl": "e290d922322165627705a85e842e8a2c85a9d5f3cd21bf6578f80c7dfc9a3688"
+  }
+}

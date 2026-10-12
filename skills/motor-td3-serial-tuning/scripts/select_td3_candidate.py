@@ -8,10 +8,11 @@ def select(training_path, repeated_path, output):
     training = json.loads(Path(training_path).read_text(encoding="utf-8"))
     repeated = json.loads(Path(repeated_path).read_text(encoding="utf-8"))
     reasons = []
-    if training.get("action_mask") != [1, 0]:
-        reasons.append("Ki action mask is not fixed")
-    if training.get("ki_exploration_performed"):
-        reasons.append("Ki exploration was observed")
+    action_mask = training.get("action_mask")
+    if action_mask not in ([1, 0], [1, 1]):
+        reasons.append("Unsupported action mask")
+    if action_mask == [1, 1] and not training.get("ki_exploration_performed"):
+        reasons.append("Two-head action mask lacks real Ki coverage")
     if not all(row.get("action_bounds_passed") and row.get("gain_bounds_passed")
                for row in training.get("seed_reports", [])):
         reasons.append("At least one seed failed action or gain bounds")
@@ -36,6 +37,12 @@ def select(training_path, repeated_path, output):
             fault == 0 for policy in ("baseline", "actor_kp")
             for fault in repeated["statistics"][policy]["faults"]):
         reasons.append("Repeated trial safety evidence is incomplete")
+    next_required = [
+        "Validate a retrained candidate on unseen real-motor conditions",
+        "Independently calibrate current conversion before ordinary deployment admission",
+    ]
+    if not training.get("ki_exploration_performed"):
+        next_required.insert(0, "Keep Ki fixed when Ki action coverage is absent")
     report = {
         "schema_version": 1,
         "source": "td3-candidate-admission",
@@ -50,11 +57,7 @@ def select(training_path, repeated_path, output):
         "peak_nominal_current_change_a_actor_minus_baseline": current_change,
         "peak_speed_change_rpm_actor_minus_baseline": peak_speed_change,
         "reasons": reasons,
-        "next_required_evidence": [
-            "Collect Ki action coverage or keep Ki permanently fixed",
-            "Validate a retrained candidate on unseen real-motor conditions",
-            "Independently calibrate current conversion before ordinary deployment admission",
-        ],
+        "next_required_evidence": next_required,
     }
     output = Path(output)
     output.parent.mkdir(parents=True, exist_ok=True)

@@ -1,12 +1,14 @@
-function report = trainSpeedLoopReweightedTD3(runDirs, outputDir, allowExperimentalShadow, seeds)
+function report = trainSpeedLoopReweightedTD3(runDirs, outputDir, allowExperimentalShadow, seeds, actionMask)
 % Train experimental TD3 candidates with stronger current/speed penalties.
 % This is offline only: it never opens hardware, applies gains, or grants
-% ordinary live admission. Ki is fixed to zero action and baseline Ki.
+% ordinary live admission. Ki is enabled only when actionMask(2)=1 and real
+% Ki action coverage is present; otherwise it remains fixed at baseline.
 arguments
     runDirs (:,1) string
     outputDir (1,1) string
     allowExperimentalShadow (1,1) logical = false
     seeds (:,1) double = [7;17;27]
+    actionMask (1,2) double = [1 0]
 end
 assert(allowExperimentalShadow,"Explicit experimental shadow-analysis selection required");
 assert(~isempty(runDirs) && ~isempty(seeds));
@@ -61,6 +63,7 @@ for trialIndex = 1:numel(runDirs)
         r.step=step-1;
         r.boot_id=boot;
         r.validation_split = mod(trialIndex,5)==0 || trialIndex==numel(runDirs);
+        r.training_action_normalized = r.action_normalized(:) .* actionMask(:);
         r.analysis_mode="experimental-reweighted-offline-shadow";
         r.shadow_learner_eligible=true;
         r.ordinary_live_learner_eligible=false;
@@ -86,7 +89,7 @@ for seedIndex=1:numel(seeds)
     for index=1:numel(trainRows)
         r=trainRows{index};
         experience=struct('Observation',{{single(r.observation(:))}}, ...
-            'Action',{{single(r.action_normalized(:))}}, ...
+            'Action',{{single(r.training_action_normalized(:))}}, ...
             'Reward',double(r.reward), ...
             'NextObservation',{{single(r.next_observation(:))}},'IsDone',0);
         validateExperience(agent.ExperienceBuffer,experience);
@@ -95,7 +98,7 @@ for seedIndex=1:numel(seeds)
     options=rlTrainingFromDataOptions('MaxEpochs',2,'NumStepsPerEpoch',40, ...
         'Plots','none','Verbose',false,'SaveAgentCriteria','none');
     trainingStats=trainFromData(agent,options);
-    [predictions,checks]=predictMaskedActor(agent,validationRows);
+    [predictions,checks]=predictMaskedActor(agent,validationRows,actionMask);
     file=fullfile(outputDir,"reweighted-candidate-seed-"+seed+".mat");
     reportSeed=struct(seed=seed,train_experiences=numel(trainRows), ...
         validation_experiences=numel(validationRows), ...
@@ -105,7 +108,7 @@ for seedIndex=1:numel(seeds)
         validation_action_max=max(predictions,[],1), ...
         action_bounds_passed=checks.action_bounds_passed, ...
         gain_bounds_passed=checks.gain_bounds_passed, ...
-        ki_masked=true,offline_performance_verified=false, ...
+        ki_masked=actionMask(2)==0,offline_performance_verified=false, ...
         deployment_allowed=false,performance_claim_allowed=false);
     seedReports{seedIndex}=reportSeed;
     candidateFiles(seedIndex)=string(file);
@@ -123,8 +126,10 @@ report=struct(schema_version=1,source="real_motor",simulation_only=false, ...
     validation_experiences=numel(validationRows),replay_warmup_required=128, ...
     training_seed_values=seeds(:).',seed_reports=[seedReports{:}], ...
     seed_kp_action_means=kpSeedMeans,seed_kp_action_direction_consistent=seedDirectionConsistent, ...
-    candidate_files=candidateFiles,action_mask=[1 0],ki_fixed_baseline=.00144, ...
-    ki_exploration_performed=false,legacy_reward_preserved=true, ...
+    candidate_files=candidateFiles,action_mask=actionMask, ...
+    ki_fixed_baseline=conditionalKiBaseline(actionMask), ...
+    ki_exploration_performed=any(cellfun(@(r)abs(r.action_normalized(2))>1e-7,allRows)), ...
+    legacy_reward_preserved=true, ...
     reward_profile="current-speed-penalty-v2", ...
     deployment_allowed=false,performance_claim_allowed=false, ...
     offline_performance_verified=false,needs_physical_validation=true, ...
@@ -149,27 +154,35 @@ action = double(r.action_normalized);
 reward = -err^2 - .12*current^2 - .08*nearLimit^2 - .10*sat - .005*sum(action.^2);
 end
 
-function [predictions,checks] = predictMaskedActor(agent,rows)
+function [predictions,checks] = predictMaskedActor(agent,rows,actionMask)
 predictions=zeros(numel(rows),2);
 for index=1:numel(rows)
     a=getAction(getActor(agent),{single(rows{index}.observation(:))});
     predictions(index,:)=double(a{1}(:)).';
 end
-predictions(:,2)=0; % Ki is unobserved and must remain fixed.
+if actionMask(2)==0, predictions(:,2)=0; end
 checks.action_bounds_passed=all(abs(predictions(:))<=1+1e-6);
 checks.gain_bounds_passed=true;
 for index=1:numel(rows)
-    kp=double(rows{index}.state(8));
-    kpAction=predictions(index,1);
-    if kpAction>=0
-        gain=kp+(min(.0054224,kp+.00027112)-kp)*kpAction;
-    else
-        gain=kp+(kp-max(.0013556,kp-.00027112))*kpAction;
-    end
-    if ~(gain>=.0013556 && gain<=.0054224)
-        checks.gain_bounds_passed=false;
+    current=[double(rows{index}.state(8)),double(rows{index}.state(9))];
+    lower=[.0013556,.00072]; upper=[.0054224,.00216]; step=[.00027112,.000144];
+    for channel=1:2
+        if actionMask(channel)==0, continue; end
+        action=predictions(index,channel);
+        if action>=0
+            gain=current(channel)+(min(upper(channel),current(channel)+step(channel))-current(channel))*action;
+        else
+            gain=current(channel)+(current(channel)-max(lower(channel),current(channel)-step(channel)))*action;
+        end
+        if ~(gain>=lower(channel) && gain<=upper(channel))
+            checks.gain_bounds_passed=false;
+        end
     end
 end
+end
+
+function value=conditionalKiBaseline(actionMask)
+if actionMask(2)==0, value=.00144; else, value=NaN; end
 end
 
 function writeRows(path,rows)

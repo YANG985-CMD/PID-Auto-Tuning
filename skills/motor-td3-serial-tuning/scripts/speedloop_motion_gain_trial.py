@@ -33,8 +33,11 @@ def f32(value):
     return struct.unpack('<f', struct.pack('<f', value))[0]
 
 
-def planned_gains(elapsed_ms):
+def planned_gains(elapsed_ms, ki_probe_sign=0):
     # A small deterministic local probe, well inside the existing step limit.
+    if ki_probe_sign:
+        ki = BASE_KI + ki_probe_sign * .25 * .000144 if 2400 <= elapsed_ms < 2600 else BASE_KI
+        return f32(BASE_KP), f32(ki)
     return f32(BASE_KP * (1.04 if 2400 <= elapsed_ms < 2600 else 1)), f32(BASE_KI)
 
 
@@ -114,6 +117,8 @@ def trial(a):
                   independent_cpu_stall_watchdog_integrated=False,
                   speed_ref_rpm=1000, maximum_motion_seconds=3, host_stop_seconds=STOP_SECONDS)
     result['gain_interval_ms'] = GAIN_INTERVAL_SECONDS*1000
+    result['ki_probe_sign'] = int(getattr(a, 'ki_probe_sign', 0))
+    result['ki_probe_fraction_of_local_step'] = .25 if result['ki_probe_sign'] else 0
     result['host_clock'] = 'QueryPerformanceCounter via perf_counter'
     result['host_script_sha256'] = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
     telemetry, commands, sent = [], [], {}
@@ -127,6 +132,9 @@ def trial(a):
     shadow_records = []
     shadow_by_seq = {}
     apply_actor_kp = bool(getattr(a, 'apply_shadow_kp', False))
+    ki_probe_sign = int(getattr(a, 'ki_probe_sign', 0))
+    if ki_probe_sign not in (-1, 0, 1):
+        raise ValueError('Ki probe sign must be -1, 0 or +1')
     session = ConnectHelper.session_with_chosen_probe(unique_id=a.uid, target_override='cortex_m',
         connect_mode='attach', frequency=1000000, no_config=True,
         options={'resume_on_disconnect': False,'cache.enable_memory':False,'cache.enable_register':False}, blocking=False)
@@ -226,7 +234,7 @@ def trial(a):
                         result['actor_gain_commands_sent'] += 1
                     else:
                         kp, ki = ((f32(BASE_KP),f32(BASE_KI)) if final_due or shadow
-                                  else planned_gains(last['elapsed_ms']))
+                                  else planned_gains(last['elapsed_ms'], ki_probe_sign))
                     action_seq += 1
                     send(dict(type='gains', command_seq=action_seq, kp=kp, ki=ki, lease_ms=200), last)
                     next_gain = now + GAIN_INTERVAL_SECONDS
@@ -335,5 +343,7 @@ if __name__ == '__main__':
     p.add_argument('--shadow-token-file')
     p.add_argument('--apply-shadow-kp', action='store_true',
                    help='Experimental single-trial mode: apply MATLAB Kp only; Ki remains baseline')
+    p.add_argument('--ki-probe-sign', type=int, choices=(-1, 0, 1), default=0,
+                   help='Experimental fixed-PI data collection: local Ki probe sign')
     args = p.parse_args()
     raise SystemExit(0 if trial(args)['passed'] else 1)

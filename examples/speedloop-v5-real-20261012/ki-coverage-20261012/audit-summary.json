@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "physical_trials": 6,
+  "audits": [
+    {
+      "audit": "audit-1",
+      "causal_experience_candidates": 10,
+      "raw_stage_confirmed_candidates": 10,
+      "rmse_rpm": 137.88809923538994,
+      "peak_current_a": 1.0546875,
+      "peak_speed_rpm": 1619.695556640625,
+      "faults_zero": true,
+      "stop_verified": true
+    },
+    {
+      "audit": "audit-2",
+      "causal_experience_candidates": 10,
+      "raw_stage_confirmed_candidates": 10,
+      "rmse_rpm": 151.955746807789,
+      "peak_current_a": 1.07666015625,
+      "peak_speed_rpm": 1727.11572265625,
+      "faults_zero": true,
+      "stop_verified": true
+    },
+    {
+      "audit": "audit-3",
+      "causal_experience_candidates": 10,
+      "raw_stage_confirmed_candidates": 10,
+      "rmse_rpm": 160.7094464127943,
+      "peak_current_a": 1.03271484375,
+      "peak_speed_rpm": 1779.359375,
+      "faults_zero": true,
+      "stop_verified": true
+    },
+    {
+      "audit": "audit-4",
+      "causal_experience_candidates": 10,
+      "raw_stage_confirmed_candidates": 10,
+      "rmse_rpm": 135.76599734630926,
+      "peak_current_a": 1.0546875,
+      "peak_speed_rpm": 1619.1710205078125,
+      "faults_zero": true,
+      "stop_verified": true
+    },
+    {
+      "audit": "audit-5",
+      "causal_experience_candidates": 10,
+      "raw_stage_confirmed_candidates": 9,
+      "rmse_rpm": 135.3818281786031,
+      "peak_current_a": 1.0546875,
+      "peak_speed_rpm": 1632.919677734375,
+      "faults_zero": true,
+      "stop_verified": true
+    },
+    {
+      "audit": "audit-6",
+      "causal_experience_candidates": 10,
+      "raw_stage_confirmed_candidates": 10,
+      "rmse_rpm": 132.7877475536851,
+      "peak_current_a": 1.07666015625,
+      "peak_speed_rpm": 1598.4654541015625,
+      "faults_zero": true,
+      "stop_verified": true
+    }
+  ]
+}
