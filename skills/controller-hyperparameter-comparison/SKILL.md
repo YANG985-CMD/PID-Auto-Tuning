@@ -1,11 +1,11 @@
 ---
 name: controller-hyperparameter-comparison
-description: Compare and improve four portable controller hyperparameter tuning methods—AI bounded search, fuzzy PID, neural-network PID, and TD3 Actor—using common experiments and exportable implementations.
+description: Compare, improve, and port four PID parameter self-tuning methods—AI bounded search, fuzzy PID, neural-network PID, and TD3 Actor—using common experiments and exportable implementations.
 ---
 
-# Controller Hyperparameter Comparison
+# PID Parameter Self-Tuning
 
-Use this skill when the user wants to automatically tune controller hyperparameters, compare the four methods in this repository, or adapt one of them to a different plant, controller, MCU, or communication interface. The motor speed loop is the reference example; the workflow also applies to position, attitude, temperature, pressure, flow, and other parameterized control loops.
+Use this skill when the user wants PID parameter self-tuning, a comparison of these four methods, or a port to a different plant, MCU, or communication interface. The tuning targets are proportional, integral, and derivative gains (Kp, Ki, Kd). The motor speed-loop example uses the PI subset (Kd=0) and tunes Kp/Ki. For full PID, extend the action/output mapping, Kd bounds, and derivative filtering explicitly. The workflow also applies to position, attitude, temperature, pressure, flow, and other loops controlled by PID.
 
 ## The four methods
 
@@ -18,7 +18,7 @@ All four methods are intended to be portable. Adapt the state/telemetry schema, 
 
 ## Workflow
 
-1. Define the controlled variable, tunable parameters, state features, sampling period, parameter bounds, objective metrics, and hard rejection conditions.
+1. Define the controlled variable, PID form (PI or full PID), tunable gains, state features, sampling period, gain bounds, objective metrics, and hard rejection conditions.
 2. Run the common simulation comparison from the repository root:
 
    ```text
@@ -38,4 +38,4 @@ Read [method-improvements.md](references/method-improvements.md) when the user a
 
 ## Scope
 
-This skill compares and ports controller hyperparameter methods. It does not authorize physical motion, erase or flash a board, or replace a device's real-time protection and emergency stop. Treat hardware deployment as a separate, explicitly authorized validation task.
+This skill compares and ports PID parameter self-tuning methods. It does not authorize physical motion, erase or flash a board, or replace a device's real-time protection and emergency stop. Treat hardware deployment as a separate, explicitly authorized validation task.

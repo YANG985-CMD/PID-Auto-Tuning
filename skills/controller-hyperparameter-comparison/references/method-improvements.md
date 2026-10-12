@@ -1,4 +1,4 @@
-# Paper-informed improvements
+# Paper-informed improvements for PID parameter self-tuning
 
 These references are design inputs, not proof that a method is safe or superior on a new plant.
 
