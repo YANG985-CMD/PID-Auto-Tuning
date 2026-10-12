@@ -1,5 +1,12 @@
-function agent = createMotorTD3(seed)
+function agent = createMotorTD3(seed, actionMask, behaviorCloningWeight)
 % Small exportable actor: 10 -> 16 ReLU -> 16 ReLU -> 2 tanh.
+arguments
+    seed (1,1) double
+    actionMask (2,1) double = [1;1]
+    behaviorCloningWeight (1,1) double = 0
+end
+assert(all(ismember(actionMask,[0 1])) && actionMask(1)==1);
+assert(isfinite(behaviorCloningWeight) && behaviorCloningWeight>=0);
 rng(seed, 'twister');
 obs = rlNumericSpec([10 1]);
 act = rlNumericSpec([2 1], 'LowerLimit',-ones(2,1), 'UpperLimit',ones(2,1));
@@ -22,6 +29,11 @@ for i = 1:height(values)
         end
     end
 end
+if any(actionMask==0)
+    actorNet=addLayers(actorNet,functionLayer(@(x)x.*single(actionMask), ...
+        'Name','fixed_action_mask','Formattable',true));
+    actorNet=connectLayers(actorNet,'bounded_action','fixed_action_mask');
+end
 actor = rlContinuousDeterministicActor(actorNet,obs,act, 'ObservationInputNames','state');
 critic1 = makeCritic(obs,act);
 critic2 = makeCritic(obs,act);
@@ -31,6 +43,14 @@ options = rlTD3AgentOptions('MiniBatchSize',32, 'ExperienceBufferLength',10000, 
 options.ActorOptimizerOptions.LearnRate = 1e-4;
 options.CriticOptimizerOptions(1).LearnRate = 1e-3;
 options.CriticOptimizerOptions(2).LearnRate = 1e-3;
+options.TargetPolicySmoothModel.StandardDeviationMin=options.TargetPolicySmoothModel.StandardDeviationMin.*actionMask;
+options.TargetPolicySmoothModel.StandardDeviation=options.TargetPolicySmoothModel.StandardDeviation.*actionMask;
+options.ExplorationModel.StandardDeviationMin=options.ExplorationModel.StandardDeviationMin.*actionMask;
+options.ExplorationModel.StandardDeviation=options.ExplorationModel.StandardDeviation.*actionMask;
+if behaviorCloningWeight>0
+    options.BatchDataRegularizerOptions=rlBehaviorCloningRegularizerOptions( ...
+        BehaviorCloningRegularizerWeight=behaviorCloningWeight);
+end
 agent = rlTD3Agent(actor,[critic1 critic2],options);
 agent.UseExplorationPolicy = false;
 end

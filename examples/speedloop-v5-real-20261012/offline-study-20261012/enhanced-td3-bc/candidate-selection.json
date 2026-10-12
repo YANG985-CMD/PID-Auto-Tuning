@@ -1,0 +1,59 @@
+{
+  "schema_version": 2,
+  "source": "td3-candidate-admission",
+  "candidate_status": "rejected",
+  "selected_seed": null,
+  "candidates": [
+    {
+      "seed": 7,
+      "checkpoint_sha256": "4138f36ddbfaad9bc8b17893e4f22388940b093a0b2c08e4e778c3e3961c6858",
+      "candidate_status": "rejected",
+      "physical_metrics": null,
+      "physical_evaluation_matched": false,
+      "deployment_allowed": false,
+      "performance_claim_allowed": false,
+      "reasons": [
+        "No physical evaluation for this checkpoint and action mask",
+        "Seed direction inconsistency; experimental screening remains closed"
+      ]
+    },
+    {
+      "seed": 17,
+      "checkpoint_sha256": "309405cb5e484a01af450a9df7d0fe3a3ae9bce1b3b9d9b5725589b2a8734b17",
+      "candidate_status": "rejected",
+      "physical_metrics": null,
+      "physical_evaluation_matched": false,
+      "deployment_allowed": false,
+      "performance_claim_allowed": false,
+      "reasons": [
+        "No physical evaluation for this checkpoint and action mask",
+        "Seed direction inconsistency; experimental screening remains closed"
+      ]
+    },
+    {
+      "seed": 27,
+      "checkpoint_sha256": "8fdb70023c4371eaaefedcfa7b11c1a8a6e2ac8e75adf1f4352d4c9a2787796d",
+      "candidate_status": "rejected",
+      "physical_metrics": null,
+      "physical_evaluation_matched": false,
+      "deployment_allowed": false,
+      "performance_claim_allowed": false,
+      "reasons": [
+        "No physical evaluation for this checkpoint and action mask",
+        "Seed direction inconsistency; experimental screening remains closed"
+      ]
+    }
+  ],
+  "reasons": [],
+  "deployment_allowed": false,
+  "performance_claim_allowed": false,
+  "hold_baseline_pi": true,
+  "thermal_gate_modified": false,
+  "training_summary": "enhanced-td3-bc/reweighted-training-summary.json",
+  "repeated_comparison": "bound-old-policy-comparison.json",
+  "next_required_evidence": [
+    "Exact-policy repeated physical RMSE improvement >=5 percent, no current or speed increase",
+    "Untrained-condition evaluation with the same fixed policy",
+    "Existing thermal gate and independent current calibration for ordinary deployment"
+  ]
+}

@@ -1,5 +1,5 @@
 function report = auditSpeedLoopClosedLoopTrial(runDir, outputDir)
-% Audit motion-v4 real data. No hardware commands, replay insertion or training.
+% Audit motion-v4/v5 data. No hardware commands, replay insertion or training.
 % Elapsed time predicts a stage; only the retained Hall ring proves its stage.
 arguments
     runDir (1,1) string
@@ -117,6 +117,7 @@ for i = 1:numel(gains)
         response_rmse_rpm=responseRmse,response_peak_current_a=responsePeakCurrent, ...
         response_peak_speed_rpm=responsePeakSpeed,response_saturation_ratio=responseSaturation, ...
         response_overshoot_rpm=max(0,max(response.speed-response.speed_ref)), ...
+        response_sample_count=height(response), ...
         reward_profile="legacy-v1", ...
         stage_confirmed_from_raw_edges=confirmed, ...
         model_stage_basis="elapsed-plan-only",response_ms=(endpoint.t_us-ta)/1000, ...
@@ -164,7 +165,7 @@ fig = figure(Name="SpeedLoop real motor audit",Color="w",Visible="off");
 layout = tiledlayout(fig,4,1,TileSpacing="compact");
 nexttile(layout); plot(active.elapsed_ms/1000,active.speed,LineWidth=1.2);
 yline(1000,"--");yline(1800,":");xline(2.2,":");ylabel("Hall rpm");grid on;
-title("Real motor: 1000 rpm target; startup + 4% Kp probe + return");
+title("Real motor: actual startup and gain schedule, 1000 rpm target");
 nexttile(layout);stairs(active.elapsed_ms/1000,active.kp/.003389,LineWidth=1.2);
 ylabel("Kp / baseline");grid on;
 nexttile(layout);plot(active.elapsed_ms/1000,active.current,LineWidth=1.2);

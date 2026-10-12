@@ -1,0 +1,10 @@
+{
+  "python_protocol_runtime_tests": 17,
+  "python_admission_gain_schedule_shadow_tests": 30,
+  "matlab_offline_tests": 7,
+  "actor_json_weight_roundtrips": 12,
+  "critic_json_weight_roundtrips": 24,
+  "hardware_accessed_by_checks": false,
+  "final_actor_c_generated": false,
+  "deployment_allowed": false
+}

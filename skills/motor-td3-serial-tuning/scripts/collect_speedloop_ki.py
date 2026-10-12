@@ -48,6 +48,7 @@ def run(args):
             "--boot-token-file", str(prepare_dir / "boot-token.txt"),
             "--power-confirmed", "--authorized-no-thermal-trial",
             "--ki-probe-sign", str(SIGN[policy]),
+            "--gain-mode", "baseline" if policy == "baseline" else "ki_probe",
         ], capture_output=True, text=True, check=False)
         (round_dir / "trial.stdout.txt").write_text(
             trial.stdout + trial.stderr, encoding="utf-8")

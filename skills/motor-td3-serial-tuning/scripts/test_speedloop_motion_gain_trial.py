@@ -47,19 +47,26 @@ class Checks(unittest.TestCase):
 
     def test_ki_probe_is_small_and_kp_stays_baseline(self):
         base = planned_gains(2399, 0)
-        plus = planned_gains(2400, 1)
-        minus = planned_gains(2400, -1)
+        plus = planned_gains(2200, 1)
+        minus = planned_gains(2200, -1)
         self.assertEqual(base[0], plus[0])
         self.assertEqual(base[0], minus[0])
         self.assertLessEqual(abs(plus[1]-base[1]), .25*.000144+1e-7)
         self.assertLessEqual(abs(minus[1]-base[1]), .25*.000144+1e-7)
-        self.assertEqual(planned_gains(2600, 1), base)
+        self.assertEqual(planned_gains(2700, 1), base)
 
     def test_stop_reserve_for_pending_action_ack(self):
         self.assertTrue(gain_due(2.69, 0., 2.68, None))
         self.assertFalse(gain_due(2.70, 0., 2.68, None))
         self.assertFalse(gain_due(2.90, 0., 2.72, None))
         self.assertFalse(gain_due(2.73, 0., 2.72, 2.70))
+
+    def test_explicit_baseline_never_probes_kp_or_ki(self):
+        for elapsed in (0,2200,2400,2600,2700):
+            self.assertEqual(planned_gains(elapsed,0,'baseline'), (f32(.003389),f32(.00144)))
+        with self.assertRaises(ValueError): planned_gains(2400,1,'baseline')
+        with self.assertRaises(ValueError): planned_gains(2400,0,'ki_probe')
+        with self.assertRaises(ValueError): planned_gains(2400,1,'kp_probe')
 
     def test_final_heartbeat_avoids_silence_and_late_new_action(self):
         # Sweep every possible phase of the regular 60ms command timer.

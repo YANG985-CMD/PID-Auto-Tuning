@@ -1,0 +1,97 @@
+{
+  "schema_version": 1,
+  "hardware_accessed": false,
+  "source": "real_motor",
+  "physical_sessions": 35,
+  "causal_windows": 311,
+  "training_windows": 228,
+  "validation_windows": 83,
+  "validation_run_indices": [
+    5,
+    10,
+    15,
+    20,
+    23,
+    25,
+    29,
+    31,
+    35
+  ],
+  "unique_boot_count": 35,
+  "action_direction_counts_kp_ki": {
+    "positive": [
+      49,
+      7
+    ],
+    "negative": [
+      23,
+      8
+    ],
+    "zero": [
+      239,
+      296
+    ]
+  },
+  "ki_nonzero_delta_windows": 15,
+  "ki_intervention_onsets": 8,
+  "ki_return_to_baseline_windows": 7,
+  "ki_offset_held_windows": 52,
+  "response_sample_count_histogram": {
+    "2": 78,
+    "3": 30,
+    "4": 11,
+    "1": 192
+  },
+  "response_ms_range": [
+    0.821,
+    71.856
+  ],
+  "source_elapsed_ms_range": [
+    2214.012939453125,
+    2716.0380859375
+  ],
+  "reference_speed_rpm_values": [
+    1000
+  ],
+  "near_speed_penalty_nonzero_windows": 0,
+  "saturation_penalty_nonzero_windows": 0,
+  "full_trial_peak_before_first_training_source_sessions": 33,
+  "baseline_label_corrections": [
+    {
+      "path": "examples/speedloop-v5-real-20261012/ki-coverage-20261012/round-01-baseline",
+      "original_label": "baseline",
+      "corrected_actual_behavior": "kp_probe",
+      "fixed_PI_performance_comparison_eligible": false,
+      "raw_record_rewritten": false
+    },
+    {
+      "path": "examples/speedloop-v5-real-20261012/ki-coverage-20261012/round-03-baseline",
+      "original_label": "baseline",
+      "corrected_actual_behavior": "kp_probe",
+      "fixed_PI_performance_comparison_eligible": false,
+      "raw_record_rewritten": false
+    },
+    {
+      "path": "examples/speedloop-v5-real-20261012/ki-coverage-2-20261012/round-01-baseline",
+      "original_label": "baseline",
+      "corrected_actual_behavior": "kp_probe",
+      "fixed_PI_performance_comparison_eligible": false,
+      "raw_record_rewritten": false
+    },
+    {
+      "path": "examples/speedloop-v5-real-20261012/ki-coverage-2-20261012/round-03-baseline",
+      "original_label": "baseline",
+      "corrected_actual_behavior": "kp_probe",
+      "fixed_PI_performance_comparison_eligible": false,
+      "raw_record_rewritten": false
+    }
+  ],
+  "gate_issue_fixed": "Old-policy A/B metrics cannot score a different checkpoint/mask",
+  "limitations": [
+    "Only 1000 rpm, no unseen speed/load coverage",
+    "Changing holding duration does not add intervention directions",
+    "Short consecutive windows are correlated; holdout is by episode",
+    "Logged outcomes cannot give counterfactual RMSE for a new Actor"
+  ],
+  "deployment_allowed": false
+}

@@ -41,4 +41,8 @@ Thumbs.db
 !examples/speedloop-v5-real-20261012/ki-coverage-20261012/*
 !examples/speedloop-v5-real-20261012/reweighted-td3-ki-20261012/
 !examples/speedloop-v5-real-20261012/reweighted-td3-ki-20261012/*
+!examples/speedloop-v5-real-20261012/repeated-ab-20261012/*/*.jsonl
+!examples/speedloop-v5-real-20261012/ki-coverage-20261012/*/*.jsonl
+!examples/speedloop-v5-real-20261012/ki-coverage-2-20261012/**/*.jsonl
+!examples/speedloop-v5-real-20261012/offline-study-20261012/**/*.jsonl
 

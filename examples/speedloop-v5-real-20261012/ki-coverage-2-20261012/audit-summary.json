@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "physical_trials": 6,
+  "audits": [
+    {
+      "audit": "audit-1",
+      "causal_experience_candidates": 10,
+      "raw_stage_confirmed_candidates": 10,
+      "rmse_rpm": 162.33026939912338,
+      "peak_current_a": 1.0546875,
+      "peak_speed_rpm": 1790.8309326171875,
+      "faults_zero": true,
+      "stop_verified": true
+    },
+    {
+      "audit": "audit-2",
+      "causal_experience_candidates": 10,
+      "raw_stage_confirmed_candidates": 10,
+      "rmse_rpm": 154.44277631752178,
+      "peak_current_a": 1.07666015625,
+      "peak_speed_rpm": 1743.3751220703125,
+      "faults_zero": true,
+      "stop_verified": true
+    },
+    {
+      "audit": "audit-3",
+      "causal_experience_candidates": 10,
+      "raw_stage_confirmed_candidates": 9,
+      "rmse_rpm": 156.96824357564583,
+      "peak_current_a": 1.07666015625,
+      "peak_speed_rpm": 1772.421142578125,
+      "faults_zero": true,
+      "stop_verified": true
+    },
+    {
+      "audit": "audit-4",
+      "causal_experience_candidates": 10,
+      "raw_stage_confirmed_candidates": 10,
+      "rmse_rpm": 152.32528937129575,
+      "peak_current_a": 1.07666015625,
+      "peak_speed_rpm": 1739.1304931640625,
+      "faults_zero": true,
+      "stop_verified": true
+    },
+    {
+      "audit": "audit-5",
+      "causal_experience_candidates": 10,
+      "raw_stage_confirmed_candidates": 10,
+      "rmse_rpm": 139.41528582707937,
+      "peak_current_a": 1.03271484375,
+      "peak_speed_rpm": 1637.7333984375,
+      "faults_zero": true,
+      "stop_verified": true
+    },
+    {
+      "audit": "audit-6",
+      "causal_experience_candidates": 10,
+      "raw_stage_confirmed_candidates": 9,
+      "rmse_rpm": 157.89814965627485,
+      "peak_current_a": 1.07666015625,
+      "peak_speed_rpm": 1770.5382080078125,
+      "faults_zero": true,
+      "stop_verified": true
+    }
+  ]
+}

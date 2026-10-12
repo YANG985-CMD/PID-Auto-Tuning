@@ -1,0 +1,106 @@
+{
+  "schema_version": 2,
+  "source": "real_motor_repeated_ab_hash_bound",
+  "candidate_checkpoint_sha256": "2d9516d757ad8e9784da9171afe48f5dc60f809666639084c691bbc10b23efab",
+  "policy_action_mask": [
+    1,
+    0
+  ],
+  "comparison_policies": [
+    "baseline",
+    "actor_kp",
+    "baseline",
+    "actor_kp",
+    "baseline",
+    "actor_kp"
+  ],
+  "comparable_protocol": true,
+  "statistics": {
+    "baseline": {
+      "n": 3,
+      "metrics": {
+        "rmse_rpm": {
+          "values": [
+            136.8974429875739,
+            141.0533117813778,
+            156.2524480251699
+          ],
+          "mean": 144.73440093137387
+        },
+        "peak_current_a": {
+          "values": [
+            1.03271484375,
+            1.03271484375,
+            1.0546875
+          ],
+          "mean": 1.0400390625
+        },
+        "peak_speed_rpm": {
+          "values": [
+            1624.431396484375,
+            1642.0361328125,
+            1745.20068359375
+          ],
+          "mean": 1670.5560709635417
+        }
+      },
+      "faults": [
+        0,
+        0,
+        0
+      ],
+      "stop_all_acknowledged": true,
+      "outputs_all_closed": true,
+      "cores_all_halted": true,
+      "can_all_released": true,
+      "actions_all_in_bounds": true
+    },
+    "actor_kp": {
+      "n": 3,
+      "metrics": {
+        "rmse_rpm": {
+          "values": [
+            133.90131557273634,
+            158.84645809900957,
+            156.1612203403228
+          ],
+          "mean": 149.63633133735624
+        },
+        "peak_current_a": {
+          "values": [
+            1.03271484375,
+            1.07666015625,
+            1.0546875
+          ],
+          "mean": 1.0546875
+        },
+        "peak_speed_rpm": {
+          "values": [
+            1617.0762939453125,
+            1778.7264404296875,
+            1782.53125
+          ],
+          "mean": 1726.111328125
+        }
+      },
+      "faults": [
+        0,
+        0,
+        0
+      ],
+      "stop_all_acknowledged": true,
+      "outputs_all_closed": true,
+      "cores_all_halted": true,
+      "can_all_released": true,
+      "actions_all_in_bounds": true
+    }
+  },
+  "all_trials_passed": true,
+  "performance_claim_allowed": false,
+  "deployment_allowed": false,
+  "limitations": [
+    "Expected post-start 2.2s window is not proven steady state",
+    "Nominal current only; no independent current calibration",
+    "This evidence applies only to the bound Kp-only checkpoint"
+  ]
+}

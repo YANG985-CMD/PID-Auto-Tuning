@@ -33,11 +33,17 @@ def f32(value):
     return struct.unpack('<f', struct.pack('<f', value))[0]
 
 
-def planned_gains(elapsed_ms, ki_probe_sign=0):
+def planned_gains(elapsed_ms, ki_probe_sign=0, mode=None):
     # A small deterministic local probe, well inside the existing step limit.
-    if ki_probe_sign:
-        ki = BASE_KI + ki_probe_sign * .25 * .000144 if 2400 <= elapsed_ms < 2600 else BASE_KI
+    mode = mode or ('ki_probe' if ki_probe_sign else 'kp_probe')
+    if mode == 'baseline':
+        if ki_probe_sign: raise ValueError('Baseline cannot request a Ki probe')
+        return f32(BASE_KP), f32(BASE_KI)
+    if mode == 'ki_probe':
+        if ki_probe_sign not in (-1, 1): raise ValueError('Ki probe needs a signed direction')
+        ki = BASE_KI + ki_probe_sign * .25 * .000144 if 2200 <= elapsed_ms < 2700 else BASE_KI
         return f32(BASE_KP), f32(ki)
+    if mode != 'kp_probe' or ki_probe_sign: raise ValueError('Conflicting gain mode')
     return f32(BASE_KP * (1.04 if 2400 <= elapsed_ms < 2600 else 1)), f32(BASE_KI)
 
 
@@ -119,6 +125,7 @@ def trial(a):
     result['gain_interval_ms'] = GAIN_INTERVAL_SECONDS*1000
     result['ki_probe_sign'] = int(getattr(a, 'ki_probe_sign', 0))
     result['ki_probe_fraction_of_local_step'] = .25 if result['ki_probe_sign'] else 0
+    result['ki_probe_window_ms'] = [2200, 2700] if result['ki_probe_sign'] else []
     result['host_clock'] = 'QueryPerformanceCounter via perf_counter'
     result['host_script_sha256'] = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
     telemetry, commands, sent = [], [], {}
@@ -135,6 +142,11 @@ def trial(a):
     ki_probe_sign = int(getattr(a, 'ki_probe_sign', 0))
     if ki_probe_sign not in (-1, 0, 1):
         raise ValueError('Ki probe sign must be -1, 0 or +1')
+    gain_mode = getattr(a, 'gain_mode', None) or ('ki_probe' if ki_probe_sign else 'kp_probe')
+    planned_gains(0, ki_probe_sign, gain_mode) # Validate before attaching to hardware.
+    if ki_probe_sign and (apply_actor_kp or getattr(a, 'shadow_port', None)):
+        raise ValueError('Ki collection cannot be combined with an Actor/shadow trial')
+    result['gain_mode'] = 'actor_kp' if apply_actor_kp else 'baseline' if getattr(a, 'shadow_port', None) else gain_mode
     session = ConnectHelper.session_with_chosen_probe(unique_id=a.uid, target_override='cortex_m',
         connect_mode='attach', frequency=1000000, no_config=True,
         options={'resume_on_disconnect': False,'cache.enable_memory':False,'cache.enable_register':False}, blocking=False)
@@ -234,7 +246,7 @@ def trial(a):
                         result['actor_gain_commands_sent'] += 1
                     else:
                         kp, ki = ((f32(BASE_KP),f32(BASE_KI)) if final_due or shadow
-                                  else planned_gains(last['elapsed_ms'], ki_probe_sign))
+                                  else planned_gains(last['elapsed_ms'], ki_probe_sign, gain_mode))
                     action_seq += 1
                     send(dict(type='gains', command_seq=action_seq, kp=kp, ki=ki, lease_ms=200), last)
                     next_gain = now + GAIN_INTERVAL_SECONDS
@@ -345,5 +357,7 @@ if __name__ == '__main__':
                    help='Experimental single-trial mode: apply MATLAB Kp only; Ki remains baseline')
     p.add_argument('--ki-probe-sign', type=int, choices=(-1, 0, 1), default=0,
                    help='Experimental fixed-PI data collection: local Ki probe sign')
+    p.add_argument('--gain-mode', choices=('baseline','kp_probe','ki_probe'),
+                   help='Explicit behavior; omission preserves the historical probe entry')
     args = p.parse_args()
     raise SystemExit(0 if trial(args)['passed'] else 1)

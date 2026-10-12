@@ -1,4 +1,4 @@
-function report = trainSpeedLoopReweightedTD3(runDirs, outputDir, allowExperimentalShadow, seeds, actionMask)
+function report = trainSpeedLoopReweightedTD3(runDirs, outputDir, allowExperimentalShadow, seeds, actionMask, experiment)
 % Train experimental TD3 candidates with stronger current/speed penalties.
 % This is offline only: it never opens hardware, applies gains, or grants
 % ordinary live admission. Ki is enabled only when actionMask(2)=1 and real
@@ -9,9 +9,21 @@ arguments
     allowExperimentalShadow (1,1) logical = false
     seeds (:,1) double = [7;17;27]
     actionMask (1,2) double = [1 0]
+    experiment.RewardProfile (1,1) string = "current-speed-penalty-v2"
+    experiment.BehaviorCloningWeight (1,1) double = 0
+    experiment.ValidationRunIndices (:,1) double = []
 end
 assert(allowExperimentalShadow,"Explicit experimental shadow-analysis selection required");
 assert(~isempty(runDirs) && ~isempty(seeds));
+assert(any(experiment.RewardProfile==["legacy-v1","current-speed-penalty-v2"]));
+assert(all(ismember(actionMask,[0 1])) && actionMask(1)==1);
+assert(isfinite(experiment.BehaviorCloningWeight) && experiment.BehaviorCloningWeight>=0);
+if isempty(experiment.ValidationRunIndices)
+    validationRuns=unique([find(mod(1:numel(runDirs),5)==0),numel(runDirs)]);
+else
+    validationRuns=experiment.ValidationRunIndices(:)';
+    assert(all(fix(validationRuns)==validationRuns & validationRuns>=1 & validationRuns<=numel(runDirs)));
+end
 if ~isfolder(outputDir), mkdir(outputDir); end
 
 allRows = cell(0,1);
@@ -54,16 +66,18 @@ for trialIndex = 1:numel(runDirs)
         assert(isfield(r,"response_rmse_rpm") && isfield(r,"response_peak_current_a"));
         assert(isfield(r,"response_peak_speed_rpm") && isfield(r,"response_saturation_ratio"));
         r.legacy_reward = r.reward;
-        r.reward = reweightedReward(r);
-        r.reward_profile = "current-speed-penalty-v2";
+        r.reweighted_reward = reweightedReward(r);
+        if experiment.RewardProfile=="current-speed-penalty-v2", r.reward=r.reweighted_reward; end
+        r.reward_profile = experiment.RewardProfile;
         r.reward_weights = struct(error=1,current=0.12,near_speed_limit=0.08, ...
             saturation=0.10,action=0.005,near_speed_threshold_rpm=1500, ...
             near_speed_scale_rpm=300);
         r.run_index=trialIndex;
         r.step=step-1;
         r.boot_id=boot;
-        r.validation_split = mod(trialIndex,5)==0 || trialIndex==numel(runDirs);
-        r.training_action_normalized = r.action_normalized(:) .* actionMask(:);
+        r.validation_split = ismember(trialIndex,validationRuns);
+        % Never relabel an actually applied Ki action as a zero action.
+        r.training_action_normalized = motorTD3MaskedAction(r.action_normalized(:),actionMask(:));
         r.analysis_mode="experimental-reweighted-offline-shadow";
         r.shadow_learner_eligible=true;
         r.ordinary_live_learner_eligible=false;
@@ -79,13 +93,22 @@ trainRows = allRows(~validation);
 validationRows = allRows(validation);
 assert(numel(trainRows)>=128,"Training split is below TD3 warmup");
 assert(~isempty(validationRows),"Validation split is empty");
+trainingActions=cell2mat(cellfun(@(r)r.action_normalized(:),trainRows,UniformOutput=false)');
+coverage=struct(positive=sum(trainingActions>1e-7,2)', ...
+    negative=sum(trainingActions<-1e-7,2)',zero=sum(abs(trainingActions)<=1e-7,2)');
+if actionMask(2)==1
+    assert(coverage.positive(2)>0 && coverage.negative(2)>0, ...
+        'MotorTD3:Coverage','Ki requires both action directions in the training split');
+end
 writeRows(fullfile(outputDir,"reweighted-transitions.jsonl"),allRows);
 
 seedReports = cell(numel(seeds),1);
 candidateFiles = strings(numel(seeds),1);
 for seedIndex=1:numel(seeds)
     seed = seeds(seedIndex);
-    agent = createMotorTD3(seed);
+    agent = createMotorTD3(seed,actionMask(:),experiment.BehaviorCloningWeight);
+    initialActor=getModel(getActor(agent)); initialCritics=getCritic(agent);
+    initialCriticModels={getModel(initialCritics(1)),getModel(initialCritics(2))};
     for index=1:numel(trainRows)
         r=trainRows{index};
         experience=struct('Observation',{{single(r.observation(:))}}, ...
@@ -97,7 +120,9 @@ for seedIndex=1:numel(seeds)
     end
     options=rlTrainingFromDataOptions('MaxEpochs',2,'NumStepsPerEpoch',40, ...
         'Plots','none','Verbose',false,'SaveAgentCriteria','none');
+    before=diagnoseMotorTD3Policy(agent,validationRows);
     trainingStats=trainFromData(agent,options);
+    after=diagnoseMotorTD3Policy(agent,validationRows);
     [predictions,checks]=predictMaskedActor(agent,validationRows,actionMask);
     file=fullfile(outputDir,"reweighted-candidate-seed-"+seed+".mat");
     reportSeed=struct(seed=seed,train_experiences=numel(trainRows), ...
@@ -108,29 +133,38 @@ for seedIndex=1:numel(seeds)
         validation_action_max=max(predictions,[],1), ...
         action_bounds_passed=checks.action_bounds_passed, ...
         gain_bounds_passed=checks.gain_bounds_passed, ...
+        actor_weight_change_l2=modelDelta(initialActor,getModel(getActor(agent))), ...
+        critic_weight_change_l2=criticDeltas(initialCriticModels,agent), ...
+        validation_before=before.metrics,validation_after=after.metrics, ...
+        epoch_q_value=double(trainingStats.QValue), ...
         ki_masked=actionMask(2)==0,offline_performance_verified=false, ...
         deployment_allowed=false,performance_claim_allowed=false);
-    seedReports{seedIndex}=reportSeed;
     candidateFiles(seedIndex)=string(file);
     save(file,'agent','reportSeed','trainingStats');
+    reportSeed.checkpoint_sha256=motorFileSHA256(file);
+    seedReports{seedIndex}=reportSeed;
+    writetable(after.predictions,fullfile(outputDir,"validation-seed-"+seed+".csv"));
 end
 
 datasetText = fileread(fullfile(outputDir,"reweighted-transitions.jsonl"));
-kpSeedMeans = cellfun(@(s)mean([s.validation_action_min(1), ...
-    s.validation_action_max(1)]),seedReports);
+kpSeedMeans = cellfun(@(s)s.validation_after.action_mean(1),seedReports);
 seedDirectionConsistent = all(kpSeedMeans>=0) || all(kpSeedMeans<=0);
 report=struct(schema_version=1,source="real_motor",simulation_only=false, ...
     mode="experimental-reweighted-offline-shadow",hardware_accessed=false, ...
     matlab_release=string(version("-release")),physical_trials=numel(runDirs), ...
     replay_experiences=numel(allRows),training_experiences=numel(trainRows), ...
     validation_experiences=numel(validationRows),replay_warmup_required=128, ...
+    validation_run_indices=validationRuns,validation_boot_ids=boots(validationRuns), ...
+    train_boot_ids=boots(setdiff(1:numel(runDirs),validationRuns)), ...
+    training_action_coverage=coverage,behavior_cloning_weight=experiment.BehaviorCloningWeight, ...
+    algorithm=conditionalAlgorithm(experiment.BehaviorCloningWeight), ...
     training_seed_values=seeds(:).',seed_reports=[seedReports{:}], ...
     seed_kp_action_means=kpSeedMeans,seed_kp_action_direction_consistent=seedDirectionConsistent, ...
     candidate_files=candidateFiles,action_mask=actionMask, ...
     ki_fixed_baseline=conditionalKiBaseline(actionMask), ...
     ki_exploration_performed=any(cellfun(@(r)abs(r.action_normalized(2))>1e-7,allRows)), ...
     legacy_reward_preserved=true, ...
-    reward_profile="current-speed-penalty-v2", ...
+    reward_profile=experiment.RewardProfile, ...
     deployment_allowed=false,performance_claim_allowed=false, ...
     offline_performance_verified=false,needs_physical_validation=true, ...
     ordinary_live_admission=false,thermal_gate_modified=false, ...
@@ -160,7 +194,9 @@ for index=1:numel(rows)
     a=getAction(getActor(agent),{single(rows{index}.observation(:))});
     predictions(index,:)=double(a{1}(:)).';
 end
-if actionMask(2)==0, predictions(:,2)=0; end
+if actionMask(2)==0
+    assert(all(predictions(:,2)==0),'Ki mask must be part of the Actor itself');
+end
 checks.action_bounds_passed=all(abs(predictions(:))<=1+1e-6);
 checks.gain_bounds_passed=true;
 for index=1:numel(rows)
@@ -186,9 +222,11 @@ if actionMask(2)==0, value=.00144; else, value=NaN; end
 end
 
 function writeRows(path,rows)
-fid=fopen(path,"w","n","UTF-8"); assert(fid>=0);
+fid=fopen(path,"wb"); assert(fid>=0);
 closer=onCleanup(@()fclose(fid)); %#ok<NASGU>
-for index=1:numel(rows), fprintf(fid,"%s\n",jsonencode(rows{index})); end
+for index=1:numel(rows)
+    fwrite(fid,unicode2native([jsonencode(rows{index}),char(10)],'UTF-8'),'uint8');
+end
 end
 
 function value=sha256(text)
@@ -202,4 +240,21 @@ function writeUTF8(path,text)
 fid=fopen(path,'wb'); assert(fid>=0);
 closer=onCleanup(@()fclose(fid)); %#ok<NASGU>
 fwrite(fid,unicode2native(char(text),'UTF-8'),'uint8');
+end
+
+function value=modelDelta(initial,final)
+value=0;
+for index=1:height(initial.Learnables)
+    value=value+sum(double(extractdata(final.Learnables.Value{index}-initial.Learnables.Value{index})).^2,'all');
+end
+value=sqrt(value);
+end
+
+function values=criticDeltas(initial,agent)
+critics=getCritic(agent);
+values=[modelDelta(initial{1},getModel(critics(1))),modelDelta(initial{2},getModel(critics(2)))];
+end
+
+function value=conditionalAlgorithm(weight)
+if weight>0, value="TD3-with-behavior-cloning"; else, value="TD3"; end
 end

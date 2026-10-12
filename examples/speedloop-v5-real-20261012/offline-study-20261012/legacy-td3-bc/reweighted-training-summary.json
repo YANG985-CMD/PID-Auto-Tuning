@@ -1,0 +1,523 @@
+{
+  "schema_version": 1,
+  "source": "real_motor",
+  "simulation_only": false,
+  "mode": "experimental-reweighted-offline-shadow",
+  "hardware_accessed": false,
+  "matlab_release": "2024b",
+  "physical_trials": 35,
+  "replay_experiences": 311,
+  "training_experiences": 228,
+  "validation_experiences": 83,
+  "replay_warmup_required": 128,
+  "validation_run_indices": [
+    5,
+    10,
+    15,
+    20,
+    23,
+    25,
+    29,
+    31,
+    35
+  ],
+  "validation_boot_ids": [
+    "bfdba0ed4878cb51",
+    "f12f46fef335f530",
+    "67f45fa8caca3daa",
+    "de700aa45f8bdbf9",
+    "030036e2d1150242",
+    "8bd2ca9658004aaf",
+    "730b393af7860d56",
+    "f1925f5500f2fde7",
+    "18e086ff20c1483e"
+  ],
+  "train_boot_ids": [
+    "62ed6cb11f2a62b6",
+    "b8433e7112c3648c",
+    "dc310c853c597f86",
+    "98ee690221471a1a",
+    "0bfadd579a560747",
+    "2f5fd135989c6de3",
+    "3c8b20549a6f15bc",
+    "50da879b21cb03b3",
+    "cf2cb79ee1220cc2",
+    "c158b397a61ac58b",
+    "524388afbd4768fe",
+    "f518c9ddaf6b5a50",
+    "b4e76cf321fe9ecc",
+    "9337e77564d8c910",
+    "920b038ba2ae5329",
+    "3529c0523e3ee540",
+    "7f84c253ddbef985",
+    "a5104cebebcfb4ef",
+    "623dee7a78ae7f31",
+    "a521a14052fa67fe",
+    "c0504d924e476996",
+    "65949dd252654104",
+    "86d70051b86a179e",
+    "6c65d0eee89852c6",
+    "e3739c0505499945",
+    "b0054860729e3efa"
+  ],
+  "training_action_coverage": {
+    "positive": [
+      36,
+      4
+    ],
+    "negative": [
+      20,
+      4
+    ],
+    "zero": [
+      172,
+      220
+    ]
+  },
+  "behavior_cloning_weight": 2.5,
+  "algorithm": "TD3-with-behavior-cloning",
+  "training_seed_values": [
+    7,
+    17,
+    27
+  ],
+  "seed_reports": [
+    {
+      "seed": 7,
+      "train_experiences": 228,
+      "validation_experiences": 83,
+      "training_steps": [
+        40,
+        80
+      ],
+      "training_steps_total": 80,
+      "validation_action_min": [
+        0.005850720684975386,
+        0.002210503676906228
+      ],
+      "validation_action_max": [
+        0.010643362067639828,
+        0.006582620553672314
+      ],
+      "action_bounds_passed": true,
+      "gain_bounds_passed": true,
+      "actor_weight_change_l2": 0.07212548834703203,
+      "critic_weight_change_l2": [
+        1.8438924651151611,
+        2.0333674068520002
+      ],
+      "validation_before": {
+        "action_mean": [
+          0.0020189423742423573,
+          0.003179728652417929
+        ],
+        "action_std": [
+          0.0007156175367377073,
+          0.000824267173143701
+        ],
+        "behavior_action_mse": [
+          0.018085324709657374,
+          0.005305975111801869
+        ],
+        "zero_action_mse": [
+          0.01807525942098878,
+          0.005271077156083213
+        ],
+        "logged_q_mean": [
+          0.054984696248703335,
+          -0.05619359078132603
+        ],
+        "policy_q_mean": [
+          0.056854972862694635,
+          -0.053690732243549394
+        ],
+        "critic_disagreement_mean": 0.11117828703002937,
+        "online_bellman_residual_rmse": [
+          0.11745899930417554,
+          0.019269450420281393
+        ],
+        "observed_reward_mean": -0.0028321164240565615,
+        "metrics_are_physical_performance": false,
+        "residual_basis": "Current critics + deterministic next Actor; no target noise or target-network access"
+      },
+      "validation_after": {
+        "action_mean": [
+          0.009757596724498344,
+          0.005584423205848918
+        ],
+        "action_std": [
+          0.0008505454958941496,
+          0.0008352337492003834
+        ],
+        "behavior_action_mse": [
+          0.018182593617835457,
+          0.0053416502941633515
+        ],
+        "zero_action_mse": [
+          0.01807525942098878,
+          0.005271077156083213
+        ],
+        "logged_q_mean": [
+          -0.06475938977785857,
+          -0.060445442346923325
+        ],
+        "policy_q_mean": [
+          -0.0644539573106421,
+          -0.059008725728076625
+        ],
+        "critic_disagreement_mean": 0.009419594588408986,
+        "online_bellman_residual_rmse": [
+          0.007666141951987327,
+          0.014704932681365588
+        ],
+        "observed_reward_mean": -0.0028321164240565615,
+        "metrics_are_physical_performance": false,
+        "residual_basis": "Current critics + deterministic next Actor; no target noise or target-network access"
+      },
+      "epoch_q_value": [
+        -0.01923920027911663,
+        -0.015702085569500923
+      ],
+      "ki_masked": false,
+      "offline_performance_verified": false,
+      "deployment_allowed": false,
+      "performance_claim_allowed": false,
+      "checkpoint_sha256": "7a017c35be099f4a448b98b627fbf14886d992a7a0e765f3a32d771387772ee8"
+    },
+    {
+      "seed": 17,
+      "train_experiences": 228,
+      "validation_experiences": 83,
+      "training_steps": [
+        40,
+        80
+      ],
+      "training_steps_total": 80,
+      "validation_action_min": [
+        -0.01338577177375555,
+        0.009375247173011303
+      ],
+      "validation_action_max": [
+        -0.010866916738450527,
+        0.010476712137460709
+      ],
+      "action_bounds_passed": true,
+      "gain_bounds_passed": true,
+      "actor_weight_change_l2": 0.06270175185798306,
+      "critic_weight_change_l2": [
+        1.7931425469701172,
+        1.8410885135084052
+      ],
+      "validation_before": {
+        "action_mean": [
+          -0.01029495082526322,
+          -0.005855609516961029
+        ],
+        "action_std": [
+          0.0005587052875728872,
+          0.0003539336611328789
+        ],
+        "behavior_action_mse": [
+          0.018182682913449957,
+          0.005269161693410991
+        ],
+        "zero_action_mse": [
+          0.01807525942098878,
+          0.005271077156083213
+        ],
+        "logged_q_mean": [
+          0.4284814219158816,
+          -0.04599355313792286
+        ],
+        "policy_q_mean": [
+          0.42822722929069795,
+          -0.04485771414565753
+        ],
+        "critic_disagreement_mean": 0.4744749750538045,
+        "online_bellman_residual_rmse": [
+          0.4715927546462158,
+          0.018646448937561174
+        ],
+        "observed_reward_mean": -0.0028321164240565615,
+        "metrics_are_physical_performance": false,
+        "residual_basis": "Current critics + deterministic next Actor; no target noise or target-network access"
+      },
+      "validation_after": {
+        "action_mean": [
+          -0.01282602806676583,
+          0.009922996174588979
+        ],
+        "action_std": [
+          0.000546702137583046,
+          0.00021029840269300238
+        ],
+        "behavior_action_mse": [
+          0.01824238348093347,
+          0.005432546123922826
+        ],
+        "zero_action_mse": [
+          0.01807525942098878,
+          0.005271077156083213
+        ],
+        "logged_q_mean": [
+          -0.04156227719532438,
+          -0.048718468162668754
+        ],
+        "policy_q_mean": [
+          -0.04180002405521381,
+          -0.048518575727939606
+        ],
+        "critic_disagreement_mean": 0.00859427537365132,
+        "online_bellman_residual_rmse": [
+          0.011684821487502915,
+          0.0057190924638219984
+        ],
+        "observed_reward_mean": -0.0028321164240565615,
+        "metrics_are_physical_performance": false,
+        "residual_basis": "Current critics + deterministic next Actor; no target noise or target-network access"
+      },
+      "epoch_q_value": [
+        -0.029801946133375168,
+        -0.031199980527162552
+      ],
+      "ki_masked": false,
+      "offline_performance_verified": false,
+      "deployment_allowed": false,
+      "performance_claim_allowed": false,
+      "checkpoint_sha256": "7d4f94fcead0f6cb637a314b6e4ac6257ddde108d21ad2754fc656962b285edd"
+    },
+    {
+      "seed": 27,
+      "train_experiences": 228,
+      "validation_experiences": 83,
+      "training_steps": [
+        40,
+        80
+      ],
+      "training_steps_total": 80,
+      "validation_action_min": [
+        -0.016060128808021545,
+        -0.01675684191286564
+      ],
+      "validation_action_max": [
+        -0.009084291756153107,
+        -0.013107412494719028
+      ],
+      "action_bounds_passed": true,
+      "gain_bounds_passed": true,
+      "actor_weight_change_l2": 0.07196471146926302,
+      "critic_weight_change_l2": [
+        2.071757501363968,
+        1.7974135417249182
+      ],
+      "validation_before": {
+        "action_mean": [
+          -0.004747112340529461,
+          -0.0022987355534211697
+        ],
+        "action_std": [
+          0.00045884408634872193,
+          0.00023465260594473795
+        ],
+        "behavior_action_mse": [
+          0.01810294098315994,
+          0.005264668056785424
+        ],
+        "zero_action_mse": [
+          0.01807525942098878,
+          0.005271077156083213
+        ],
+        "logged_q_mean": [
+          -0.07927411094487431,
+          -0.19930405932736683
+        ],
+        "policy_q_mean": [
+          -0.07691180665629456,
+          -0.1993517274238977
+        ],
+        "critic_disagreement_mean": 0.12002994838249252,
+        "online_bellman_residual_rmse": [
+          0.11466572120302372,
+          0.029311785502410873
+        ],
+        "observed_reward_mean": -0.0028321164240565615,
+        "metrics_are_physical_performance": false,
+        "residual_basis": "Current critics + deterministic next Actor; no target noise or target-network access"
+      },
+      "validation_after": {
+        "action_mean": [
+          -0.015283551269087446,
+          -0.016025633304323775
+        ],
+        "action_std": [
+          0.0012507192219375614,
+          0.0006082242255609289
+        ],
+        "behavior_action_mse": [
+          0.01831582753501804,
+          0.005428072061571731
+        ],
+        "zero_action_mse": [
+          0.01807525942098878,
+          0.005271077156083213
+        ],
+        "logged_q_mean": [
+          -0.1607001626706985,
+          -0.16260655349995717
+        ],
+        "policy_q_mean": [
+          -0.15878553185836378,
+          -0.16269571091755328
+        ],
+        "critic_disagreement_mean": 0.006836782198354423,
+        "online_bellman_residual_rmse": [
+          0.007734422911168664,
+          0.008646483819762435
+        ],
+        "observed_reward_mean": -0.0028321164240565615,
+        "metrics_are_physical_performance": false,
+        "residual_basis": "Current critics + deterministic next Actor; no target noise or target-network access"
+      },
+      "epoch_q_value": [
+        -0.0250016450881958,
+        -0.0210653617978096
+      ],
+      "ki_masked": false,
+      "offline_performance_verified": false,
+      "deployment_allowed": false,
+      "performance_claim_allowed": false,
+      "checkpoint_sha256": "6b135bb22ff009c1ccdc68b2b638285091edae7830ee9cbcb77aab3660c7a70c"
+    }
+  ],
+  "seed_kp_action_means": [
+    0.009757596724498344,
+    -0.01282602806676583,
+    -0.015283551269087446
+  ],
+  "seed_kp_action_direction_consistent": false,
+  "candidate_files": [
+    "models/offline-study-20261012/legacy-td3-bc/reweighted-candidate-seed-7.mat",
+    "models/offline-study-20261012/legacy-td3-bc/reweighted-candidate-seed-17.mat",
+    "models/offline-study-20261012/legacy-td3-bc/reweighted-candidate-seed-27.mat"
+  ],
+  "action_mask": [
+    1,
+    1
+  ],
+  "ki_fixed_baseline": null,
+  "ki_exploration_performed": true,
+  "legacy_reward_preserved": true,
+  "reward_profile": "legacy-v1",
+  "deployment_allowed": false,
+  "performance_claim_allowed": false,
+  "offline_performance_verified": false,
+  "needs_physical_validation": true,
+  "ordinary_live_admission": false,
+  "thermal_gate_modified": false,
+  "temperature_c": null,
+  "current_conversion_independently_calibrated": false,
+  "telemetry_sha256": [
+    "3ae09ce93173973d9b0c7beb3c8896743c030193fe01a582e1ad2a55229ca742",
+    "f42cccf95e16bcafcaa0634fd17ead090699447c4633a9f3e2ea566039d27797",
+    "f142d008f149ac91cbda1244b2a4b66b6b0a4b056abc3e4ce11267d25c9dd11c",
+    "f7eaad9e7a7b380b57c1f57f9e649c734e5a02864630332dbd087fba244032c3",
+    "9011a7865d1d4fc9569d3c13c3767b89ca0ee71bda12c1af07f1b341b9ce4239",
+    "732c040dc16afb20db5afb62e21e46c6a9d2aca26d591033b27c8aeeb796460f",
+    "980e0cdeeb9d04ac1a9bea18c99dd1fb0866f2b7341833cd91a7258a7e5e3de1",
+    "8c1e401ff9ff7f4de542f0fe989355e4ebf21293dc67f2c649ddbcfaae45f93c",
+    "95351de6482b988527afeacba3d0996bd662e51e6d492896d71b8d07a7b5e30a",
+    "fe61cc2289d2ea602ade2cdf02e91b99dc000305f8313e2c81d5382581c7bbe3",
+    "83c796cf8035f650395b3c0befee0e9dc569e529edc1db78d6bfd86b7d82899d",
+    "e12dc1be4a2ff8b332dd80e64b00ef2f191c00133c9dc251bcdb49ecdbf5cd18",
+    "038e16d73bbdf2caa24d987eb387f9d46141f9ff24f407dff231906f1687d925",
+    "7c84b21ea88a3e7f0938e1cc11192d9c084dc9d6be56b05ce85caf547d2ea2d1",
+    "841a4003e685a1f5562421b27666058576658360dc166361ee7ecafdf44e8a2a",
+    "a0bbfe4c402bb5afe9436c218466af9a7ef08d24c7683734bafa0a97276664c8",
+    "45da4d74a6400d6d79550e1cdd45cc066c43571dab7c1db828353375496e2d9d",
+    "47ac732c91250c165bf8398d7bf2e25c1eec5d31f0749e02f3001ed26836fcd0",
+    "0867ffebf76f47e02952f9f0b5e06bec47a4cdeba48aa39d7faa76f46736a2de",
+    "cf088dd398feb226cddf59c549978cc76b51c4bd2b126195d303cdf74e2065c0",
+    "87cc1652da92a501db84fc49f79db605b3ab4e4fd0e6280ee159d3401f4a17ea",
+    "25493e72bd800a4cffd262098c585db1ee9deaf68be77d11fbf3d25f812d10dc",
+    "a5e7fac06cd5fb7b269243e65472b033efa95a3f3b694429497b0787c1eef053",
+    "64cbb097bcaaeab53e7e88319ad12463ecc54103460f6a96f27760cfd469a41b",
+    "631fe7521463c82abb3df2f418a66c29c27f49b6193e70a5cca0f273e631efa9",
+    "9d8abffe6537c45b1ae1f8869215ab1049a442c563b2f0f637d5af939edb1174",
+    "ded096d4bd790dc5d3fdb62d0084bb0d017a8e664319e6a87bc19ba80e052851",
+    "7f0feddc820c456220a822688db006e57fdab9ce789014c2c978de9ad9e72b3a",
+    "8ea84d20567c8b8907aeff3b85b2a22f77d7751b4e32ecb70db34fe33d7c24b3",
+    "aafb895f40aef29e4f89614e6e108b5074b5db11ec1c079bea9cd9938dbe50e1",
+    "4ccaeca47fb3b09a65fc36c8d526387d792e8c69113279af70fc30d483655849",
+    "f44160d41371f4b5629a59e349cf83d6fa238d2cb28fcb9615c48146f8a5010d",
+    "9f5a381c29dcc9bca050249c191b05632f477618d8e68f48fa69dff57f7491f4",
+    "ab4a16dddb1286ed4d95ac99475ffc9aee7014b328b3ef4394a6a2f920268b0d",
+    "2b4051df5e2c7f063925f6f82457c3ccc05d676ebb8dbd2915830cf32a2c67b4"
+  ],
+  "boot_ids": [
+    "62ed6cb11f2a62b6",
+    "b8433e7112c3648c",
+    "dc310c853c597f86",
+    "98ee690221471a1a",
+    "bfdba0ed4878cb51",
+    "0bfadd579a560747",
+    "2f5fd135989c6de3",
+    "3c8b20549a6f15bc",
+    "50da879b21cb03b3",
+    "f12f46fef335f530",
+    "cf2cb79ee1220cc2",
+    "c158b397a61ac58b",
+    "524388afbd4768fe",
+    "f518c9ddaf6b5a50",
+    "67f45fa8caca3daa",
+    "b4e76cf321fe9ecc",
+    "9337e77564d8c910",
+    "920b038ba2ae5329",
+    "3529c0523e3ee540",
+    "de700aa45f8bdbf9",
+    "7f84c253ddbef985",
+    "a5104cebebcfb4ef",
+    "030036e2d1150242",
+    "623dee7a78ae7f31",
+    "8bd2ca9658004aaf",
+    "a521a14052fa67fe",
+    "c0504d924e476996",
+    "65949dd252654104",
+    "730b393af7860d56",
+    "86d70051b86a179e",
+    "f1925f5500f2fde7",
+    "6c65d0eee89852c6",
+    "e3739c0505499945",
+    "b0054860729e3efa",
+    "18e086ff20c1483e"
+  ],
+  "dataset_sha256": "3318f90768734269d3a46063459c59d9613e68814f9e80437bc45d8b7732cdfd",
+  "hash_convention": "UTF-8 with LF line endings; field content unchanged",
+  "state_fields": [
+    "speed_ref",
+    "speed",
+    "speed_error",
+    "error_history",
+    "integral_output",
+    "current",
+    "vbus",
+    "kp",
+    "ki",
+    "elapsed_ms"
+  ],
+  "state_scale": [
+    1000,
+    1000,
+    1000,
+    1000,
+    3,
+    2,
+    24,
+    0.003389,
+    0.00144,
+    3000
+  ],
+  "acceptance_rule": "Require >=5 percent holdout RMSE improvement without current or peak-speed increase; physical evidence still required",
+  "recommendation": "hold_baseline_PI_until_unseen_physical_validation",
+  "training_output_dataset_sha256": "3318f90768734269d3a46063459c59d9613e68814f9e80437bc45d8b7732cdfd",
+  "publication_line_endings": "UTF-8 LF; original source byte hashes retained separately"
+}

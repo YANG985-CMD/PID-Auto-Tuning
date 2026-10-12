@@ -1,0 +1,6 @@
+{
+  "tests": 7,
+  "passed": 7,
+  "hardware_accessed": false,
+  "synthetic_test_rows_not_in_physical_replay": true
+}
