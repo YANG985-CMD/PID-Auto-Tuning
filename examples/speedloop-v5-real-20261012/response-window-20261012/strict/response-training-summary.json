@@ -1,0 +1,62 @@
+{
+  "schema_version": 2,
+  "source": "real_motor",
+  "hardware_accessed": false,
+  "mode": "experimental-held-gain-response",
+  "window_profile": "strict",
+  "exploratory_only": false,
+  "action_mask": [
+    1,
+    1
+  ],
+  "physical_trials": 41,
+  "replay_experiences": 141,
+  "training_experiences": 106,
+  "validation_experiences": 35,
+  "replay_warmup_required": 128,
+  "training_ready": false,
+  "training_action_coverage": {
+    "positive": [
+      18,
+      6
+    ],
+    "negative": [
+      15,
+      3
+    ],
+    "zero": [
+      73,
+      97
+    ]
+  },
+  "remaining_training_windows": 22,
+  "validation_run_indices": [
+    5,
+    10,
+    15,
+    20,
+    23,
+    25,
+    29,
+    31,
+    35,
+    41
+  ],
+  "dataset_sha256": "39ab29f516de4e40cced59017fdf05822c35e5702ed0f65fac6153fcd37869a4",
+  "discount_contract": "gamma 0.99 per grouped decision; state contains elapsed time",
+  "discount_factor": 0.99,
+  "behavior_cloning_weight": 2.5,
+  "algorithm": "TD3-with-behavior-cloning",
+  "ki_exploration_performed": true,
+  "temperature_c": null,
+  "current_conversion_independently_calibrated": false,
+  "td3_training_performed": false,
+  "seed_reports": [],
+  "candidate_files": [],
+  "deployment_allowed": false,
+  "ordinary_live_admission": false,
+  "thermal_gate_modified": false,
+  "performance_claim_allowed": false,
+  "offline_performance_verified": false,
+  "reason": "Insufficient held-response replay; no agent or gradient updates created"
+}

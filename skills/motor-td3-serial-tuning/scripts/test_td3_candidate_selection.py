@@ -39,6 +39,10 @@ class CandidateSelectionChecks(unittest.TestCase):
         self.assertFalse(result["deployment_allowed"])
         self.assertFalse(result["performance_claim_allowed"])
 
+    def test_exploratory_windows_cannot_use_matching_performance_to_bypass_admission(self):
+        self.training["exploratory_only"]=True
+        self.assertEqual(self.run_gate()["candidate_status"],"rejected")
+
     def test_old_checkpoint_metrics_are_not_assigned_to_new_actor(self):
         self.evidence["candidate_checkpoint_sha256"] = "b" * 64
         result = self.run_gate()

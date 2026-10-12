@@ -65,6 +65,8 @@ def select(training_path, repeated_path, output, *, quiet=False):
     repeated = json.loads(Path(repeated_path).read_text(encoding="utf-8"))
     mask = training.get("action_mask")
     global_reasons = []
+    if training.get("exploratory_only") is True:
+        global_reasons.append("Exploratory response-window profile cannot grant deployment admission")
     seeds = training.get("seed_reports", [])
     if not seeds:
         global_reasons.append("No candidate seed reports")

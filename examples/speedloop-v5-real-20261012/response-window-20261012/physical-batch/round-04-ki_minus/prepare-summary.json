@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "firmware_id": "g431-speedloop-pi-motion-v5",
+  "passed": true,
+  "hardware_accessed": true,
+  "motor_power_physically_disconnected": false,
+  "energized_preparation_exception": true,
+  "begin_sent": false,
+  "gains_sent": false,
+  "full_readback_sha256": "45ad8fcd5039822741d888cb54eaea909cfc55d3e13dc8da0cdfcfc98703cce5",
+  "energized_pre_reset_state": {
+    "tim1_ccer": 4096,
+    "tim1_bdtr": 33697912,
+    "gpioa_moder": 2861957119,
+    "gpiob_moder": 1471065791,
+    "gpioa_odr": 0,
+    "gpiob_odr": 0,
+    "device_id": 537093224
+  },
+  "startup_state": {
+    "tim1_ccer": 4096,
+    "tim1_bdtr": 33730680,
+    "gpioa_moder": 2861957119,
+    "gpiob_moder": 1471065791,
+    "gpioa_odr": 0,
+    "gpiob_odr": 0,
+    "device_id": 537093224,
+    "endpoint_ready": 1,
+    "initialized": 1,
+    "irq_fault": 0,
+    "adc_samples": 4963,
+    "motor_td3_g431_debugger_boot_token": 0,
+    "Motor_state": 0,
+    "ADC_offset": 1
+  },
+  "core_halted": true,
+  "boot_token_consumed": true,
+  "run_seconds": 0.5
+}

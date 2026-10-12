@@ -1,0 +1,9 @@
+{
+  "passed": true,
+  "python_can": "4.6.1",
+  "pyocd": "0.45.1",
+  "pcan_available": true,
+  "expected_stlink_present": true,
+  "can_initialized": false,
+  "motion_started": false
+}

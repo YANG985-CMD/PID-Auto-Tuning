@@ -1,0 +1,515 @@
+[
+  {
+    "run_index": 2,
+    "boot_id": "b8433e7112c3648c",
+    "source_command_seqs": [
+      39
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 3
+  },
+  {
+    "run_index": 4,
+    "boot_id": "98ee690221471a1a",
+    "source_command_seqs": [
+      39
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 3
+  },
+  {
+    "run_index": 4,
+    "boot_id": "98ee690221471a1a",
+    "source_command_seqs": [
+      42
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 3
+  },
+  {
+    "run_index": 6,
+    "boot_id": "0bfadd579a560747",
+    "source_command_seqs": [
+      39
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 3
+  },
+  {
+    "run_index": 6,
+    "boot_id": "0bfadd579a560747",
+    "source_command_seqs": [
+      42
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 3
+  },
+  {
+    "run_index": 8,
+    "boot_id": "3c8b20549a6f15bc",
+    "source_command_seqs": [
+      39
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 3
+  },
+  {
+    "run_index": 8,
+    "boot_id": "3c8b20549a6f15bc",
+    "source_command_seqs": [
+      42
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 3
+  },
+  {
+    "run_index": 9,
+    "boot_id": "50da879b21cb03b3",
+    "source_command_seqs": [
+      42
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 3
+  },
+  {
+    "run_index": 10,
+    "boot_id": "f12f46fef335f530",
+    "source_command_seqs": [
+      39
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 3
+  },
+  {
+    "run_index": 12,
+    "boot_id": "c158b397a61ac58b",
+    "source_command_seqs": [
+      39
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 3
+  },
+  {
+    "run_index": 12,
+    "boot_id": "c158b397a61ac58b",
+    "source_command_seqs": [
+      43
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 3
+  },
+  {
+    "run_index": 13,
+    "boot_id": "524388afbd4768fe",
+    "source_command_seqs": [
+      39
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 3
+  },
+  {
+    "run_index": 15,
+    "boot_id": "67f45fa8caca3daa",
+    "source_command_seqs": [
+      39
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 3
+  },
+  {
+    "run_index": 16,
+    "boot_id": "b4e76cf321fe9ecc",
+    "source_command_seqs": [
+      39
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 3
+  },
+  {
+    "run_index": 17,
+    "boot_id": "9337e77564d8c910",
+    "source_command_seqs": [
+      42
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 3
+  },
+  {
+    "run_index": 19,
+    "boot_id": "3529c0523e3ee540",
+    "source_command_seqs": [
+      44
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 1
+  },
+  {
+    "run_index": 19,
+    "boot_id": "3529c0523e3ee540",
+    "source_command_seqs": [
+      45
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 1
+  },
+  {
+    "run_index": 19,
+    "boot_id": "3529c0523e3ee540",
+    "source_command_seqs": [
+      46
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 2
+  },
+  {
+    "run_index": 19,
+    "boot_id": "3529c0523e3ee540",
+    "source_command_seqs": [
+      47
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 1
+  },
+  {
+    "run_index": 19,
+    "boot_id": "3529c0523e3ee540",
+    "source_command_seqs": [
+      48
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 1
+  },
+  {
+    "run_index": 19,
+    "boot_id": "3529c0523e3ee540",
+    "source_command_seqs": [
+      49
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 1
+  },
+  {
+    "run_index": 19,
+    "boot_id": "3529c0523e3ee540",
+    "source_command_seqs": [
+      50
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 1
+  },
+  {
+    "run_index": 19,
+    "boot_id": "3529c0523e3ee540",
+    "source_command_seqs": [
+      51
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 1
+  },
+  {
+    "run_index": 19,
+    "boot_id": "3529c0523e3ee540",
+    "source_command_seqs": [
+      52
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 1
+  },
+  {
+    "run_index": 21,
+    "boot_id": "7f84c253ddbef985",
+    "source_command_seqs": [
+      44
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 1
+  },
+  {
+    "run_index": 21,
+    "boot_id": "7f84c253ddbef985",
+    "source_command_seqs": [
+      45
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 1
+  },
+  {
+    "run_index": 21,
+    "boot_id": "7f84c253ddbef985",
+    "source_command_seqs": [
+      46
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 2
+  },
+  {
+    "run_index": 21,
+    "boot_id": "7f84c253ddbef985",
+    "source_command_seqs": [
+      47
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 1
+  },
+  {
+    "run_index": 21,
+    "boot_id": "7f84c253ddbef985",
+    "source_command_seqs": [
+      48
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 1
+  },
+  {
+    "run_index": 21,
+    "boot_id": "7f84c253ddbef985",
+    "source_command_seqs": [
+      49
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 1
+  },
+  {
+    "run_index": 21,
+    "boot_id": "7f84c253ddbef985",
+    "source_command_seqs": [
+      50
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 1
+  },
+  {
+    "run_index": 21,
+    "boot_id": "7f84c253ddbef985",
+    "source_command_seqs": [
+      51
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 1
+  },
+  {
+    "run_index": 21,
+    "boot_id": "7f84c253ddbef985",
+    "source_command_seqs": [
+      52
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 2
+  },
+  {
+    "run_index": 21,
+    "boot_id": "7f84c253ddbef985",
+    "source_command_seqs": [
+      53
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 3
+  },
+  {
+    "run_index": 23,
+    "boot_id": "030036e2d1150242",
+    "source_command_seqs": [
+      44
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 1
+  },
+  {
+    "run_index": 23,
+    "boot_id": "030036e2d1150242",
+    "source_command_seqs": [
+      45
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 1
+  },
+  {
+    "run_index": 23,
+    "boot_id": "030036e2d1150242",
+    "source_command_seqs": [
+      46
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 1
+  },
+  {
+    "run_index": 23,
+    "boot_id": "030036e2d1150242",
+    "source_command_seqs": [
+      47
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 1
+  },
+  {
+    "run_index": 23,
+    "boot_id": "030036e2d1150242",
+    "source_command_seqs": [
+      48
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 1
+  },
+  {
+    "run_index": 23,
+    "boot_id": "030036e2d1150242",
+    "source_command_seqs": [
+      49
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 1
+  },
+  {
+    "run_index": 23,
+    "boot_id": "030036e2d1150242",
+    "source_command_seqs": [
+      50
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 1
+  },
+  {
+    "run_index": 23,
+    "boot_id": "030036e2d1150242",
+    "source_command_seqs": [
+      51
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 1
+  },
+  {
+    "run_index": 23,
+    "boot_id": "030036e2d1150242",
+    "source_command_seqs": [
+      52
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 1
+  },
+  {
+    "run_index": 23,
+    "boot_id": "030036e2d1150242",
+    "source_command_seqs": [
+      53
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 1
+  },
+  {
+    "run_index": 25,
+    "boot_id": "8bd2ca9658004aaf",
+    "source_command_seqs": [
+      48
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 2
+  },
+  {
+    "run_index": 26,
+    "boot_id": "a521a14052fa67fe",
+    "source_command_seqs": [
+      48
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 2
+  },
+  {
+    "run_index": 26,
+    "boot_id": "a521a14052fa67fe",
+    "source_command_seqs": [
+      52
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 2
+  },
+  {
+    "run_index": 27,
+    "boot_id": "c0504d924e476996",
+    "source_command_seqs": [
+      48
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 2
+  },
+  {
+    "run_index": 27,
+    "boot_id": "c0504d924e476996",
+    "source_command_seqs": [
+      52
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 2
+  },
+  {
+    "run_index": 28,
+    "boot_id": "65949dd252654104",
+    "source_command_seqs": [
+      52
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 2
+  },
+  {
+    "run_index": 28,
+    "boot_id": "65949dd252654104",
+    "source_command_seqs": [
+      53
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 1
+  },
+  {
+    "run_index": 30,
+    "boot_id": "86d70051b86a179e",
+    "source_command_seqs": [
+      48
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 2
+  },
+  {
+    "run_index": 30,
+    "boot_id": "86d70051b86a179e",
+    "source_command_seqs": [
+      52
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 2
+  },
+  {
+    "run_index": 32,
+    "boot_id": "6c65d0eee89852c6",
+    "source_command_seqs": [
+      48
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 2
+  },
+  {
+    "run_index": 32,
+    "boot_id": "6c65d0eee89852c6",
+    "source_command_seqs": [
+      52
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 2
+  },
+  {
+    "run_index": 32,
+    "boot_id": "6c65d0eee89852c6",
+    "source_command_seqs": [
+      53
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 1
+  },
+  {
+    "run_index": 39,
+    "boot_id": "eed23ab6b124e9c7",
+    "source_command_seqs": [
+      54
+    ],
+    "reason": "Too short before gain change or end of proven stage",
+    "response_samples": 3
+  }
+]
