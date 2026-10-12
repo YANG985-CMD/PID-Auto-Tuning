@@ -1,9 +1,9 @@
-"""Prepare one motion-v4 identity, normally with motor power disconnected.
+"""Prepare one motion-v5 identity, normally with motor power disconnected.
 
 Does not flash or start the motor. Verifies the full image, resets with explicit
 SYSRESETREQ, stops at main AFTER C initialization, writes one unique token,
 observes phase-inhibited ADC startup, and leaves the core halted.
-The explicit energized exception is restricted to the exact reviewed v4 image
+The explicit energized exception is restricted to the exact reviewed v5 image
 and phase-pin inhibition verified before halt/reset; it cannot flash or BEGIN.
 """
 import argparse
@@ -16,7 +16,7 @@ import subprocess
 import time
 
 from speedloop_motion_handshake import IDENTITY,PHASE_MASK,REGS,RAM
-ENERGIZED_IMAGE_SHA='902b5dd09f9873a1143798852e55414102e131fa0ab16ad983e145cde0e45ef2'
+ENERGIZED_IMAGE_SHA='45ad8fcd5039822741d888cb54eaea909cfc55d3e13dc8da0cdfcfc98703cce5'
 
 
 def prepare(a):
@@ -108,5 +108,5 @@ if __name__=='__main__':
     p.add_argument('--uid',default='0674FF554850715087183841')
     p.add_argument('--power-disconnected-confirmed',action='store_true')
     p.add_argument('--energized-phase-inhibited-confirmed',action='store_true',
-                   help='Explicit operator exception; exact v4 image and six GPIO-low phases required')
+                   help='Explicit operator exception; exact v5 image and six GPIO-low phases required')
     args=p.parse_args();raise SystemExit(0 if prepare(args)['passed'] else 1)

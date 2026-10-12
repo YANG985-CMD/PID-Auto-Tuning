@@ -1,0 +1,12 @@
+{
+  "passed": true,
+  "architecture": "Cortex-M4 hard float",
+  "object_text_bytes": 2836,
+  "object_data_bytes": 0,
+  "object_bss_bytes": 0,
+  "includes_weights_in_text_section": true,
+  "hardware_accessed": false,
+  "firmware_linked": false,
+  "processor_in_loop_verified": false,
+  "motion_approved": false
+}

@@ -24,7 +24,7 @@ CAN_FILES=('motor_td3_speedloop_can.c','motor_td3_speedloop_can.h',
            'motor_td3_guard.c','motor_td3_guard.h','motor_td3_protocol.h',
            'motor_td3_g431_adapter.c','motor_td3_g431_adapter.h','motor_td3_g431_off.h')
 CAN_BUILD_ID='g431-speedloop-pi-can-review-v1'
-MOTION_BUILD_ID='g431-speedloop-pi-motion-v4'
+MOTION_BUILD_ID='g431-speedloop-pi-motion-v5'
 
 
 def patch_copy(copy,can_pi=False,motion=False):
@@ -357,6 +357,7 @@ def build(a):
         source_unchanged=True,reference_profile=profile,phase_start_calls_removed=True,
         idle_sampling_requires_moe=bool(a.motion_can),
         idle_phase_pins_gpio_low=bool(a.motion_can),
+        hall_trace_capacity=512 if a.motion_can else 0,
         hardware_accessed=False,flash_programmed=False,motion_capable=bool(a.motion_can),motion_approved=False,
         transport_gain_commands_connected=bool(connected),board_can_hal_connected=bool(a.can_pi),
         connected_can_model_checks=connected,td3_actor_connected=False,

@@ -1,4 +1,4 @@
-"""One 3 s, 1000 rpm physical PI trial on the exact reviewed motion-v4 image.
+"""One 3 s, 1000 rpm physical PI trial on the exact reviewed motion-v5 image.
 
 Explicit experiment exception: no measured temperature channel. Does not change
 the normal training gates. No Actor, gradient updates, random exploration or flash.
@@ -21,7 +21,11 @@ from speedloop_motion_prepare import ENERGIZED_IMAGE_SHA
 from speedloop_board_stop import inhibit
 
 BASE_KP, BASE_KI = .003389, .00144
-STOP_SECONDS = 2.85
+STOP_SECONDS = 2.80
+GAIN_CUTOFF_SECONDS = 2.70
+FINAL_GAIN_SECONDS = 2.72
+FINAL_GAIN_DEADLINE_SECONDS = 2.75
+GAIN_INTERVAL_SECONDS = .050
 
 
 def f32(value):
@@ -30,7 +34,24 @@ def f32(value):
 
 def planned_gains(elapsed_ms):
     # A small deterministic local probe, well inside the existing step limit.
-    return f32(BASE_KP * (1.04 if 2400 <= elapsed_ms < 2700 else 1)), f32(BASE_KI)
+    return f32(BASE_KP * (1.04 if 2400 <= elapsed_ms < 2600 else 1)), f32(BASE_KI)
+
+
+def gain_due(now, begin_at, next_gain, stop_at):
+    return (begin_at is not None and stop_at is None and next_gain is not None and
+            now >= next_gain and now-begin_at < GAIN_CUTOFF_SECONDS)
+
+
+def final_gain_due(now, begin_at, stop_at, already_sent):
+    return (begin_at is not None and stop_at is None and not already_sent and
+            now-begin_at >= FINAL_GAIN_SECONDS)
+
+
+def acknowledgement_ready(actual, expected, now, due):
+    if actual==expected: return True
+    if now-due>=.025:
+        raise RuntimeError('Actual action acknowledgement exceeded its decision deadline')
+    return False
 
 
 def check_telemetry(obj, last, sent):
@@ -77,7 +98,7 @@ def trial(a):
     summary = json.loads((build/'summary.json').read_text(encoding='utf-8'))
     if (summary['build_id'] != IDENTITY or not summary['passed'] or
             summary['bin_sha256'] != ENERGIZED_IMAGE_SHA):
-        raise ValueError('Only the exact reviewed motion-v4 image is accepted')
+        raise ValueError('Only the exact reviewed motion-v5 image is accepted')
     nm = subprocess.run([a.nm, '--defined-only', str(build/'speedloop-pi-review.elf')],
                         capture_output=True, text=True, check=True)
     symbols = {s[2]: int(s[0], 16) for line in nm.stdout.splitlines()
@@ -91,12 +112,16 @@ def trial(a):
                   current_conversion_independently_calibrated=False,
                   independent_cpu_stall_watchdog_integrated=False,
                   speed_ref_rpm=1000, maximum_motion_seconds=3, host_stop_seconds=STOP_SECONDS)
+    result['gain_interval_ms'] = GAIN_INTERVAL_SECONDS*1000
+    result['host_clock'] = 'QueryPerformanceCounter via perf_counter'
+    result['host_script_sha256'] = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
     telemetry, commands, sent = [], [], {}
     link = None
     verified = False
     wire_seq, transfer, action_seq = 0, 0, 0
     hello = None
     begin_at = stop_at = next_gain = None
+    final_gain_sent = False
     session = ConnectHelper.session_with_chosen_probe(unique_id=a.uid, target_override='cortex_m',
         connect_mode='attach', frequency=1000000, no_config=True,
         options={'resume_on_disconnect': False,'cache.enable_memory':False,'cache.enable_register':False}, blocking=False)
@@ -110,7 +135,7 @@ def trial(a):
             transfer = (transfer + 1) % 256
             expires = source['t_us'] + 100000 if obj['type'] in ('begin', 'gains') else 0
             record = dict(obj, wire_seq=wire_seq, source_t_us=source['t_us'] if source else None,
-                          expires_us=expires, host_monotonic=time.monotonic())
+                          expires_us=expires, host_monotonic=time.perf_counter())
             if obj['type'] == 'gains': sent[obj['command_seq']] = record
             commands.append(record)
             packet = wire.pack(obj, nonce, 0 if obj['type'] == 'hello' else boot, wire_seq, expires)
@@ -141,24 +166,33 @@ def trial(a):
             rx = wire.Reassembler(allow_missing_temperature=True)
             target.resume()
             send(dict(type='hello', profile_id=IDENTITY))
-            due = time.monotonic() + 5
-            while time.monotonic() < due:
-                now = time.monotonic()
+            due = time.perf_counter() + 5
+            while time.perf_counter() < due:
+                now = time.perf_counter()
                 if begin_at and not stop_at and now-begin_at >= STOP_SECONDS:
-                    send(dict(type='stop')); stop_at = time.monotonic()
-                if begin_at and not stop_at and next_gain is not None and now >= next_gain:
+                    send(dict(type='stop')); stop_at = time.perf_counter()
+                final_due = final_gain_due(now, begin_at, stop_at, final_gain_sent)
+                if final_due and telemetry and telemetry[-1]['applied_seq'] != action_seq:
+                    if now-begin_at >= FINAL_GAIN_DEADLINE_SECONDS:
+                        raise RuntimeError('Last action acknowledgement missed final heartbeat deadline')
+                    final_due = False
+                regular_due = gain_due(now, begin_at, next_gain, stop_at)
+                if regular_due:
+                    regular_due = acknowledgement_ready(telemetry[-1]['applied_seq'],action_seq,now,next_gain)
+                if regular_due or final_due:
                     last = telemetry[-1]
                     if not last['enabled'] or now-begin_at > .15 and last['applied_seq'] != action_seq:
                         raise RuntimeError('No fresh actual action acknowledgement')
-                    if time.monotonic()-last['host_received_monotonic'] >= .045:
+                    if time.perf_counter()-last['host_received_monotonic'] >= .045:
                         raise RuntimeError('Telemetry stale; no gain refresh')
-                    kp, ki = planned_gains(last['elapsed_ms'])
+                    kp, ki = (f32(BASE_KP),f32(BASE_KI)) if final_due else planned_gains(last['elapsed_ms'])
                     action_seq += 1
                     send(dict(type='gains', command_seq=action_seq, kp=kp, ki=ki, lease_ms=200), last)
-                    next_gain = now + .06
+                    next_gain = now + GAIN_INTERVAL_SECONDS
+                    if final_due: final_gain_sent = True
                 frame = link.receive()
                 if frame is None: continue
-                packet = rx.feed(frame, time.monotonic())
+                packet = rx.feed(frame, time.perf_counter())
                 if packet is None: continue
                 obj, meta = wire.unpack(packet, allow_missing_temperature=True)
                 if meta['nonce'] != nonce or meta['boot'] != boot:
@@ -175,18 +209,18 @@ def trial(a):
                     except Exception:
                         result['rejected_telemetry'] = obj
                         raise
-                    obj['host_received_monotonic'] = time.monotonic()
+                    obj['host_received_monotonic'] = time.perf_counter()
                     telemetry.append(obj)
                     if begin_at is None:
                         if obj['enabled']: raise RuntimeError('Unexpected pre-BEGIN motion')
                         send(dict(type='begin', profile_id=IDENTITY, speed_ref=1000, lease_ms=200), obj)
-                        begin_at = time.monotonic(); result['motion_command_sent'] = True
+                        begin_at = time.perf_counter(); result['motion_command_sent'] = True
                     elif obj['enabled'] and next_gain is None:
-                        next_gain = time.monotonic()
-                    elif stop_at and not obj['enabled'] and time.monotonic()-stop_at >= .1:
+                        next_gain = time.perf_counter()
+                    elif stop_at and not obj['enabled'] and time.perf_counter()-stop_at >= .1:
                         result['protocol_stop_acknowledged'] = True
                         break
-                    elif not obj['enabled'] and not stop_at and time.monotonic()-begin_at > .1:
+                    elif not obj['enabled'] and not stop_at and time.perf_counter()-begin_at > .1:
                         raise RuntimeError('Motion stopped before planned STOP')
                 else: raise RuntimeError('Unexpected response')
             active = [t for t in telemetry if t['enabled']]
@@ -216,12 +250,14 @@ def trial(a):
                     result['final_tx_fault'] = target.read32(symbols['motor_td3_g431_tx_fault'])
                     count = target.read32(symbols['motor_td3_g431_hall_edge_count'])
                     records = []
-                    for index in range(max(0, count-32), count):
-                        raw = bytes(target.read_memory_block8(symbols['motor_td3_g431_hall_edges']+(index%32)*24,24))
+                    capacity = summary['hall_trace_capacity']
+                    if capacity != 512: raise RuntimeError('Unexpected Hall trace capacity')
+                    for index in range(max(0, count-capacity), count):
+                        raw = bytes(target.read_memory_block8(symbols['motor_td3_g431_hall_edges']+(index%capacity)*24,24))
                         timestamp, ticks, period, rpm, code, previous, stage, valid = struct.unpack('<QIIf4B',raw)
                         records.append(dict(edge=index+1,t_us=timestamp,raw_timer_ticks=ticks,period_us=period,
                                             rpm=rpm,hall_code=code,previous_code=previous,model_stage=stage,valid=bool(valid)))
-                    (output/'hall-edges.json').write_text(json.dumps(dict(total_edges=count,records=records),indent=2)+'\n',encoding='utf-8')
+                    (output/'hall-edges.json').write_text(json.dumps(dict(total_edges=count,capacity=capacity,records=records),indent=2)+'\n',encoding='utf-8')
                 except Exception as exc:
                     result['passed'] = False; result['shutdown_error'] = str(exc)
             if link:

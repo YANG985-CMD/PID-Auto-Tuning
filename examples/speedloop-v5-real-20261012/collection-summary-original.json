@@ -1,0 +1,224 @@
+{
+  "schema_version": 1,
+  "started_utc": "2026-10-12T03:00:48.574013+00:00",
+  "passed": true,
+  "hardware_accessed": true,
+  "authorized_rounds": 16,
+  "authorized_maximum_motion_seconds": 48,
+  "reserved_motion_seconds": 48,
+  "cooldown_seconds": 30,
+  "trials": [
+    {
+      "index": 1,
+      "run_dir": "E:\\simulink\\_codex_tmp\\speedloop-v5-batch-20261012\\trial-01\\run",
+      "hall_preflight": {
+        "stable_code": 4,
+        "samples": 28,
+        "observation_seconds": 0.5,
+        "note": "Stable Hall code check; not an independent zero-speed measurement"
+      },
+      "complete_telemetry_packets": 149,
+      "actual_gain_commands": 44,
+      "nominal_peak_current_a": 1.07666015625
+    },
+    {
+      "index": 2,
+      "run_dir": "E:\\simulink\\_codex_tmp\\speedloop-v5-batch-20261012\\trial-02\\run",
+      "hall_preflight": {
+        "stable_code": 5,
+        "samples": 27,
+        "observation_seconds": 0.5,
+        "note": "Stable Hall code check; not an independent zero-speed measurement"
+      },
+      "complete_telemetry_packets": 149,
+      "actual_gain_commands": 44,
+      "nominal_peak_current_a": 1.0546875
+    },
+    {
+      "index": 3,
+      "run_dir": "E:\\simulink\\_codex_tmp\\speedloop-v5-batch-20261012\\trial-03\\run",
+      "hall_preflight": {
+        "stable_code": 6,
+        "samples": 28,
+        "observation_seconds": 0.5,
+        "note": "Stable Hall code check; not an independent zero-speed measurement"
+      },
+      "complete_telemetry_packets": 148,
+      "actual_gain_commands": 44,
+      "nominal_peak_current_a": 1.0546875
+    },
+    {
+      "index": 4,
+      "run_dir": "E:\\simulink\\_codex_tmp\\speedloop-v5-batch-20261012\\trial-04\\run",
+      "hall_preflight": {
+        "stable_code": 4,
+        "samples": 28,
+        "observation_seconds": 0.5,
+        "note": "Stable Hall code check; not an independent zero-speed measurement"
+      },
+      "complete_telemetry_packets": 148,
+      "actual_gain_commands": 44,
+      "nominal_peak_current_a": 1.0546875
+    },
+    {
+      "index": 5,
+      "run_dir": "E:\\simulink\\_codex_tmp\\speedloop-v5-batch-20261012\\trial-05\\run",
+      "hall_preflight": {
+        "stable_code": 5,
+        "samples": 28,
+        "observation_seconds": 0.5,
+        "note": "Stable Hall code check; not an independent zero-speed measurement"
+      },
+      "complete_telemetry_packets": 148,
+      "actual_gain_commands": 44,
+      "nominal_peak_current_a": 1.0107421875
+    },
+    {
+      "index": 6,
+      "run_dir": "E:\\simulink\\_codex_tmp\\speedloop-v5-batch-20261012\\trial-06\\run",
+      "hall_preflight": {
+        "stable_code": 1,
+        "samples": 28,
+        "observation_seconds": 0.5,
+        "note": "Stable Hall code check; not an independent zero-speed measurement"
+      },
+      "complete_telemetry_packets": 148,
+      "actual_gain_commands": 44,
+      "nominal_peak_current_a": 1.07666015625
+    },
+    {
+      "index": 7,
+      "run_dir": "E:\\simulink\\_codex_tmp\\speedloop-v5-batch-20261012\\trial-07\\run",
+      "hall_preflight": {
+        "stable_code": 4,
+        "samples": 28,
+        "observation_seconds": 0.5,
+        "note": "Stable Hall code check; not an independent zero-speed measurement"
+      },
+      "complete_telemetry_packets": 149,
+      "actual_gain_commands": 44,
+      "nominal_peak_current_a": 1.0546875
+    },
+    {
+      "index": 8,
+      "run_dir": "E:\\simulink\\_codex_tmp\\speedloop-v5-batch-20261012\\trial-08\\run",
+      "hall_preflight": {
+        "stable_code": 4,
+        "samples": 28,
+        "observation_seconds": 0.5,
+        "note": "Stable Hall code check; not an independent zero-speed measurement"
+      },
+      "complete_telemetry_packets": 148,
+      "actual_gain_commands": 44,
+      "nominal_peak_current_a": 1.07666015625
+    },
+    {
+      "index": 9,
+      "run_dir": "E:\\simulink\\_codex_tmp\\speedloop-v5-batch-20261012\\trial-09\\run",
+      "hall_preflight": {
+        "stable_code": 4,
+        "samples": 27,
+        "observation_seconds": 0.5,
+        "note": "Stable Hall code check; not an independent zero-speed measurement"
+      },
+      "complete_telemetry_packets": 148,
+      "actual_gain_commands": 44,
+      "nominal_peak_current_a": 1.0546875
+    },
+    {
+      "index": 10,
+      "run_dir": "E:\\simulink\\_codex_tmp\\speedloop-v5-batch-20261012\\trial-10\\run",
+      "hall_preflight": {
+        "stable_code": 4,
+        "samples": 28,
+        "observation_seconds": 0.5,
+        "note": "Stable Hall code check; not an independent zero-speed measurement"
+      },
+      "complete_telemetry_packets": 148,
+      "actual_gain_commands": 44,
+      "nominal_peak_current_a": 1.03271484375
+    },
+    {
+      "index": 11,
+      "run_dir": "E:\\simulink\\_codex_tmp\\speedloop-v5-batch-20261012\\trial-11\\run",
+      "hall_preflight": {
+        "stable_code": 1,
+        "samples": 28,
+        "observation_seconds": 0.5,
+        "note": "Stable Hall code check; not an independent zero-speed measurement"
+      },
+      "complete_telemetry_packets": 149,
+      "actual_gain_commands": 44,
+      "nominal_peak_current_a": 1.0546875
+    },
+    {
+      "index": 12,
+      "run_dir": "E:\\simulink\\_codex_tmp\\speedloop-v5-batch-20261012\\trial-12\\run",
+      "hall_preflight": {
+        "stable_code": 5,
+        "samples": 28,
+        "observation_seconds": 0.5,
+        "note": "Stable Hall code check; not an independent zero-speed measurement"
+      },
+      "complete_telemetry_packets": 148,
+      "actual_gain_commands": 44,
+      "nominal_peak_current_a": 1.0546875
+    },
+    {
+      "index": 13,
+      "run_dir": "E:\\simulink\\_codex_tmp\\speedloop-v5-batch-20261012\\trial-13\\run",
+      "hall_preflight": {
+        "stable_code": 5,
+        "samples": 28,
+        "observation_seconds": 0.5,
+        "note": "Stable Hall code check; not an independent zero-speed measurement"
+      },
+      "complete_telemetry_packets": 148,
+      "actual_gain_commands": 44,
+      "nominal_peak_current_a": 1.0546875
+    },
+    {
+      "index": 14,
+      "run_dir": "E:\\simulink\\_codex_tmp\\speedloop-v5-batch-20261012\\trial-14\\run",
+      "hall_preflight": {
+        "stable_code": 6,
+        "samples": 28,
+        "observation_seconds": 0.5,
+        "note": "Stable Hall code check; not an independent zero-speed measurement"
+      },
+      "complete_telemetry_packets": 148,
+      "actual_gain_commands": 44,
+      "nominal_peak_current_a": 1.0546875
+    },
+    {
+      "index": 15,
+      "run_dir": "E:\\simulink\\_codex_tmp\\speedloop-v5-batch-20261012\\trial-15\\run",
+      "hall_preflight": {
+        "stable_code": 1,
+        "samples": 28,
+        "observation_seconds": 0.5,
+        "note": "Stable Hall code check; not an independent zero-speed measurement"
+      },
+      "complete_telemetry_packets": 149,
+      "actual_gain_commands": 44,
+      "nominal_peak_current_a": 1.0546875
+    },
+    {
+      "index": 16,
+      "run_dir": "E:\\simulink\\_codex_tmp\\speedloop-v5-batch-20261012\\trial-16\\run",
+      "hall_preflight": {
+        "stable_code": 4,
+        "samples": 27,
+        "observation_seconds": 0.5,
+        "note": "Stable Hall code check; not an independent zero-speed measurement"
+      },
+      "complete_telemetry_packets": 149,
+      "actual_gain_commands": 44,
+      "nominal_peak_current_a": 1.0546875
+    }
+  ],
+  "fixed_behavior": true,
+  "td3_training_performed": false,
+  "actor_deployed": false,
+  "thermal_exception": "user-approved bounded dataset collection only; normal gates unchanged"
+}

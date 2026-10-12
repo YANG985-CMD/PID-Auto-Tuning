@@ -1,0 +1,9 @@
+{
+  "source": "real_motor",
+  "epoch_index": 1,
+  "epoch_steps": 20,
+  "total_steps": 20,
+  "q_value": -0.01422414556145668,
+  "q_value_is_motor_performance_score": false,
+  "hardware_candidate_applied": false
+}

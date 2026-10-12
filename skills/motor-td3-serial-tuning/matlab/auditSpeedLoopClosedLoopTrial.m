@@ -7,7 +7,7 @@ arguments
 end
 if ~isfolder(outputDir), mkdir(outputDir); end
 run = jsondecode(fileread(fullfile(runDir,"summary.json")));
-assert(run.passed && string(run.firmware_id)=="g431-speedloop-pi-motion-v4");
+assert(run.passed && any(string(run.firmware_id)==["g431-speedloop-pi-motion-v4","g431-speedloop-pi-motion-v5"]));
 data = readJSONLines(fullfile(runDir,"telemetry.jsonl"));
 commands = readJSONLines(fullfile(runDir,"commands.jsonl"));
 ring = jsondecode(fileread(fullfile(runDir,"hall-edges.json")));
@@ -44,16 +44,28 @@ end
 assert(all(diff(active.applied_seq)>=0));
 edges = ring.records;
 assert(~isempty(edges) && all([edges.valid]) && all(diff([edges.t_us])>0));
-% Check raw periods and the vendor forward Hall sector order independently.
+% Check raw periods and signed adjacent vendor Hall sectors independently.
 order = [5 4 6 2 3 1];
 for i = 1:numel(edges)
-    e = edges(i); previous = find(order==e.previous_code,1);
-    assert(~isempty(previous) && order(mod(previous,6)+1)==e.hall_code);
-    assert(e.period_us>0 && abs(e.rpm-5000000/e.period_us)<.001);
+    e = edges(i);
+    if e.edge==1 && e.period_us==0
+        assert(e.previous_code==0 && e.rpm==0 && any(order==e.hall_code));
+        continue; % First edge establishes position, not a known period.
+    end
+    previous = find(order==e.previous_code,1);
+    current = find(order==e.hall_code,1);
+    assert(~isempty(previous) && ~isempty(current));
+    direction = mod(current-previous,6);
+    assert(direction==1 || direction==5);
+    signed = 1; if direction==5, signed=-1; end
+    assert(e.period_us>0 && abs(e.rpm-signed*5000000/e.period_us)<.001);
     if i>1, assert(e.period_us==e.t_us-edges(i-1).t_us); end
 end
-assert(all([edges.model_stage]==4),"Retained edge window does not prove continuous RunStage");
-proofStart = edges(1).t_us; proofEnd = edges(end).t_us;
+runIndex = find([edges.model_stage]==4,1);
+assert(~isempty(runIndex) && all([edges(runIndex:end).model_stage]==4), ...
+    "Retained edge window does not prove continuous RunStage");
+runEdges = edges(runIndex:end);
+proofStart = runEdges(1).t_us; proofEnd = runEdges(end).t_us;
 proven = active(active.t_us>=proofStart & active.t_us<=proofEnd,:);
 planned = active(active.elapsed_ms>=2200,:);
 assert(~isempty(proven));
@@ -121,7 +133,9 @@ report = struct(schema_version=1,passed=true,source="real_motor",simulation_only
     sampled_peak_speed_rpm=max(abs(active.speed)),nominal_peak_current_a=max(active.current), ...
     all_telemetry_faults_zero=true,stop_and_physical_shutdown_verified=true, ...
     retained_hall_edges=numel(edges),total_hall_edges=ring.total_edges, ...
-    retained_hall_stage=4,raw_hall_rpm_range=[min([edges.rpm]),max([edges.rpm])], ...
+    retained_hall_stage_values=unique([edges.model_stage]), ...
+    retained_run_stage_edges=numel(runEdges), ...
+    raw_hall_rpm_range=[min([runEdges.rpm]),max([runEdges.rpm])], ...
     raw_stage_proof_t_us=[proofStart,proofEnd],raw_stage_confirmed_snapshots=height(proven), ...
     raw_stage_window_rmse_rpm=sqrt(mean((proven.speed-proven.speed_ref).^2)), ...
     expected_post_start_snapshots=height(planned), ...
@@ -132,12 +146,13 @@ report = struct(schema_version=1,passed=true,source="real_motor",simulation_only
     eligible_td3_experiences=0,replay_warmup_required=128, ...
     td3_training_performed=false,actor_deployed=false, ...
     state_fields=stateNames,state_scale=scales,temperature_c=NaN, ...
+    error_history_semantics="Error from the last completed 1ms PI boundary (pi_link.previous_error)", ...
     current_conversion_independently_calibrated=false, ...
     interpretation="One startup/probe/return trace proves application, not candidate improvement or four-method comparison", ...
-    training_hold_reason="Too few independent closed-loop action windows; stage evidence retained only at end; normal live safety admission remains unchanged");
+    training_hold_reason="Too few closed-loop action windows; ordinary live safety admission remains unchanged");
 writetable(T,fullfile(outputDir,"telemetry.csv"));
 writeJSON(fullfile(outputDir,"analysis.json"),report);
-fig = figure(Name="SpeedLoop v4 real motor audit",Color="w",Visible="off");
+fig = figure(Name="SpeedLoop real motor audit",Color="w",Visible="off");
 layout = tiledlayout(fig,4,1,TileSpacing="compact");
 nexttile(layout); plot(active.elapsed_ms/1000,active.speed,LineWidth=1.2);
 yline(1000,"--");yline(1800,":");xline(2.2,":");ylabel("Hall rpm");grid on;
@@ -146,9 +161,9 @@ nexttile(layout);stairs(active.elapsed_ms/1000,active.kp/.003389,LineWidth=1.2);
 ylabel("Kp / baseline");grid on;
 nexttile(layout);plot(active.elapsed_ms/1000,active.current,LineWidth=1.2);
 ylabel("Nominal current (A)");grid on;
-nexttile(layout);plot(([edges.t_us]-active.t_us(1))/1e6+active.elapsed_ms(1)/1000, ...
-    [edges.rpm],"o-",LineWidth=1.1);yline(1000,"--");ylabel("Raw Hall rpm");
-xlabel("Time since BEGIN (s)");grid on;title("Retained raw Hall edges: all model stage 4 (RunStage)");
+nexttile(layout);plot(([runEdges.t_us]-active.t_us(1))/1e6+active.elapsed_ms(1)/1000, ...
+    [runEdges.rpm],"o-",LineWidth=1.1);yline(1000,"--");ylabel("Raw Hall rpm");
+xlabel("Time since BEGIN (s)");grid on;title("Raw Hall edges with model stage 4 (RunStage)");
 exportgraphics(fig,fullfile(outputDir,"closed-loop-audit.png"),Resolution=180);
 close(fig);
 end

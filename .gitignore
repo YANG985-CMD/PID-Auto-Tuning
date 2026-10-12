@@ -12,6 +12,9 @@ venv/
 !examples/speedloop-v4-real-20261012/telemetry.jsonl
 !examples/speedloop-v4-real-20261012/commands.jsonl
 !examples/speedloop-v4-real-20261012/experience-candidates.jsonl
+!examples/speedloop-v5-real-20261012/*.jsonl
+!examples/speedloop-v5-real-20261012/trials/*/*.jsonl
+!examples/speedloop-v5-real-20261012/failures/*/*.jsonl
 checkpoints/
 runs/
 bridge-token.txt

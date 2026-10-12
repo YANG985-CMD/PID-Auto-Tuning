@@ -1,0 +1,47 @@
+{"type": "hello", "profile_id": "g431-speedloop-pi-motion-v5", "wire_seq": 0, "source_t_us": null, "expires_us": 0, "host_monotonic": 6931.765}
+{"type": "begin", "profile_id": "g431-speedloop-pi-motion-v5", "speed_ref": 1000, "lease_ms": 200, "wire_seq": 1, "source_t_us": 530719, "expires_us": 630719, "host_monotonic": 6931.796}
+{"type": "gains", "command_seq": 1, "kp": 0.0033889999613165855, "ki": 0.0014400000218302011, "lease_ms": 200, "wire_seq": 2, "source_t_us": 570709, "expires_us": 670709, "host_monotonic": 6931.843}
+{"type": "gains", "command_seq": 2, "kp": 0.0033889999613165855, "ki": 0.0014400000218302011, "lease_ms": 200, "wire_seq": 3, "source_t_us": 610705, "expires_us": 710705, "host_monotonic": 6931.906}
+{"type": "gains", "command_seq": 3, "kp": 0.0033889999613165855, "ki": 0.0014400000218302011, "lease_ms": 200, "wire_seq": 4, "source_t_us": 670698, "expires_us": 770698, "host_monotonic": 6931.968}
+{"type": "gains", "command_seq": 4, "kp": 0.0033889999613165855, "ki": 0.0014400000218302011, "lease_ms": 200, "wire_seq": 5, "source_t_us": 730690, "expires_us": 830690, "host_monotonic": 6932.031}
+{"type": "gains", "command_seq": 5, "kp": 0.0033889999613165855, "ki": 0.0014400000218302011, "lease_ms": 200, "wire_seq": 6, "source_t_us": 810780, "expires_us": 910780, "host_monotonic": 6932.093}
+{"type": "gains", "command_seq": 6, "kp": 0.0033889999613165855, "ki": 0.0014400000218302011, "lease_ms": 200, "wire_seq": 7, "source_t_us": 870873, "expires_us": 970873, "host_monotonic": 6932.156}
+{"type": "gains", "command_seq": 7, "kp": 0.0033889999613165855, "ki": 0.0014400000218302011, "lease_ms": 200, "wire_seq": 8, "source_t_us": 930865, "expires_us": 1030865, "host_monotonic": 6932.218}
+{"type": "gains", "command_seq": 8, "kp": 0.0033889999613165855, "ki": 0.0014400000218302011, "lease_ms": 200, "wire_seq": 9, "source_t_us": 990858, "expires_us": 1090858, "host_monotonic": 6932.281}
+{"type": "gains", "command_seq": 9, "kp": 0.0033889999613165855, "ki": 0.0014400000218302011, "lease_ms": 200, "wire_seq": 10, "source_t_us": 1050850, "expires_us": 1150850, "host_monotonic": 6932.343}
+{"type": "gains", "command_seq": 10, "kp": 0.0033889999613165855, "ki": 0.0014400000218302011, "lease_ms": 200, "wire_seq": 11, "source_t_us": 1110843, "expires_us": 1210843, "host_monotonic": 6932.406}
+{"type": "gains", "command_seq": 11, "kp": 0.0033889999613165855, "ki": 0.0014400000218302011, "lease_ms": 200, "wire_seq": 12, "source_t_us": 1170835, "expires_us": 1270835, "host_monotonic": 6932.468}
+{"type": "gains", "command_seq": 12, "kp": 0.0033889999613165855, "ki": 0.0014400000218302011, "lease_ms": 200, "wire_seq": 13, "source_t_us": 1230828, "expires_us": 1330828, "host_monotonic": 6932.531}
+{"type": "gains", "command_seq": 13, "kp": 0.0033889999613165855, "ki": 0.0014400000218302011, "lease_ms": 200, "wire_seq": 14, "source_t_us": 1310818, "expires_us": 1410818, "host_monotonic": 6932.593}
+{"type": "gains", "command_seq": 14, "kp": 0.0033889999613165855, "ki": 0.0014400000218302011, "lease_ms": 200, "wire_seq": 15, "source_t_us": 1370810, "expires_us": 1470810, "host_monotonic": 6932.656}
+{"type": "gains", "command_seq": 15, "kp": 0.0033889999613165855, "ki": 0.0014400000218302011, "lease_ms": 200, "wire_seq": 16, "source_t_us": 1430803, "expires_us": 1530803, "host_monotonic": 6932.718}
+{"type": "gains", "command_seq": 16, "kp": 0.0033889999613165855, "ki": 0.0014400000218302011, "lease_ms": 200, "wire_seq": 17, "source_t_us": 1490795, "expires_us": 1590795, "host_monotonic": 6932.781}
+{"type": "gains", "command_seq": 17, "kp": 0.0033889999613165855, "ki": 0.0014400000218302011, "lease_ms": 200, "wire_seq": 18, "source_t_us": 1550787, "expires_us": 1650787, "host_monotonic": 6932.843}
+{"type": "gains", "command_seq": 18, "kp": 0.0033889999613165855, "ki": 0.0014400000218302011, "lease_ms": 200, "wire_seq": 19, "source_t_us": 1610780, "expires_us": 1710780, "host_monotonic": 6932.906}
+{"type": "gains", "command_seq": 19, "kp": 0.0033889999613165855, "ki": 0.0014400000218302011, "lease_ms": 200, "wire_seq": 20, "source_t_us": 1670773, "expires_us": 1770773, "host_monotonic": 6932.968}
+{"type": "gains", "command_seq": 20, "kp": 0.0033889999613165855, "ki": 0.0014400000218302011, "lease_ms": 200, "wire_seq": 21, "source_t_us": 1730765, "expires_us": 1830765, "host_monotonic": 6933.031}
+{"type": "gains", "command_seq": 21, "kp": 0.0033889999613165855, "ki": 0.0014400000218302011, "lease_ms": 200, "wire_seq": 22, "source_t_us": 1810755, "expires_us": 1910755, "host_monotonic": 6933.093}
+{"type": "gains", "command_seq": 22, "kp": 0.0033889999613165855, "ki": 0.0014400000218302011, "lease_ms": 200, "wire_seq": 23, "source_t_us": 1870848, "expires_us": 1970848, "host_monotonic": 6933.156}
+{"type": "gains", "command_seq": 23, "kp": 0.0033889999613165855, "ki": 0.0014400000218302011, "lease_ms": 200, "wire_seq": 24, "source_t_us": 1930840, "expires_us": 2030840, "host_monotonic": 6933.218}
+{"type": "gains", "command_seq": 24, "kp": 0.0033889999613165855, "ki": 0.0014400000218302011, "lease_ms": 200, "wire_seq": 25, "source_t_us": 1990833, "expires_us": 2090833, "host_monotonic": 6933.281}
+{"type": "gains", "command_seq": 25, "kp": 0.0033889999613165855, "ki": 0.0014400000218302011, "lease_ms": 200, "wire_seq": 26, "source_t_us": 2050825, "expires_us": 2150825, "host_monotonic": 6933.343}
+{"type": "gains", "command_seq": 26, "kp": 0.0033889999613165855, "ki": 0.0014400000218302011, "lease_ms": 200, "wire_seq": 27, "source_t_us": 2110818, "expires_us": 2210818, "host_monotonic": 6933.406}
+{"type": "gains", "command_seq": 27, "kp": 0.0033889999613165855, "ki": 0.0014400000218302011, "lease_ms": 200, "wire_seq": 28, "source_t_us": 2170810, "expires_us": 2270810, "host_monotonic": 6933.468}
+{"type": "gains", "command_seq": 28, "kp": 0.0033889999613165855, "ki": 0.0014400000218302011, "lease_ms": 200, "wire_seq": 29, "source_t_us": 2230802, "expires_us": 2330802, "host_monotonic": 6933.531}
+{"type": "gains", "command_seq": 29, "kp": 0.0033889999613165855, "ki": 0.0014400000218302011, "lease_ms": 200, "wire_seq": 30, "source_t_us": 2310792, "expires_us": 2410792, "host_monotonic": 6933.593}
+{"type": "gains", "command_seq": 30, "kp": 0.0033889999613165855, "ki": 0.0014400000218302011, "lease_ms": 200, "wire_seq": 31, "source_t_us": 2370785, "expires_us": 2470785, "host_monotonic": 6933.656}
+{"type": "gains", "command_seq": 31, "kp": 0.0033889999613165855, "ki": 0.0014400000218302011, "lease_ms": 200, "wire_seq": 32, "source_t_us": 2430777, "expires_us": 2530777, "host_monotonic": 6933.718}
+{"type": "gains", "command_seq": 32, "kp": 0.0033889999613165855, "ki": 0.0014400000218302011, "lease_ms": 200, "wire_seq": 33, "source_t_us": 2490770, "expires_us": 2590770, "host_monotonic": 6933.781}
+{"type": "gains", "command_seq": 33, "kp": 0.0033889999613165855, "ki": 0.0014400000218302011, "lease_ms": 200, "wire_seq": 34, "source_t_us": 2550763, "expires_us": 2650763, "host_monotonic": 6933.843}
+{"type": "gains", "command_seq": 34, "kp": 0.0033889999613165855, "ki": 0.0014400000218302011, "lease_ms": 200, "wire_seq": 35, "source_t_us": 2610855, "expires_us": 2710855, "host_monotonic": 6933.906}
+{"type": "gains", "command_seq": 35, "kp": 0.0033889999613165855, "ki": 0.0014400000218302011, "lease_ms": 200, "wire_seq": 36, "source_t_us": 2670848, "expires_us": 2770848, "host_monotonic": 6933.968}
+{"type": "gains", "command_seq": 36, "kp": 0.0033889999613165855, "ki": 0.0014400000218302011, "lease_ms": 200, "wire_seq": 37, "source_t_us": 2730840, "expires_us": 2830840, "host_monotonic": 6934.031}
+{"type": "gains", "command_seq": 37, "kp": 0.0033889999613165855, "ki": 0.0014400000218302011, "lease_ms": 200, "wire_seq": 38, "source_t_us": 2810831, "expires_us": 2910831, "host_monotonic": 6934.093}
+{"type": "gains", "command_seq": 38, "kp": 0.0033889999613165855, "ki": 0.0014400000218302011, "lease_ms": 200, "wire_seq": 39, "source_t_us": 2870823, "expires_us": 2970823, "host_monotonic": 6934.156}
+{"type": "gains", "command_seq": 39, "kp": 0.0033889999613165855, "ki": 0.0014400000218302011, "lease_ms": 200, "wire_seq": 40, "source_t_us": 2930816, "expires_us": 3030816, "host_monotonic": 6934.218}
+{"type": "gains", "command_seq": 40, "kp": 0.0035245600156486034, "ki": 0.0014400000218302011, "lease_ms": 200, "wire_seq": 41, "source_t_us": 2991619, "expires_us": 3091619, "host_monotonic": 6934.281}
+{"type": "gains", "command_seq": 41, "kp": 0.0035245600156486034, "ki": 0.0014400000218302011, "lease_ms": 200, "wire_seq": 42, "source_t_us": 3051618, "expires_us": 3151618, "host_monotonic": 6934.343}
+{"type": "gains", "command_seq": 42, "kp": 0.0035245600156486034, "ki": 0.0014400000218302011, "lease_ms": 200, "wire_seq": 43, "source_t_us": 3111618, "expires_us": 3211618, "host_monotonic": 6934.406}
+{"type": "gains", "command_seq": 43, "kp": 0.0033889999613165855, "ki": 0.0014400000218302011, "lease_ms": 200, "wire_seq": 44, "source_t_us": 3171618, "expires_us": 3271618, "host_monotonic": 6934.468}
+{"type": "gains", "command_seq": 44, "kp": 0.0033889999613165855, "ki": 0.0014400000218302011, "lease_ms": 200, "wire_seq": 45, "source_t_us": 3271618, "expires_us": 3371618, "host_monotonic": 6934.562}
+{"type": "stop", "wire_seq": 46, "source_t_us": null, "expires_us": 0, "host_monotonic": 6934.64}

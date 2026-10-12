@@ -1,0 +1,20 @@
+{
+  "passed": true,
+  "hardware_accessed": true,
+  "read_only": true,
+  "reset_performed": false,
+  "flash_programmed": false,
+  "motion_started": false,
+  "core_halted": true,
+  "firmware_sha256": "45ad8fcd5039822741d888cb54eaea909cfc55d3e13dc8da0cdfcfc98703cce5",
+  "six_phase_outputs_inhibited": true,
+  "registers": {
+    "tim1_ccer": 4096,
+    "tim1_bdtr": 33697912,
+    "gpioa_moder": 2861957119,
+    "gpiob_moder": 1471065791,
+    "gpioa_odr": 0,
+    "gpiob_odr": 0,
+    "device_id": 537093224
+  }
+}

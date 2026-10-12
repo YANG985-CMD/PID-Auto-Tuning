@@ -1,6 +1,7 @@
 """Offline checks for actual-action validation and physical stop ordering."""
 import unittest
-from speedloop_motion_gain_trial import check_telemetry, planned_gains, shutdown, f32
+from speedloop_motion_gain_trial import (check_telemetry, planned_gains, shutdown, f32,
+    gain_due, final_gain_due, STOP_SECONDS, acknowledgement_ready, GAIN_INTERVAL_SECONDS)
 from speedloop_motion_handshake import REGS, PHASE_MASK
 import can_transport as wire
 
@@ -40,9 +41,40 @@ class Checks(unittest.TestCase):
     def test_small_probe_and_return(self):
         base = planned_gains(2399)
         probe = planned_gains(2400)
-        self.assertEqual(base, planned_gains(2700))
+        self.assertEqual(base, planned_gains(2600))
         self.assertLess(probe[0]-base[0], .00027112)
         self.assertEqual(base[1], probe[1])
+
+    def test_stop_reserve_for_pending_action_ack(self):
+        self.assertTrue(gain_due(2.69, 0., 2.68, None))
+        self.assertFalse(gain_due(2.70, 0., 2.68, None))
+        self.assertFalse(gain_due(2.90, 0., 2.72, None))
+        self.assertFalse(gain_due(2.73, 0., 2.72, 2.70))
+
+    def test_final_heartbeat_avoids_silence_and_late_new_action(self):
+        # Sweep every possible phase of the regular 60ms command timer.
+        for phase_ms in range(round(GAIN_INTERVAL_SECONDS*1000)):
+            next_gain = phase_ms/1000
+            final_sent = False
+            commands = []
+            for tick in range(2800):
+                now = tick/1000
+                final = final_gain_due(now, 0., None, final_sent)
+                if gain_due(now, 0., next_gain, None) or final:
+                    commands.append(now)
+                    next_gain = now+GAIN_INTERVAL_SECONDS
+                    if final: final_sent=True
+            self.assertTrue(final_sent)
+            gaps = [b-a for a,b in zip(commands,commands[1:]+[STOP_SECONDS])]
+            self.assertLess(max(gaps), .081)
+            self.assertGreaterEqual(STOP_SECONDS-commands[-1], .079)
+            self.assertLessEqual(len(commands)+1,60) # BEGIN also consumes one.
+        self.assertFalse(final_gain_due(2.73, 0., None, True))
+
+    def test_acknowledgement_wait_is_bounded(self):
+        self.assertTrue(acknowledgement_ready(2,2,1.06,1.05))
+        self.assertFalse(acknowledgement_ready(1,2,1.06,1.05))
+        with self.assertRaises(RuntimeError): acknowledgement_ready(1,2,1.08,1.05)
 
     def test_hardware_off_precedes_halt(self):
         class Target:

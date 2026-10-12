@@ -1,0 +1,32 @@
+{
+  "policy_version": "experimental-shadow-20261012",
+  "profile_id": "g431-v5-experimental-math-only",
+  "normalization_id": "g431-nominal-physical-scales-v1",
+  "action_mapping_id": "asymmetric-local-step-f32-v1",
+  "simulation_only": false,
+  "training_data": {
+    "source": "real_motor",
+    "dataset_sha256": "772b22be0e52faf4a80f25b44acba92134313e6ec7de24ab0f2b31700c95aaec",
+    "profile_id": "g431-v5-experimental-math-only",
+    "firmware_id": "g431-speedloop-pi-motion-v5",
+    "protocol_id": "motor-td3-can-v1",
+    "eligible_transitions": 0,
+    "shadow_replay_experiences": 134,
+    "episodes": 17,
+    "action_unique_count": 3,
+    "mode": "experimental-offline-shadow",
+    "deployment_allowed": false,
+    "hash_note": "UTF-8 LF shadow-transitions.jsonl; ordinary live admission is false"
+  },
+  "schema_version": 1,
+  "files_sha256": {
+    "motor_actor.c": "1fe5c0b624aca932319a6d5e3547eec2c8fafa5d0252c2d318ac94fb5a50eaf5",
+    "motor_actor.h": "dc0cb2c5a2d9fb2235e40ef33d153136a2991cf83887f3c9f5bf428805d054f8"
+  },
+  "parameter_count": 482,
+  "weight_bytes": 1928,
+  "workspace_float_bytes": 168,
+  "dynamic_allocation": false,
+  "hardware_deployment_approved": false,
+  "source_sha256": "670357cc3ceedffb1396e5eb3e480a13881f63f3eebad683c77042ed35957b52"
+}

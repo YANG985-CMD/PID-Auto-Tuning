@@ -9,9 +9,11 @@ import json
 from pathlib import Path
 import subprocess
 import sys
-from speedloop_motion_handshake import REGS, PHASE_MASK, IDENTITY
-from speedloop_motion_prepare import ENERGIZED_IMAGE_SHA
+from speedloop_motion_handshake import REGS, PHASE_MASK
 from speedloop_board_stop import inhibit
+
+IDENTITY='g431-speedloop-pi-motion-v4'
+ENERGIZED_IMAGE_SHA='902b5dd09f9873a1143798852e55414102e131fa0ab16ad983e145cde0e45ef2'
 
 OLD_SHA='7128a27aad687c31a3bc26c2734eb6ea3d79cc96922addf0b2f6319d25fd3c93'
 

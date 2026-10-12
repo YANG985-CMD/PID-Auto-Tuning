@@ -140,7 +140,7 @@ python -B scripts/controller_comparison.py --output OUTPUT \
 
 ## STM32G431 实机接入进度
 
-以用户已正常运行的 `17.SpeedLoop` 为控制基线，Codex 已把 CAN 的 BEGIN/GAINS 动作接到生成的 1 ms 速度 PI 边界。**当前板上版本为 `g431-speedloop-pi-motion-v4`，2026-10-12 已完成真实闭环短试验。**下面保留 v1～v3 的接入过程，最新结果见下一节。
+以用户已正常运行的 `17.SpeedLoop` 为控制基线，Codex 已把 CAN 的 BEGIN/GAINS 动作接到生成的 1 ms 速度 PI 边界。**当前板上版本为 `g431-speedloop-pi-motion-v5`，2026-10-12 已用 17 次真实试验、134 个闭环经验完成第一轮 MATLAB TD3 实验训练。Actor 尚未应用到电机。**下面保留接入过程和各版实测。
 
 - 49 个翻译单元编译通过；20 项 PI 核心检查和 10 项实际生成模型检查通过。
 - 已在 **24 V 功率电源物理断开**时烧录到 STM32G431，并按完整应用镜像回读；构建与回读 SHA-256 一致。
@@ -172,7 +172,7 @@ Codex 管理的主机程序已在这块板子上发送 BEGIN 和 GAINS，MATLAB 
 
 针对例程直接使用 16 位 Hall 周期的问题，Codex 已实现 v4：完整微秒周期、扇区方向检查及原始边沿记录；50 个翻译单元、10 项 Hall 专项和运动适配器检查通过，1800 rpm 上限保持不变。2026-10-11 因 STLink 未连接没有擦写；2026-10-12 恢复连接后已烧录并完成以下实测。
 
-### 最新实机结果：v4 闭环、4% Kp 探测与恢复
+### v4 实机结果：闭环、4% Kp 探测与恢复
 
 **这次是真实 STM32G431 与真实电机数据，没有使用 mock 数据替代。** Codex 完成 v4 烧录、完整镜像回读、禁止运动启动检查，随后管理一次最长 3 秒、目标 1000 rpm 的试验。参数从 Kp=0.003389、Ki=0.00144，小幅探测到 Kp=0.00352456，然后恢复；Ki 没有变化。
 
@@ -196,6 +196,33 @@ Codex 管理的主机程序已在这块板子上发送 BEGIN 和 GAINS，MATLAB 
 MATLAB 已提取 **10 个因果完整的动作窗口候选**，其中 **2 个有保留的原始 RunStage 边沿直接佐证**。它们目前是待审计候选，未加入普通 TD3 经验池。现有训练代码要求 128 个合格经验窗口才开始更新；151 个遥测点、46 次增益刷新不能冒充 151 或 46 个闭环训练经验。缺失温度仍为 `null`，专用短试验例外没有修改 `SKILL.md` 或普通训练门。
 
 这一次“启动 → 探测 → 恢复”的顺序还混有闭环切换瞬态，不能证明 4% 增益更优，不能与不同窗口的旧基线或四种方法仿真表直接比较。下一阶段是补充闭环阶段与动作覆盖，再由 MATLAB 训练、Codex 审查固定策略结果；不能直接部署初始化 Actor。[完整实测说明](docs/speedloop-v4-closed-loop-trial-20261012.md)、[MATLAB 分析](examples/speedloop-v4-real-20261012/analysis.json)、[原始数据与文件校验](examples/speedloop-v4-real-20261012/evidence-manifest.json)。
+
+### 最新：134 个真实闭环经验，MATLAB TD3 已实际更新
+
+Codex 将 Hall 环形记录从 32 条扩到 512 条，保留整次短试验的原始阶段证据；固件已完整回读一致。随后修正了“最后动作尚未取得运动回读”和“过早停止刷新导致 100 ms 失联超时”两个主机收尾问题，失败记录也保留。最新复测在 2.80 秒主动 STOP，故障为 0，六路输出关闭后暂停核心。
+
+| v5 最新实测 | 结果 |
+|---|---:|
+| 完整状态 / 输出使能状态 | 148 / 141 组 |
+| 实际增益应用确认 | 44 次 |
+| 原始 Hall 边沿 | 287 条全部保留，含对齐、开环和闭环阶段 |
+| 原始 RunStage 边沿 | 125 条 |
+| 有完整时序和原始闭环证据的动作窗口 | 8 个 |
+| 初批 MATLAB TD3 实验经验池 | 8 个真实窗口；不是遥测点数 |
+| 后续实机采集 | 另行授权的 16 轮，每轮至多 3 秒、间隔至少 30 秒，全部完成并正常停机 |
+| 最终 TD3 经验池 | 17 次不同会话、134 个真实闭环窗口 |
+| MATLAB TD3 更新 | 1 epoch、实际 20 steps |
+| Actor / 两个 Critic 权重变化 L2 | 0.020293 / 0.584027、0.607209 |
+| Actor C 数值验证 | 40 个合成计算向量通过；最大动作误差约 1.9×10⁻⁹ |
+| Actor 上板 / 四种方法实机排名 | 尚未执行 / 尚未完成 |
+
+MATLAB 使用真实 `rlTD3Agent.ExperienceBuffer`，检查重复试验、实际动作、状态串接与时间，按正常 STOP 的时间截断保留 bootstrap。初批仅 8 个窗口，保存 `replay-pending.mat`；补充采集后得到 134 个真实窗口，调用 `trainFromData`，保存 `experimental-candidate.mat`，Actor 和两个 Critic 均实际更新。这一入口是**实验旁路分析**，不开放新策略下发，不改普通训练门或 `SKILL.md`。
+
+![真实电机数据的 TD3 权重更新和旁路输出](docs/images/speedloop-v5-real-td3-training.png)
+
+**Codex 已实际完成训练结果分析与部署文件准备：**核对数据来源和哈希，调用 MATLAB 训练，检查经验池及 Actor/Critic 权重变化，分析候选的旁路输出，导出 482 参数的 Actor JSON/C99 文件并完成主机 C 与 MATLAB 数值一致性检查。C 文件尚未烧录或在 MCU 上验证。当前采集只覆盖 Kp 探测、Ki 固定；候选却给出非零 Ki 动作，因此本版不能宣称 Ki 调度可靠或性能优于原 PI。下一步须单独验证动作覆盖和固定策略响应，才可评估板端部署。
+
+初次 v5 完整闭环窗口包含切换瞬态，31 个点的 RMSE 为 145.682 rpm。它比 v4 图中只取末段约 0.14 秒的 26.601 rpm 窗口更长，不能将二者直接排序。这些是采集行为的响应，不是新 Actor 的实机成绩。[v5 实测与训练说明](docs/speedloop-v5-experimental-replay-20261012.md)、[MATLAB 训练摘要](examples/speedloop-v5-real-20261012/training-summary.json)、[Actor C 计算文件](examples/speedloop-v5-real-20261012/actor-calculation-only/motor_actor.c)、[数据清单](examples/speedloop-v5-real-20261012/evidence-manifest.json)。
 
 - [运动版构建和烧录回读记录](examples/controller-comparison-20261011/speedloop-pi-motion-flash.json)
 - [v2 修正与板上启动采样记录](examples/controller-comparison-20261011/speedloop-pi-motion-v2-startup.json)

@@ -98,7 +98,26 @@ int main(void) {
     assert(motor_td3_can_telemetry(packet,1,2,&t)==104);
     t.temperature_c=INFINITY;assert(!motor_td3_can_telemetry(packet,1,2,&t));
     t.temperature_c=NAN;t.current=NAN;assert(!motor_td3_can_telemetry(packet,1,2,&t));
-    puts("{\"passed\":true,\"adapter_checks\":10}");return 0;
+    /* Full-trial trace capacity, wrap indexing and stop freezing are real C
+     * adapter behaviors. Synthetic edges do not approve physical motion. */
+    fresh(12);memset(&hall_clock,0,sizeof(hall_clock));
+    motor_td3_g431_hall_edge_count=0;motion_enabled=1;rtDW.Motor_state=4;
+    static const uint8_t sectors[]={5,4,6,2,3,1};
+    assert(motor_td3_g431_hall_edge_capacity==512U);
+    for(unsigned i=0;i<620;i++) {
+        host_us+=5000;
+        assert(motor_td3_g431_hall_capture(16000,sectors[i%6]));
+    }
+    assert(motor_td3_g431_hall_edge_count==620U);
+    for(unsigned i=108;i<620;i++) {
+        volatile hall_edge_record *e=&motor_td3_g431_hall_edges[i%512U];
+        assert(e->period_us==5000U && e->code==sectors[i%6] &&
+               e->model_stage==4U && e->valid && fabsf(e->rpm-1000.0f)<.001f);
+    }
+    motor_td3_g431_disable();host_us+=5000;
+    assert(!motor_td3_g431_hall_capture(16000,5));
+    assert(motor_td3_g431_hall_edge_count==620U);
+    puts("{\"passed\":true,\"adapter_checks\":12}");return 0;
 }
 '''
 

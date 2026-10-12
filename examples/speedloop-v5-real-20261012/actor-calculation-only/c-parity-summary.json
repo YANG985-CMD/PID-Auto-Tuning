@@ -1,0 +1,8 @@
+{
+  "host_c_parity_passed": true,
+  "vectors": 40,
+  "max_action_error": 1.903093720806437e-09,
+  "max_gain_error": 4.96355040402463e-12,
+  "nan_rejected": true,
+  "processor_in_loop_verified": false
+}

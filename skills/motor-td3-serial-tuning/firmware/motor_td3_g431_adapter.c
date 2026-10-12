@@ -17,8 +17,8 @@
 #include <math.h>
 #include <string.h>
 #if defined(MOTOR_TD3_SPEEDLOOP_PI_MOTION)
-#define LOCKED_FIRMWARE "g431-speedloop-pi-motion-v4"
-#define LOCKED_PROFILE "g431-speedloop-pi-motion-v4"
+#define LOCKED_FIRMWARE "g431-speedloop-pi-motion-v5"
+#define LOCKED_PROFILE "g431-speedloop-pi-motion-v5"
 #elif defined(MOTOR_TD3_SPEEDLOOP_WATCHDOG)
 #include "motor_td3_g431_watchdog.h"
 #endif
@@ -65,7 +65,9 @@ typedef struct {
     float rpm;
     uint8_t code,previous_code,model_stage,valid;
 } hall_edge_record;
-volatile hall_edge_record motor_td3_g431_hall_edges[32];
+#define HALL_TRACE_CAPACITY 512U
+const uint32_t motor_td3_g431_hall_edge_capacity=HALL_TRACE_CAPACITY;
+volatile hall_edge_record motor_td3_g431_hall_edges[HALL_TRACE_CAPACITY];
 volatile uint32_t motor_td3_g431_hall_edge_count;
 /* The first board trial uses only the already observed 1000 rpm baseline. */
 static const float live_refs[] = {1000.0f};
@@ -249,7 +251,7 @@ int motor_td3_g431_hall_capture(uint32_t ticks,uint8_t code) {
     int ok;
     if(!motion_enabled) { unlock(p);return 0; } /* Preserve last motion evidence. */
     ok=motor_td3_speedloop_hall_edge(&hall_clock,n,code,&rpm,&step);
-    motor_td3_g431_hall_edges[motor_td3_g431_hall_edge_count%32U]=
+    motor_td3_g431_hall_edges[motor_td3_g431_hall_edge_count%HALL_TRACE_CAPACITY]=
         (hall_edge_record){n,ticks,period,rpm,code,previous,(uint8_t)rtDW.Motor_state,(uint8_t)ok};
     ++motor_td3_g431_hall_edge_count;
     if(!ok) {
