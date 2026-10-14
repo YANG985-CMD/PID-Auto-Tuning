@@ -1,0 +1,2136 @@
+{
+  "passed": true,
+  "primary_metric_version": "raw-Hall-held-time-integral-v1",
+  "matched_relative_intervals": true,
+  "gain_response_windows_predeclared": true,
+  "comparison_declared_after_capture": true,
+  "descriptive_only": true,
+  "entire_hold_and_all_slots_retained": true,
+  "reference_changes_split_at_firmware_clock": true,
+  "groups": {
+    "all_declared_slots": {
+      "probe": {
+        "duration_seconds": 10.138745,
+        "raw_Hall_RMSE_rpm": 31.80683305496678,
+        "peak_raw_Hall_speed_rpm": 1107.9105224609375,
+        "nominal_peak_current_a": 0.1318359375,
+        "mean_slot_peak_nominal_current_a": 0.0913238525390625,
+        "mean_slot_peak_raw_Hall_speed_rpm": 1059.0134925842285,
+        "Iq_command_snapshot_saturation_ratio": 0.0
+      },
+      "baseline": {
+        "duration_seconds": 10.138745,
+        "raw_Hall_RMSE_rpm": 31.435268180053964,
+        "peak_raw_Hall_speed_rpm": 1114.8271484375,
+        "nominal_peak_current_a": 0.10986328125,
+        "mean_slot_peak_nominal_current_a": 0.086517333984375,
+        "mean_slot_peak_raw_Hall_speed_rpm": 1061.234001159668,
+        "Iq_command_snapshot_saturation_ratio": 0.0
+      },
+      "RMSE_reduction_percent": -1.1820000159838973,
+      "independent_physical_boots_per_condition": 1
+    },
+    "lower31_hold": {
+      "probe": {
+        "duration_seconds": 5.48232,
+        "raw_Hall_RMSE_rpm": 31.45149110427913,
+        "peak_raw_Hall_speed_rpm": 1107.9105224609375,
+        "nominal_peak_current_a": 0.1318359375,
+        "mean_slot_peak_nominal_current_a": 0.083770751953125,
+        "mean_slot_peak_raw_Hall_speed_rpm": 1057.297019958496,
+        "Iq_command_snapshot_saturation_ratio": 0.0
+      },
+      "baseline": {
+        "duration_seconds": 5.48232,
+        "raw_Hall_RMSE_rpm": 30.96938934916142,
+        "peak_raw_Hall_speed_rpm": 1112.3470458984375,
+        "nominal_peak_current_a": 0.10986328125,
+        "mean_slot_peak_nominal_current_a": 0.087890625,
+        "mean_slot_peak_raw_Hall_speed_rpm": 1059.5801124572754,
+        "Iq_command_snapshot_saturation_ratio": 0.0
+      },
+      "RMSE_reduction_percent": -1.556704104437756,
+      "independent_physical_boots_per_condition": 1
+    },
+    "lower31_by_reference": {
+      "950": {
+        "probe": {
+          "duration_seconds": 1.393269,
+          "raw_Hall_RMSE_rpm": 30.38726658156226,
+          "peak_raw_Hall_speed_rpm": 1040.582763671875
+        },
+        "baseline": {
+          "duration_seconds": 1.393269,
+          "raw_Hall_RMSE_rpm": 29.250525224699203,
+          "peak_raw_Hall_speed_rpm": 1050.640869140625
+        },
+        "RMSE_reduction_percent": -3.886225454519998,
+        "independent_physical_boots_per_condition": 1
+      },
+      "1000": {
+        "probe": {
+          "duration_seconds": 2.7141,
+          "raw_Hall_RMSE_rpm": 31.426742138176508,
+          "peak_raw_Hall_speed_rpm": 1096.2508544921875
+        },
+        "baseline": {
+          "duration_seconds": 2.7141,
+          "raw_Hall_RMSE_rpm": 30.86281029341911,
+          "peak_raw_Hall_speed_rpm": 1079.91357421875
+        },
+        "RMSE_reduction_percent": -1.827221304203941,
+        "independent_physical_boots_per_condition": 1
+      },
+      "1050": {
+        "probe": {
+          "duration_seconds": 1.374951,
+          "raw_Hall_RMSE_rpm": 32.54159192739517,
+          "peak_raw_Hall_speed_rpm": 1107.9105224609375
+        },
+        "baseline": {
+          "duration_seconds": 1.374951,
+          "raw_Hall_RMSE_rpm": 32.81768414601498,
+          "peak_raw_Hall_speed_rpm": 1112.3470458984375
+        },
+        "RMSE_reduction_percent": 0.8412909862603457,
+        "independent_physical_boots_per_condition": 1
+      }
+    },
+    "uninterrupted_lower31_hold_diagnostic": {
+      "probe": {
+        "duration_seconds": 7.800424,
+        "raw_Hall_RMSE_rpm": 31.291618645457802,
+        "peak_raw_Hall_speed_rpm": 1107.9105224609375,
+        "nominal_peak_current_a": 0.1318359375,
+        "mean_slot_peak_nominal_current_a": 0.1318359375,
+        "mean_slot_peak_raw_Hall_speed_rpm": 1107.9105224609375,
+        "Iq_command_snapshot_saturation_ratio": 0.0
+      },
+      "baseline": {
+        "duration_seconds": 7.800424,
+        "raw_Hall_RMSE_rpm": 30.909917517853383,
+        "peak_raw_Hall_speed_rpm": 1112.3470458984375,
+        "nominal_peak_current_a": 0.10986328125,
+        "mean_slot_peak_nominal_current_a": 0.10986328125,
+        "mean_slot_peak_raw_Hall_speed_rpm": 1112.3470458984375,
+        "Iq_command_snapshot_saturation_ratio": 0.0
+      },
+      "RMSE_reduction_percent": -1.2348823881006776,
+      "independent_physical_boots_per_condition": 1,
+      "begin_ms": 10399.576,
+      "end_ms": 18200,
+      "declared_after_capture": true,
+      "admission_metric": false
+    }
+  },
+  "rows": [
+    {
+      "slot": 0,
+      "begin_ms": 6354.581,
+      "end_ms": 6700,
+      "probe_kp": 0.0033889999613165855,
+      "baseline_kp": 0.0033889999613165855,
+      "probe": {
+        "components": [
+          {
+            "begin_us": 6918342,
+            "end_us": 7263761,
+            "duration_us": 345419.0,
+            "mse_rpm2": 1086.301493483637,
+            "raw_Hall_RMSE_rpm": 32.959088177369786,
+            "mean_error_rpm": -11.402773112946534,
+            "peak_raw_Hall_speed_rpm": 1065.870849609375,
+            "contributing_intervals": 71,
+            "reference_rpm": 1000
+          }
+        ],
+        "duration_us": 345419.0,
+        "mse_rpm2": 1086.301493483637,
+        "raw_Hall_RMSE_rpm": 32.959088177369786,
+        "peak_raw_Hall_speed_rpm": 1065.870849609375,
+        "nominal_peak_current_a": 0.10986328125,
+        "telemetry_samples": 17,
+        "telemetry_current_squared_mean_a2": 0.004373578464283663,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 17
+      },
+      "baseline": {
+        "components": [
+          {
+            "begin_us": 6918342,
+            "end_us": 7263761,
+            "duration_us": 345419.0,
+            "mse_rpm2": 1349.0836305398448,
+            "raw_Hall_RMSE_rpm": 36.729873816007654,
+            "mean_error_rpm": -17.383204341642585,
+            "peak_raw_Hall_speed_rpm": 1071.8114013671875,
+            "contributing_intervals": 71,
+            "reference_rpm": 1000
+          }
+        ],
+        "duration_us": 345419.0,
+        "mse_rpm2": 1349.0836305398448,
+        "raw_Hall_RMSE_rpm": 36.729873816007654,
+        "peak_raw_Hall_speed_rpm": 1071.8114013671875,
+        "nominal_peak_current_a": 0.087890625,
+        "telemetry_samples": 17,
+        "telemetry_current_squared_mean_a2": 0.003209184197818532,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 17
+      },
+      "RMSE_reduction_percent": 10.26626352578015
+    },
+    {
+      "slot": 1,
+      "begin_ms": 6934.009,
+      "end_ms": 7200,
+      "probe_kp": 0.0032534399069845676,
+      "baseline_kp": 0.0033889999613165855,
+      "probe": {
+        "components": [
+          {
+            "begin_us": 7497770,
+            "end_us": 7763761,
+            "duration_us": 265991.0,
+            "mse_rpm2": 1065.3877210064863,
+            "raw_Hall_RMSE_rpm": 32.640277587767024,
+            "mean_error_rpm": -9.520753047205721,
+            "peak_raw_Hall_speed_rpm": 1060.6702880859375,
+            "contributing_intervals": 55,
+            "reference_rpm": 1000
+          }
+        ],
+        "duration_us": 265991.0,
+        "mse_rpm2": 1065.3877210064863,
+        "raw_Hall_RMSE_rpm": 32.640277587767024,
+        "peak_raw_Hall_speed_rpm": 1060.6702880859375,
+        "nominal_peak_current_a": 0.087890625,
+        "telemetry_samples": 13,
+        "telemetry_current_squared_mean_a2": 0.0031938919654259314,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 13
+      },
+      "baseline": {
+        "components": [
+          {
+            "begin_us": 7497770,
+            "end_us": 7763761,
+            "duration_us": 265991.0,
+            "mse_rpm2": 1068.58867107721,
+            "raw_Hall_RMSE_rpm": 32.689274557218454,
+            "mean_error_rpm": -12.10064893754996,
+            "peak_raw_Hall_speed_rpm": 1064.28271484375,
+            "contributing_intervals": 54,
+            "reference_rpm": 1000
+          }
+        ],
+        "duration_us": 265991.0,
+        "mse_rpm2": 1068.58867107721,
+        "raw_Hall_RMSE_rpm": 32.689274557218454,
+        "peak_raw_Hall_speed_rpm": 1064.28271484375,
+        "nominal_peak_current_a": 0.06591796875,
+        "telemetry_samples": 13,
+        "telemetry_current_squared_mean_a2": 0.0028225091787484977,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 13
+      },
+      "RMSE_reduction_percent": 0.14988698928043442
+    },
+    {
+      "slot": 2,
+      "begin_ms": 7392.052,
+      "end_ms": 7700,
+      "probe_kp": 0.0031212689355015755,
+      "baseline_kp": 0.0033889999613165855,
+      "probe": {
+        "components": [
+          {
+            "begin_us": 7955813,
+            "end_us": 8263761,
+            "duration_us": 307948.0,
+            "mse_rpm2": 989.3843079898724,
+            "raw_Hall_RMSE_rpm": 31.454479935135986,
+            "mean_error_rpm": -6.273426011759253,
+            "peak_raw_Hall_speed_rpm": 1067.919677734375,
+            "contributing_intervals": 63,
+            "reference_rpm": 1000
+          }
+        ],
+        "duration_us": 307948.0,
+        "mse_rpm2": 989.3843079898724,
+        "raw_Hall_RMSE_rpm": 31.454479935135986,
+        "peak_raw_Hall_speed_rpm": 1067.919677734375,
+        "nominal_peak_current_a": 0.087890625,
+        "telemetry_samples": 16,
+        "telemetry_current_squared_mean_a2": 0.002987310290336609,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 16
+      },
+      "baseline": {
+        "components": [
+          {
+            "begin_us": 7955813,
+            "end_us": 8263761,
+            "duration_us": 307948.0,
+            "mse_rpm2": 1029.4385215545517,
+            "raw_Hall_RMSE_rpm": 32.08486436864821,
+            "mean_error_rpm": -10.801209053232697,
+            "peak_raw_Hall_speed_rpm": 1061.3458251953125,
+            "contributing_intervals": 63,
+            "reference_rpm": 1000
+          }
+        ],
+        "duration_us": 307948.0,
+        "mse_rpm2": 1029.4385215545517,
+        "raw_Hall_RMSE_rpm": 32.08486436864821,
+        "peak_raw_Hall_speed_rpm": 1061.3458251953125,
+        "nominal_peak_current_a": 0.06591796875,
+        "telemetry_samples": 15,
+        "telemetry_current_squared_mean_a2": 0.002542734146118164,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 15
+      },
+      "RMSE_reduction_percent": 1.9647408393853372
+    },
+    {
+      "slot": 3,
+      "begin_ms": 7903.288,
+      "end_ms": 8200,
+      "probe_kp": 0.0029890979640185833,
+      "baseline_kp": 0.0033889999613165855,
+      "probe": {
+        "components": [
+          {
+            "begin_us": 8467049,
+            "end_us": 8563761,
+            "duration_us": 96712.0,
+            "mse_rpm2": 874.8359390993156,
+            "raw_Hall_RMSE_rpm": 29.57762565013148,
+            "mean_error_rpm": -5.5415910879705175,
+            "peak_raw_Hall_speed_rpm": 1057.5296630859375,
+            "contributing_intervals": 21,
+            "reference_rpm": 1000
+          },
+          {
+            "begin_us": 8563761,
+            "end_us": 8763761,
+            "duration_us": 200000.0,
+            "mse_rpm2": 1416.7320372110958,
+            "raw_Hall_RMSE_rpm": 37.63950102234481,
+            "mean_error_rpm": -16.003657747802734,
+            "peak_raw_Hall_speed_rpm": 1055.5203857421875,
+            "contributing_intervals": 39,
+            "reference_rpm": 950
+          }
+        ],
+        "duration_us": 296712.0,
+        "mse_rpm2": 1240.1033351680826,
+        "raw_Hall_RMSE_rpm": 35.215100953540976,
+        "peak_raw_Hall_speed_rpm": 1057.5296630859375,
+        "nominal_peak_current_a": 0.087890625,
+        "telemetry_samples": 15,
+        "telemetry_current_squared_mean_a2": 0.0033473968505859375,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 15
+      },
+      "baseline": {
+        "components": [
+          {
+            "begin_us": 8467049,
+            "end_us": 8563761,
+            "duration_us": 96712.0,
+            "mse_rpm2": 1132.0612840969031,
+            "raw_Hall_RMSE_rpm": 33.64611841055225,
+            "mean_error_rpm": -12.674975004944812,
+            "peak_raw_Hall_speed_rpm": 1058.649169921875,
+            "contributing_intervals": 21,
+            "reference_rpm": 1000
+          },
+          {
+            "begin_us": 8563761,
+            "end_us": 8763761,
+            "duration_us": 200000.0,
+            "mse_rpm2": 1235.9213187645719,
+            "raw_Hall_RMSE_rpm": 35.15567263991079,
+            "mean_error_rpm": -17.878648598327636,
+            "peak_raw_Hall_speed_rpm": 1031.140380859375,
+            "contributing_intervals": 40,
+            "reference_rpm": 950
+          }
+        ],
+        "duration_us": 296712.0,
+        "mse_rpm2": 1202.068587251254,
+        "raw_Hall_RMSE_rpm": 34.67086078036215,
+        "peak_raw_Hall_speed_rpm": 1058.649169921875,
+        "nominal_peak_current_a": 0.10986328125,
+        "telemetry_samples": 15,
+        "telemetry_current_squared_mean_a2": 0.0027036666870117188,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 15
+      },
+      "RMSE_reduction_percent": -1.5697336637430448
+    },
+    {
+      "slot": 4,
+      "begin_ms": 8409.324,
+      "end_ms": 8700,
+      "probe_kp": 0.002856926992535591,
+      "baseline_kp": 0.0033889999613165855,
+      "probe": {
+        "components": [
+          {
+            "begin_us": 8973085,
+            "end_us": 9263761,
+            "duration_us": 290676.0,
+            "mse_rpm2": 857.3917132925073,
+            "raw_Hall_RMSE_rpm": 29.281251907876264,
+            "mean_error_rpm": -4.160389234358618,
+            "peak_raw_Hall_speed_rpm": 1001.6025390625,
+            "contributing_intervals": 57,
+            "reference_rpm": 950
+          }
+        ],
+        "duration_us": 290676.0,
+        "mse_rpm2": 857.3917132925073,
+        "raw_Hall_RMSE_rpm": 29.281251907876264,
+        "peak_raw_Hall_speed_rpm": 1001.6025390625,
+        "nominal_peak_current_a": 0.06591796875,
+        "telemetry_samples": 15,
+        "telemetry_current_squared_mean_a2": 0.0027036666870117188,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 15
+      },
+      "baseline": {
+        "components": [
+          {
+            "begin_us": 8973085,
+            "end_us": 9263761,
+            "duration_us": 290676.0,
+            "mse_rpm2": 826.4214263669551,
+            "raw_Hall_RMSE_rpm": 28.747546440817434,
+            "mean_error_rpm": -5.66516082645665,
+            "peak_raw_Hall_speed_rpm": 1003.8145141601562,
+            "contributing_intervals": 56,
+            "reference_rpm": 950
+          }
+        ],
+        "duration_us": 290676.0,
+        "mse_rpm2": 826.4214263669551,
+        "raw_Hall_RMSE_rpm": 28.747546440817434,
+        "peak_raw_Hall_speed_rpm": 1003.8145141601562,
+        "nominal_peak_current_a": 0.087890625,
+        "telemetry_samples": 15,
+        "telemetry_current_squared_mean_a2": 0.003508329391479492,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 15
+      },
+      "RMSE_reduction_percent": -1.856525280018495
+    },
+    {
+      "slot": 5,
+      "begin_ms": 8917.46,
+      "end_ms": 9200,
+      "probe_kp": 0.002724756021052599,
+      "baseline_kp": 0.0033889999613165855,
+      "probe": {
+        "components": [
+          {
+            "begin_us": 9481221,
+            "end_us": 9763761,
+            "duration_us": 282540.0,
+            "mse_rpm2": 871.9412089024705,
+            "raw_Hall_RMSE_rpm": 29.528650644797004,
+            "mean_error_rpm": -0.9424976937809829,
+            "peak_raw_Hall_speed_rpm": 999.0009765625,
+            "contributing_intervals": 55,
+            "reference_rpm": 950
+          }
+        ],
+        "duration_us": 282540.0,
+        "mse_rpm2": 871.9412089024705,
+        "raw_Hall_RMSE_rpm": 29.528650644797004,
+        "peak_raw_Hall_speed_rpm": 999.0009765625,
+        "nominal_peak_current_a": 0.10986328125,
+        "telemetry_samples": 14,
+        "telemetry_current_squared_mean_a2": 0.003310612269810268,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 14
+      },
+      "baseline": {
+        "components": [
+          {
+            "begin_us": 9481221,
+            "end_us": 9763761,
+            "duration_us": 282540.0,
+            "mse_rpm2": 946.9532367906115,
+            "raw_Hall_RMSE_rpm": 30.772605297416913,
+            "mean_error_rpm": -4.547277129092203,
+            "peak_raw_Hall_speed_rpm": 1002.0040283203125,
+            "contributing_intervals": 54,
+            "reference_rpm": 950
+          }
+        ],
+        "duration_us": 282540.0,
+        "mse_rpm2": 946.9532367906115,
+        "raw_Hall_RMSE_rpm": 30.772605297416913,
+        "peak_raw_Hall_speed_rpm": 1002.0040283203125,
+        "nominal_peak_current_a": 0.087890625,
+        "telemetry_samples": 14,
+        "telemetry_current_squared_mean_a2": 0.002862300191606794,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 14
+      },
+      "RMSE_reduction_percent": 4.042409281232773
+    },
+    {
+      "slot": 6,
+      "begin_ms": 9430.497,
+      "end_ms": 9700,
+      "probe_kp": 0.0025925850495696068,
+      "baseline_kp": 0.0033889999613165855,
+      "probe": {
+        "components": [
+          {
+            "begin_us": 9994258,
+            "end_us": 10263761,
+            "duration_us": 269503.0,
+            "mse_rpm2": 847.7521393626135,
+            "raw_Hall_RMSE_rpm": 29.116183461480894,
+            "mean_error_rpm": 1.7485767208419585,
+            "peak_raw_Hall_speed_rpm": 995.6192626953125,
+            "contributing_intervals": 52,
+            "reference_rpm": 950
+          }
+        ],
+        "duration_us": 269503.0,
+        "mse_rpm2": 847.7521393626135,
+        "raw_Hall_RMSE_rpm": 29.116183461480894,
+        "peak_raw_Hall_speed_rpm": 995.6192626953125,
+        "nominal_peak_current_a": 0.10986328125,
+        "telemetry_samples": 13,
+        "telemetry_current_squared_mean_a2": 0.0037138278667743388,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 13
+      },
+      "baseline": {
+        "components": [
+          {
+            "begin_us": 9994258,
+            "end_us": 10263761,
+            "duration_us": 269503.0,
+            "mse_rpm2": 814.8211824083536,
+            "raw_Hall_RMSE_rpm": 28.545072821913656,
+            "mean_error_rpm": -3.4292747230405367,
+            "peak_raw_Hall_speed_rpm": 1002.204833984375,
+            "contributing_intervals": 53,
+            "reference_rpm": 950
+          }
+        ],
+        "duration_us": 269503.0,
+        "mse_rpm2": 814.8211824083536,
+        "raw_Hall_RMSE_rpm": 28.545072821913656,
+        "peak_raw_Hall_speed_rpm": 1002.204833984375,
+        "nominal_peak_current_a": 0.087890625,
+        "telemetry_samples": 13,
+        "telemetry_current_squared_mean_a2": 0.0025996795067420374,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 13
+      },
+      "RMSE_reduction_percent": -2.0007328169392657
+    },
+    {
+      "slot": 7,
+      "begin_ms": 9938.533,
+      "end_ms": 10200,
+      "probe_kp": 0.0024604140780866146,
+      "baseline_kp": 0.0033889999613165855,
+      "probe": {
+        "components": [
+          {
+            "begin_us": 10502294,
+            "end_us": 10563761,
+            "duration_us": 61467.0,
+            "mse_rpm2": 809.365557722474,
+            "raw_Hall_RMSE_rpm": 28.44935074342601,
+            "mean_error_rpm": 2.6755944824417344,
+            "peak_raw_Hall_speed_rpm": 992.4573364257812,
+            "contributing_intervals": 12,
+            "reference_rpm": 950
+          },
+          {
+            "begin_us": 10563761,
+            "end_us": 10763761,
+            "duration_us": 200000.0,
+            "mse_rpm2": 1447.2894195387119,
+            "raw_Hall_RMSE_rpm": 38.04325721515853,
+            "mean_error_rpm": 16.3295755670166,
+            "peak_raw_Hall_speed_rpm": 1047.7786865234375,
+            "contributing_intervals": 41,
+            "reference_rpm": 1000
+          }
+        ],
+        "duration_us": 261467.0,
+        "mse_rpm2": 1297.323014545888,
+        "raw_Hall_RMSE_rpm": 36.018370514862106,
+        "peak_raw_Hall_speed_rpm": 1047.7786865234375,
+        "nominal_peak_current_a": 0.10986328125,
+        "telemetry_samples": 13,
+        "telemetry_current_squared_mean_a2": 0.003936657538780799,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 13
+      },
+      "baseline": {
+        "components": [
+          {
+            "begin_us": 10502294,
+            "end_us": 10563761,
+            "duration_us": 61467.0,
+            "mse_rpm2": 746.0322554008638,
+            "raw_Hall_RMSE_rpm": 27.31359103817848,
+            "mean_error_rpm": -0.7552717794313794,
+            "peak_raw_Hall_speed_rpm": 992.4573364257812,
+            "contributing_intervals": 13,
+            "reference_rpm": 950
+          },
+          {
+            "begin_us": 10563761,
+            "end_us": 10763761,
+            "duration_us": 200000.0,
+            "mse_rpm2": 1181.126283877454,
+            "raw_Hall_RMSE_rpm": 34.36751786029148,
+            "mean_error_rpm": 7.215691829528809,
+            "peak_raw_Hall_speed_rpm": 1055.5203857421875,
+            "contributing_intervals": 40,
+            "reference_rpm": 1000
+          }
+        ],
+        "duration_us": 261467.0,
+        "mse_rpm2": 1078.842153764015,
+        "raw_Hall_RMSE_rpm": 32.84573265683101,
+        "peak_raw_Hall_speed_rpm": 1055.5203857421875,
+        "nominal_peak_current_a": 0.087890625,
+        "telemetry_samples": 13,
+        "telemetry_current_squared_mean_a2": 0.003528136473435622,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 13
+      },
+      "RMSE_reduction_percent": -9.659208674619935
+    },
+    {
+      "slot": 8,
+      "begin_ms": 10399.576,
+      "end_ms": 10700,
+      "probe_kp": 0.0023282431066036224,
+      "baseline_kp": 0.0033889999613165855,
+      "probe": {
+        "components": [
+          {
+            "begin_us": 10963337,
+            "end_us": 11263761,
+            "duration_us": 300424.0,
+            "mse_rpm2": 880.0127886290685,
+            "raw_Hall_RMSE_rpm": 29.665009499898503,
+            "mean_error_rpm": 0.9579737858839195,
+            "peak_raw_Hall_speed_rpm": 1049.758544921875,
+            "contributing_intervals": 61,
+            "reference_rpm": 1000
+          }
+        ],
+        "duration_us": 300424.0,
+        "mse_rpm2": 880.0127886290685,
+        "raw_Hall_RMSE_rpm": 29.665009499898503,
+        "peak_raw_Hall_speed_rpm": 1049.758544921875,
+        "nominal_peak_current_a": 0.06591796875,
+        "telemetry_samples": 15,
+        "telemetry_current_squared_mean_a2": 0.0029611587524414062,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 15
+      },
+      "baseline": {
+        "components": [
+          {
+            "begin_us": 10963337,
+            "end_us": 11263761,
+            "duration_us": 300424.0,
+            "mse_rpm2": 1010.2369371277556,
+            "raw_Hall_RMSE_rpm": 31.784224658275928,
+            "mean_error_rpm": -2.949984813902796,
+            "peak_raw_Hall_speed_rpm": 1061.1204833984375,
+            "contributing_intervals": 61,
+            "reference_rpm": 1000
+          }
+        ],
+        "duration_us": 300424.0,
+        "mse_rpm2": 1010.2369371277556,
+        "raw_Hall_RMSE_rpm": 31.784224658275928,
+        "peak_raw_Hall_speed_rpm": 1061.1204833984375,
+        "nominal_peak_current_a": 0.087890625,
+        "telemetry_samples": 15,
+        "telemetry_current_squared_mean_a2": 0.003991127014160156,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 15
+      },
+      "RMSE_reduction_percent": 6.6675062272617875
+    },
+    {
+      "slot": 9,
+      "begin_ms": 10857.519,
+      "end_ms": 11200,
+      "probe_kp": 0.0023282431066036224,
+      "baseline_kp": 0.0033889999613165855,
+      "probe": {
+        "components": [
+          {
+            "begin_us": 11421280,
+            "end_us": 11763761,
+            "duration_us": 342481.0,
+            "mse_rpm2": 935.305104279107,
+            "raw_Hall_RMSE_rpm": 30.5827582843521,
+            "mean_error_rpm": -0.2163985854125165,
+            "peak_raw_Hall_speed_rpm": 1050.640869140625,
+            "contributing_intervals": 70,
+            "reference_rpm": 1000
+          }
+        ],
+        "duration_us": 342481.0,
+        "mse_rpm2": 935.305104279107,
+        "raw_Hall_RMSE_rpm": 30.5827582843521,
+        "peak_raw_Hall_speed_rpm": 1050.640869140625,
+        "nominal_peak_current_a": 0.10986328125,
+        "telemetry_samples": 17,
+        "telemetry_current_squared_mean_a2": 0.0028683858759262983,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 17
+      },
+      "baseline": {
+        "components": [
+          {
+            "begin_us": 11421280,
+            "end_us": 11763761,
+            "duration_us": 342481.0,
+            "mse_rpm2": 865.5891162296499,
+            "raw_Hall_RMSE_rpm": 29.420895911403683,
+            "mean_error_rpm": -2.2557299633102366,
+            "peak_raw_Hall_speed_rpm": 1054.18505859375,
+            "contributing_intervals": 70,
+            "reference_rpm": 1000
+          }
+        ],
+        "duration_us": 342481.0,
+        "mse_rpm2": 865.5891162296499,
+        "raw_Hall_RMSE_rpm": 29.420895911403683,
+        "peak_raw_Hall_speed_rpm": 1054.18505859375,
+        "nominal_peak_current_a": 0.10986328125,
+        "telemetry_samples": 17,
+        "telemetry_current_squared_mean_a2": 0.003777181400972254,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 17
+      },
+      "RMSE_reduction_percent": -3.949106024667559
+    },
+    {
+      "slot": 10,
+      "begin_ms": 11366.455,
+      "end_ms": 11700,
+      "probe_kp": 0.0023282431066036224,
+      "baseline_kp": 0.0033889999613165855,
+      "probe": {
+        "components": [
+          {
+            "begin_us": 11930216,
+            "end_us": 12263761,
+            "duration_us": 333545.0,
+            "mse_rpm2": 861.4214187543722,
+            "raw_Hall_RMSE_rpm": 29.34998158013685,
+            "mean_error_rpm": -0.14054952900318454,
+            "peak_raw_Hall_speed_rpm": 1049.758544921875,
+            "contributing_intervals": 67,
+            "reference_rpm": 1000
+          }
+        ],
+        "duration_us": 333545.0,
+        "mse_rpm2": 861.4214187543722,
+        "raw_Hall_RMSE_rpm": 29.34998158013685,
+        "peak_raw_Hall_speed_rpm": 1049.758544921875,
+        "nominal_peak_current_a": 0.087890625,
+        "telemetry_samples": 17,
+        "telemetry_current_squared_mean_a2": 0.0020163900711957145,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 17
+      },
+      "baseline": {
+        "components": [
+          {
+            "begin_us": 11930216,
+            "end_us": 12263761,
+            "duration_us": 333545.0,
+            "mse_rpm2": 810.1345350784773,
+            "raw_Hall_RMSE_rpm": 28.46286238378841,
+            "mean_error_rpm": -1.7338383658481356,
+            "peak_raw_Hall_speed_rpm": 1048.877685546875,
+            "contributing_intervals": 68,
+            "reference_rpm": 1000
+          }
+        ],
+        "duration_us": 333545.0,
+        "mse_rpm2": 810.1345350784773,
+        "raw_Hall_RMSE_rpm": 28.46286238378841,
+        "peak_raw_Hall_speed_rpm": 1048.877685546875,
+        "nominal_peak_current_a": 0.06591796875,
+        "telemetry_samples": 17,
+        "telemetry_current_squared_mean_a2": 0.002357188393087948,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 17
+      },
+      "RMSE_reduction_percent": -3.1167603046618364
+    },
+    {
+      "slot": 11,
+      "begin_ms": 11850,
+      "end_ms": 12200,
+      "probe_kp": 0.0023282431066036224,
+      "baseline_kp": 0.0033889999613165855,
+      "probe": {
+        "components": [
+          {
+            "begin_us": 12413761,
+            "end_us": 12563761,
+            "duration_us": 150000.0,
+            "mse_rpm2": 860.4233498221166,
+            "raw_Hall_RMSE_rpm": 29.332973763703478,
+            "mean_error_rpm": -0.3192464579264323,
+            "peak_raw_Hall_speed_rpm": 1050.640869140625,
+            "contributing_intervals": 31,
+            "reference_rpm": 1000
+          },
+          {
+            "begin_us": 12563761,
+            "end_us": 12763761,
+            "duration_us": 200000.0,
+            "mse_rpm2": 1461.208857783203,
+            "raw_Hall_RMSE_rpm": 38.22576170311329,
+            "mean_error_rpm": 13.515532538452149,
+            "peak_raw_Hall_speed_rpm": 1107.9105224609375,
+            "contributing_intervals": 43,
+            "reference_rpm": 1050
+          }
+        ],
+        "duration_us": 350000.0,
+        "mse_rpm2": 1203.729354371309,
+        "raw_Hall_RMSE_rpm": 34.694802987930466,
+        "peak_raw_Hall_speed_rpm": 1107.9105224609375,
+        "nominal_peak_current_a": 0.087890625,
+        "telemetry_samples": 18,
+        "telemetry_current_squared_mean_a2": 0.003084540367126465,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 18
+      },
+      "baseline": {
+        "components": [
+          {
+            "begin_us": 12413761,
+            "end_us": 12563761,
+            "duration_us": 150000.0,
+            "mse_rpm2": 852.0503140438409,
+            "raw_Hall_RMSE_rpm": 29.189900891298706,
+            "mean_error_rpm": -0.487826494547526,
+            "peak_raw_Hall_speed_rpm": 1047.5592041015625,
+            "contributing_intervals": 31,
+            "reference_rpm": 1000
+          },
+          {
+            "begin_us": 12563761,
+            "end_us": 12763761,
+            "duration_us": 200000.0,
+            "mse_rpm2": 1360.1582983784801,
+            "raw_Hall_RMSE_rpm": 36.88032400045423,
+            "mean_error_rpm": 8.488242580871582,
+            "peak_raw_Hall_speed_rpm": 1101.8070068359375,
+            "contributing_intervals": 42,
+            "reference_rpm": 1050
+          }
+        ],
+        "duration_us": 350000.0,
+        "mse_rpm2": 1142.3977336636347,
+        "raw_Hall_RMSE_rpm": 33.79937475255474,
+        "peak_raw_Hall_speed_rpm": 1101.8070068359375,
+        "nominal_peak_current_a": 0.06591796875,
+        "telemetry_samples": 18,
+        "telemetry_current_squared_mean_a2": 0.0025480985641479492,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 18
+      },
+      "RMSE_reduction_percent": -2.6492449695627585
+    },
+    {
+      "slot": 12,
+      "begin_ms": 12355.631,
+      "end_ms": 12700,
+      "probe_kp": 0.0023282431066036224,
+      "baseline_kp": 0.0033889999613165855,
+      "probe": {
+        "components": [
+          {
+            "begin_us": 12919392,
+            "end_us": 13263761,
+            "duration_us": 344369.0,
+            "mse_rpm2": 1001.3538059202722,
+            "raw_Hall_RMSE_rpm": 31.644174912932588,
+            "mean_error_rpm": -1.3598585718680964,
+            "peak_raw_Hall_speed_rpm": 1101.8070068359375,
+            "contributing_intervals": 74,
+            "reference_rpm": 1050
+          }
+        ],
+        "duration_us": 344369.0,
+        "mse_rpm2": 1001.3538059202722,
+        "raw_Hall_RMSE_rpm": 31.644174912932588,
+        "peak_raw_Hall_speed_rpm": 1101.8070068359375,
+        "nominal_peak_current_a": 0.087890625,
+        "telemetry_samples": 17,
+        "telemetry_current_squared_mean_a2": 0.003237584057976218,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 17
+      },
+      "baseline": {
+        "components": [
+          {
+            "begin_us": 12919392,
+            "end_us": 13263761,
+            "duration_us": 344369.0,
+            "mse_rpm2": 991.9553893112173,
+            "raw_Hall_RMSE_rpm": 31.49532329269248,
+            "mean_error_rpm": -3.193776332624738,
+            "peak_raw_Hall_speed_rpm": 1105.7054443359375,
+            "contributing_intervals": 73,
+            "reference_rpm": 1050
+          }
+        ],
+        "duration_us": 344369.0,
+        "mse_rpm2": 991.9553893112173,
+        "raw_Hall_RMSE_rpm": 31.49532329269248,
+        "peak_raw_Hall_speed_rpm": 1105.7054443359375,
+        "nominal_peak_current_a": 0.06591796875,
+        "telemetry_samples": 17,
+        "telemetry_current_squared_mean_a2": 0.0026979867149801817,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 17
+      },
+      "RMSE_reduction_percent": -0.4726149938414581
+    },
+    {
+      "slot": 13,
+      "begin_ms": 12862.668,
+      "end_ms": 13200,
+      "probe_kp": 0.0023282431066036224,
+      "baseline_kp": 0.0033889999613165855,
+      "probe": {
+        "components": [
+          {
+            "begin_us": 13426429,
+            "end_us": 13763761,
+            "duration_us": 337332.0,
+            "mse_rpm2": 1038.16333199427,
+            "raw_Hall_RMSE_rpm": 32.22054208101208,
+            "mean_error_rpm": -1.3953941030116588,
+            "peak_raw_Hall_speed_rpm": 1106.439453125,
+            "contributing_intervals": 72,
+            "reference_rpm": 1050
+          }
+        ],
+        "duration_us": 337332.0,
+        "mse_rpm2": 1038.16333199427,
+        "raw_Hall_RMSE_rpm": 32.22054208101208,
+        "peak_raw_Hall_speed_rpm": 1106.439453125,
+        "nominal_peak_current_a": 0.087890625,
+        "telemetry_samples": 16,
+        "telemetry_current_squared_mean_a2": 0.0036209821701049805,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 16
+      },
+      "baseline": {
+        "components": [
+          {
+            "begin_us": 13426429,
+            "end_us": 13763761,
+            "duration_us": 337332.0,
+            "mse_rpm2": 1018.8258847518405,
+            "raw_Hall_RMSE_rpm": 31.91905206537062,
+            "mean_error_rpm": -1.859813600487034,
+            "peak_raw_Hall_speed_rpm": 1107.9105224609375,
+            "contributing_intervals": 72,
+            "reference_rpm": 1050
+          }
+        ],
+        "duration_us": 337332.0,
+        "mse_rpm2": 1018.8258847518405,
+        "raw_Hall_RMSE_rpm": 31.91905206537062,
+        "peak_raw_Hall_speed_rpm": 1107.9105224609375,
+        "nominal_peak_current_a": 0.10986328125,
+        "telemetry_samples": 16,
+        "telemetry_current_squared_mean_a2": 0.002745911478996277,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 16
+      },
+      "RMSE_reduction_percent": -0.9445456432227273
+    },
+    {
+      "slot": 14,
+      "begin_ms": 13350.407,
+      "end_ms": 13700,
+      "probe_kp": 0.0023282431066036224,
+      "baseline_kp": 0.0033889999613165855,
+      "probe": {
+        "components": [
+          {
+            "begin_us": 13914168,
+            "end_us": 14263761,
+            "duration_us": 349593.0,
+            "mse_rpm2": 988.9859327925438,
+            "raw_Hall_RMSE_rpm": 31.44814673065082,
+            "mean_error_rpm": -0.8962180779601431,
+            "peak_raw_Hall_speed_rpm": 1102.292724609375,
+            "contributing_intervals": 75,
+            "reference_rpm": 1050
+          }
+        ],
+        "duration_us": 349593.0,
+        "mse_rpm2": 988.9859327925438,
+        "raw_Hall_RMSE_rpm": 31.44814673065082,
+        "peak_raw_Hall_speed_rpm": 1102.292724609375,
+        "nominal_peak_current_a": 0.06591796875,
+        "telemetry_samples": 17,
+        "telemetry_current_squared_mean_a2": 0.002328788532930262,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 17
+      },
+      "baseline": {
+        "components": [
+          {
+            "begin_us": 13914168,
+            "end_us": 14263761,
+            "duration_us": 349593.0,
+            "mse_rpm2": 1076.6543432637477,
+            "raw_Hall_RMSE_rpm": 32.812411421042306,
+            "mean_error_rpm": -2.4384068207557834,
+            "peak_raw_Hall_speed_rpm": 1112.3470458984375,
+            "contributing_intervals": 74,
+            "reference_rpm": 1050
+          }
+        ],
+        "duration_us": 349593.0,
+        "mse_rpm2": 1076.6543432637477,
+        "raw_Hall_RMSE_rpm": 32.812411421042306,
+        "peak_raw_Hall_speed_rpm": 1112.3470458984375,
+        "nominal_peak_current_a": 0.087890625,
+        "telemetry_samples": 17,
+        "telemetry_current_squared_mean_a2": 0.003578382379868451,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 17
+      },
+      "RMSE_reduction_percent": 4.157770280536576
+    },
+    {
+      "slot": 15,
+      "begin_ms": 13856.343,
+      "end_ms": 14200,
+      "probe_kp": 0.0023282431066036224,
+      "baseline_kp": 0.0033889999613165855,
+      "probe": {
+        "components": [
+          {
+            "begin_us": 14420104,
+            "end_us": 14563761,
+            "duration_us": 143657.0,
+            "mse_rpm2": 856.1104968351007,
+            "raw_Hall_RMSE_rpm": 29.259365967756388,
+            "mean_error_rpm": 0.3610028725411538,
+            "peak_raw_Hall_speed_rpm": 1096.972412109375,
+            "contributing_intervals": 32,
+            "reference_rpm": 1050
+          },
+          {
+            "begin_us": 14563761,
+            "end_us": 14763761,
+            "duration_us": 200000.0,
+            "mse_rpm2": 1431.5392177723807,
+            "raw_Hall_RMSE_rpm": 37.83568709264285,
+            "mean_error_rpm": -13.254411208801269,
+            "peak_raw_Hall_speed_rpm": 1096.2508544921875,
+            "contributing_intervals": 41,
+            "reference_rpm": 1000
+          }
+        ],
+        "duration_us": 343657.0,
+        "mse_rpm2": 1190.9959907649668,
+        "raw_Hall_RMSE_rpm": 34.51080976686822,
+        "peak_raw_Hall_speed_rpm": 1096.972412109375,
+        "nominal_peak_current_a": 0.1318359375,
+        "telemetry_samples": 17,
+        "telemetry_current_squared_mean_a2": 0.0034363830790800206,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 17
+      },
+      "baseline": {
+        "components": [
+          {
+            "begin_us": 14420104,
+            "end_us": 14563761,
+            "duration_us": 143657.0,
+            "mse_rpm2": 1024.0992547289027,
+            "raw_Hall_RMSE_rpm": 32.00155081756043,
+            "mean_error_rpm": -2.1259833336095535,
+            "peak_raw_Hall_speed_rpm": 1101.321533203125,
+            "contributing_intervals": 31,
+            "reference_rpm": 1050
+          },
+          {
+            "begin_us": 14563761,
+            "end_us": 14763761,
+            "duration_us": 200000.0,
+            "mse_rpm2": 1164.536061902161,
+            "raw_Hall_RMSE_rpm": 34.12529944047614,
+            "mean_error_rpm": -11.338077227478028,
+            "peak_raw_Hall_speed_rpm": 1079.91357421875,
+            "contributing_intervals": 42,
+            "reference_rpm": 1000
+          }
+        ],
+        "duration_us": 343657.0,
+        "mse_rpm2": 1105.8300544351553,
+        "raw_Hall_RMSE_rpm": 33.254023131572445,
+        "peak_raw_Hall_speed_rpm": 1101.321533203125,
+        "nominal_peak_current_a": 0.087890625,
+        "telemetry_samples": 17,
+        "telemetry_current_squared_mean_a2": 0.002641186994664809,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 17
+      },
+      "RMSE_reduction_percent": -3.7793521413129083
+    },
+    {
+      "slot": 16,
+      "begin_ms": 14350,
+      "end_ms": 14700,
+      "probe_kp": 0.0023282431066036224,
+      "baseline_kp": 0.0033889999613165855,
+      "probe": {
+        "components": [
+          {
+            "begin_us": 14913761,
+            "end_us": 15263761,
+            "duration_us": 350000.0,
+            "mse_rpm2": 993.5518927054121,
+            "raw_Hall_RMSE_rpm": 31.520658189597057,
+            "mean_error_rpm": 1.0650468786621095,
+            "peak_raw_Hall_speed_rpm": 1059.9957275390625,
+            "contributing_intervals": 71,
+            "reference_rpm": 1000
+          }
+        ],
+        "duration_us": 350000.0,
+        "mse_rpm2": 993.5518927054121,
+        "raw_Hall_RMSE_rpm": 31.520658189597057,
+        "peak_raw_Hall_speed_rpm": 1059.9957275390625,
+        "nominal_peak_current_a": 0.06591796875,
+        "telemetry_samples": 17,
+        "telemetry_current_squared_mean_a2": 0.0021867892321418315,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 17
+      },
+      "baseline": {
+        "components": [
+          {
+            "begin_us": 14913761,
+            "end_us": 15263761,
+            "duration_us": 350000.0,
+            "mse_rpm2": 953.5890197432957,
+            "raw_Hall_RMSE_rpm": 30.88023671773414,
+            "mean_error_rpm": -1.3107523629324778,
+            "peak_raw_Hall_speed_rpm": 1050.640869140625,
+            "contributing_intervals": 71,
+            "reference_rpm": 1000
+          }
+        ],
+        "duration_us": 350000.0,
+        "mse_rpm2": 953.5890197432957,
+        "raw_Hall_RMSE_rpm": 30.88023671773414,
+        "peak_raw_Hall_speed_rpm": 1050.640869140625,
+        "nominal_peak_current_a": 0.087890625,
+        "telemetry_samples": 17,
+        "telemetry_current_squared_mean_a2": 0.003067184897030101,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 17
+      },
+      "RMSE_reduction_percent": -2.073887832262411
+    },
+    {
+      "slot": 17,
+      "begin_ms": 14850,
+      "end_ms": 15200,
+      "probe_kp": 0.0023282431066036224,
+      "baseline_kp": 0.0033889999613165855,
+      "probe": {
+        "components": [
+          {
+            "begin_us": 15413761,
+            "end_us": 15763761,
+            "duration_us": 350000.0,
+            "mse_rpm2": 899.5055023033291,
+            "raw_Hall_RMSE_rpm": 29.991757239337094,
+            "mean_error_rpm": 0.8955051930454799,
+            "peak_raw_Hall_speed_rpm": 1048.4378662109375,
+            "contributing_intervals": 71,
+            "reference_rpm": 1000
+          }
+        ],
+        "duration_us": 350000.0,
+        "mse_rpm2": 899.5055023033291,
+        "raw_Hall_RMSE_rpm": 29.991757239337094,
+        "peak_raw_Hall_speed_rpm": 1048.4378662109375,
+        "nominal_peak_current_a": 0.06591796875,
+        "telemetry_samples": 17,
+        "telemetry_current_squared_mean_a2": 0.0026979867149801817,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 17
+      },
+      "baseline": {
+        "components": [
+          {
+            "begin_us": 15413761,
+            "end_us": 15763761,
+            "duration_us": 350000.0,
+            "mse_rpm2": 959.7873968013027,
+            "raw_Hall_RMSE_rpm": 30.980435710320517,
+            "mean_error_rpm": -0.32264959350585937,
+            "peak_raw_Hall_speed_rpm": 1052.853271484375,
+            "contributing_intervals": 71,
+            "reference_rpm": 1000
+          }
+        ],
+        "duration_us": 350000.0,
+        "mse_rpm2": 959.7873968013027,
+        "raw_Hall_RMSE_rpm": 30.980435710320517,
+        "peak_raw_Hall_speed_rpm": 1052.853271484375,
+        "nominal_peak_current_a": 0.10986328125,
+        "telemetry_samples": 17,
+        "telemetry_current_squared_mean_a2": 0.0038907808416029986,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 17
+      },
+      "RMSE_reduction_percent": 3.1912994388715643
+    },
+    {
+      "slot": 18,
+      "begin_ms": 15351.657,
+      "end_ms": 15700,
+      "probe_kp": 0.0023282431066036224,
+      "baseline_kp": 0.0033889999613165855,
+      "probe": {
+        "components": [
+          {
+            "begin_us": 15915418,
+            "end_us": 16263761,
+            "duration_us": 348343.0,
+            "mse_rpm2": 950.4246316163135,
+            "raw_Hall_RMSE_rpm": 30.828957679693186,
+            "mean_error_rpm": 0.7019373479842762,
+            "peak_raw_Hall_speed_rpm": 1051.3035888671875,
+            "contributing_intervals": 70,
+            "reference_rpm": 1000
+          }
+        ],
+        "duration_us": 348343.0,
+        "mse_rpm2": 950.4246316163135,
+        "raw_Hall_RMSE_rpm": 30.828957679693186,
+        "peak_raw_Hall_speed_rpm": 1051.3035888671875,
+        "nominal_peak_current_a": 0.087890625,
+        "telemetry_samples": 17,
+        "telemetry_current_squared_mean_a2": 0.003265983918133904,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 17
+      },
+      "baseline": {
+        "components": [
+          {
+            "begin_us": 15915418,
+            "end_us": 16263761,
+            "duration_us": 348343.0,
+            "mse_rpm2": 908.4417091991899,
+            "raw_Hall_RMSE_rpm": 30.140366772804704,
+            "mean_error_rpm": -0.44608458825234304,
+            "peak_raw_Hall_speed_rpm": 1056.189208984375,
+            "contributing_intervals": 70,
+            "reference_rpm": 1000
+          }
+        ],
+        "duration_us": 348343.0,
+        "mse_rpm2": 908.4417091991899,
+        "raw_Hall_RMSE_rpm": 30.140366772804704,
+        "peak_raw_Hall_speed_rpm": 1056.189208984375,
+        "nominal_peak_current_a": 0.10986328125,
+        "telemetry_samples": 17,
+        "telemetry_current_squared_mean_a2": 0.003947580561918371,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 17
+      },
+      "RMSE_reduction_percent": -2.2846135618687535
+    },
+    {
+      "slot": 19,
+      "begin_ms": 15860.693,
+      "end_ms": 16200,
+      "probe_kp": 0.0023282431066036224,
+      "baseline_kp": 0.0033889999613165855,
+      "probe": {
+        "components": [
+          {
+            "begin_us": 16424454,
+            "end_us": 16563761,
+            "duration_us": 139307.0,
+            "mse_rpm2": 988.0353555949655,
+            "raw_Hall_RMSE_rpm": 31.433029691631152,
+            "mean_error_rpm": -0.0925571350436334,
+            "peak_raw_Hall_speed_rpm": 1049.5382080078125,
+            "contributing_intervals": 29,
+            "reference_rpm": 1000
+          },
+          {
+            "begin_us": 16563761,
+            "end_us": 16763761,
+            "duration_us": 200000.0,
+            "mse_rpm2": 1438.7609665480475,
+            "raw_Hall_RMSE_rpm": 37.93100270949935,
+            "mean_error_rpm": -14.420728229370118,
+            "peak_raw_Hall_speed_rpm": 1040.582763671875,
+            "contributing_intervals": 40,
+            "reference_rpm": 950
+          }
+        ],
+        "duration_us": 339307.0,
+        "mse_rpm2": 1253.7095744899968,
+        "raw_Hall_RMSE_rpm": 35.40776150069356,
+        "peak_raw_Hall_speed_rpm": 1049.5382080078125,
+        "nominal_peak_current_a": 0.087890625,
+        "telemetry_samples": 18,
+        "telemetry_current_squared_mean_a2": 0.003540515899658203,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 18
+      },
+      "baseline": {
+        "components": [
+          {
+            "begin_us": 16424454,
+            "end_us": 16563761,
+            "duration_us": 139307.0,
+            "mse_rpm2": 865.2975376000487,
+            "raw_Hall_RMSE_rpm": 29.415940195751837,
+            "mean_error_rpm": 1.5021239500062138,
+            "peak_raw_Hall_speed_rpm": 1050.640869140625,
+            "contributing_intervals": 29,
+            "reference_rpm": 1000
+          },
+          {
+            "begin_us": 16563761,
+            "end_us": 16763761,
+            "duration_us": 200000.0,
+            "mse_rpm2": 1236.359772898025,
+            "raw_Hall_RMSE_rpm": 35.1619079814794,
+            "mean_error_rpm": -11.0487995123291,
+            "peak_raw_Hall_speed_rpm": 1050.640869140625,
+            "contributing_intervals": 39,
+            "reference_rpm": 950
+          }
+        ],
+        "duration_us": 339307.0,
+        "mse_rpm2": 1084.0152388546508,
+        "raw_Hall_RMSE_rpm": 32.92438668911922,
+        "peak_raw_Hall_speed_rpm": 1050.640869140625,
+        "nominal_peak_current_a": 0.087890625,
+        "telemetry_samples": 18,
+        "telemetry_current_squared_mean_a2": 0.0026553869247436523,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 18
+      },
+      "RMSE_reduction_percent": -7.542660809517954
+    },
+    {
+      "slot": 20,
+      "begin_ms": 16356.731,
+      "end_ms": 16700,
+      "probe_kp": 0.0023282431066036224,
+      "baseline_kp": 0.0033889999613165855,
+      "probe": {
+        "components": [
+          {
+            "begin_us": 16920492,
+            "end_us": 17263761,
+            "duration_us": 343269.0,
+            "mse_rpm2": 900.999810358594,
+            "raw_Hall_RMSE_rpm": 30.01665888067148,
+            "mean_error_rpm": 2.073662395869634,
+            "peak_raw_Hall_speed_rpm": 999.6001586914062,
+            "contributing_intervals": 66,
+            "reference_rpm": 950
+          }
+        ],
+        "duration_us": 343269.0,
+        "mse_rpm2": 900.999810358594,
+        "raw_Hall_RMSE_rpm": 30.01665888067148,
+        "peak_raw_Hall_speed_rpm": 999.6001586914062,
+        "nominal_peak_current_a": 0.087890625,
+        "telemetry_samples": 18,
+        "telemetry_current_squared_mean_a2": 0.0033795833587646484,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 18
+      },
+      "baseline": {
+        "components": [
+          {
+            "begin_us": 16920492,
+            "end_us": 17263761,
+            "duration_us": 343269.0,
+            "mse_rpm2": 840.3442411454278,
+            "raw_Hall_RMSE_rpm": 28.98869160802929,
+            "mean_error_rpm": 0.5393469660498468,
+            "peak_raw_Hall_speed_rpm": 998.6019287109375,
+            "contributing_intervals": 66,
+            "reference_rpm": 950
+          }
+        ],
+        "duration_us": 343269.0,
+        "mse_rpm2": 840.3442411454278,
+        "raw_Hall_RMSE_rpm": 28.98869160802929,
+        "peak_raw_Hall_speed_rpm": 998.6019287109375,
+        "nominal_peak_current_a": 0.087890625,
+        "telemetry_samples": 18,
+        "telemetry_current_squared_mean_a2": 0.003540515899658203,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 18
+      },
+      "RMSE_reduction_percent": -3.54609751465107
+    },
+    {
+      "slot": 21,
+      "begin_ms": 16850,
+      "end_ms": 17200,
+      "probe_kp": 0.0023282431066036224,
+      "baseline_kp": 0.0033889999613165855,
+      "probe": {
+        "components": [
+          {
+            "begin_us": 17413761,
+            "end_us": 17763761,
+            "duration_us": 350000.0,
+            "mse_rpm2": 835.8746950826577,
+            "raw_Hall_RMSE_rpm": 28.911497627806444,
+            "mean_error_rpm": 1.9414192630440847,
+            "peak_raw_Hall_speed_rpm": 996.21435546875,
+            "contributing_intervals": 67,
+            "reference_rpm": 950
+          }
+        ],
+        "duration_us": 350000.0,
+        "mse_rpm2": 835.8746950826577,
+        "raw_Hall_RMSE_rpm": 28.911497627806444,
+        "peak_raw_Hall_speed_rpm": 996.21435546875,
+        "nominal_peak_current_a": 0.06591796875,
+        "telemetry_samples": 18,
+        "telemetry_current_squared_mean_a2": 0.0025480985641479492,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 18
+      },
+      "baseline": {
+        "components": [
+          {
+            "begin_us": 17413761,
+            "end_us": 17763761,
+            "duration_us": 350000.0,
+            "mse_rpm2": 768.8866771359396,
+            "raw_Hall_RMSE_rpm": 27.72880590894494,
+            "mean_error_rpm": 0.23247967616489956,
+            "peak_raw_Hall_speed_rpm": 1000.400146484375,
+            "contributing_intervals": 67,
+            "reference_rpm": 950
+          }
+        ],
+        "duration_us": 350000.0,
+        "mse_rpm2": 768.8866771359396,
+        "raw_Hall_RMSE_rpm": 27.72880590894494,
+        "peak_raw_Hall_speed_rpm": 1000.400146484375,
+        "nominal_peak_current_a": 0.06591796875,
+        "telemetry_samples": 18,
+        "telemetry_current_squared_mean_a2": 0.0026017427444458008,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 18
+      },
+      "RMSE_reduction_percent": -4.265209698337524
+    },
+    {
+      "slot": 22,
+      "begin_ms": 17350,
+      "end_ms": 17700,
+      "probe_kp": 0.0023282431066036224,
+      "baseline_kp": 0.0033889999613165855,
+      "probe": {
+        "components": [
+          {
+            "begin_us": 17913761,
+            "end_us": 18263761,
+            "duration_us": 350000.0,
+            "mse_rpm2": 802.0119874459781,
+            "raw_Hall_RMSE_rpm": 28.319816161938235,
+            "mean_error_rpm": 0.9630006094796317,
+            "peak_raw_Hall_speed_rpm": 999.4003295898438,
+            "contributing_intervals": 67,
+            "reference_rpm": 950
+          }
+        ],
+        "duration_us": 350000.0,
+        "mse_rpm2": 802.0119874459781,
+        "raw_Hall_RMSE_rpm": 28.319816161938235,
+        "peak_raw_Hall_speed_rpm": 999.4003295898438,
+        "nominal_peak_current_a": 0.087890625,
+        "telemetry_samples": 18,
+        "telemetry_current_squared_mean_a2": 0.0027358531951904297,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 18
+      },
+      "baseline": {
+        "components": [
+          {
+            "begin_us": 17913761,
+            "end_us": 18263761,
+            "duration_us": 350000.0,
+            "mse_rpm2": 771.2945022880036,
+            "raw_Hall_RMSE_rpm": 27.772189367927112,
+            "mean_error_rpm": 0.7679063774762834,
+            "peak_raw_Hall_speed_rpm": 997.6057739257812,
+            "contributing_intervals": 67,
+            "reference_rpm": 950
+          }
+        ],
+        "duration_us": 350000.0,
+        "mse_rpm2": 771.2945022880036,
+        "raw_Hall_RMSE_rpm": 27.772189367927112,
+        "peak_raw_Hall_speed_rpm": 997.6057739257812,
+        "nominal_peak_current_a": 0.087890625,
+        "telemetry_samples": 18,
+        "telemetry_current_squared_mean_a2": 0.0023871660232543945,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 18
+      },
+      "RMSE_reduction_percent": -1.9718531612907375
+    },
+    {
+      "slot": 23,
+      "begin_ms": 17850,
+      "end_ms": 18200,
+      "probe_kp": 0.0023282431066036224,
+      "baseline_kp": 0.0033889999613165855,
+      "probe": {
+        "components": [
+          {
+            "begin_us": 18413761,
+            "end_us": 18563761,
+            "duration_us": 150000.0,
+            "mse_rpm2": 774.8480757053611,
+            "raw_Hall_RMSE_rpm": 27.836093039529832,
+            "mean_error_rpm": 0.06998419881184896,
+            "peak_raw_Hall_speed_rpm": 996.6115112304688,
+            "contributing_intervals": 30,
+            "reference_rpm": 950
+          },
+          {
+            "begin_us": 18563761,
+            "end_us": 18763761,
+            "duration_us": 200000.0,
+            "mse_rpm2": 1309.3730699125856,
+            "raw_Hall_RMSE_rpm": 36.18526039581014,
+            "mean_error_rpm": 14.983364848937988,
+            "peak_raw_Hall_speed_rpm": 1046.6820068359375,
+            "contributing_intervals": 40,
+            "reference_rpm": 1000
+          }
+        ],
+        "duration_us": 350000.0,
+        "mse_rpm2": 1080.2909295380607,
+        "raw_Hall_RMSE_rpm": 32.86777950422055,
+        "peak_raw_Hall_speed_rpm": 1046.6820068359375,
+        "nominal_peak_current_a": 0.06591796875,
+        "telemetry_samples": 18,
+        "telemetry_current_squared_mean_a2": 0.0022798776626586914,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 18
+      },
+      "baseline": {
+        "components": [
+          {
+            "begin_us": 18413761,
+            "end_us": 18563761,
+            "duration_us": 150000.0,
+            "mse_rpm2": 781.8134906244165,
+            "raw_Hall_RMSE_rpm": 27.960927928529422,
+            "mean_error_rpm": -2.0438375516764324,
+            "peak_raw_Hall_speed_rpm": 997.2078247070312,
+            "contributing_intervals": 30,
+            "reference_rpm": 950
+          },
+          {
+            "begin_us": 18563761,
+            "end_us": 18763761,
+            "duration_us": 200000.0,
+            "mse_rpm2": 1238.3215156088809,
+            "raw_Hall_RMSE_rpm": 35.18979277587296,
+            "mean_error_rpm": 12.392582250061036,
+            "peak_raw_Hall_speed_rpm": 1053.074951171875,
+            "contributing_intervals": 40,
+            "reference_rpm": 1000
+          }
+        ],
+        "duration_us": 350000.0,
+        "mse_rpm2": 1042.6752191869675,
+        "raw_Hall_RMSE_rpm": 32.29048186675088,
+        "peak_raw_Hall_speed_rpm": 1053.074951171875,
+        "nominal_peak_current_a": 0.087890625,
+        "telemetry_samples": 18,
+        "telemetry_current_squared_mean_a2": 0.0030040740966796875,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 18
+      },
+      "RMSE_reduction_percent": -1.7878260220826947
+    },
+    {
+      "slot": 24,
+      "begin_ms": 18390.677,
+      "end_ms": 18700,
+      "probe_kp": 0.0024604140780866146,
+      "baseline_kp": 0.0033889999613165855,
+      "probe": {
+        "components": [
+          {
+            "begin_us": 18954438,
+            "end_us": 19263761,
+            "duration_us": 309323.0,
+            "mse_rpm2": 935.8296355518182,
+            "raw_Hall_RMSE_rpm": 30.591332686756527,
+            "mean_error_rpm": -3.395771810668796,
+            "peak_raw_Hall_speed_rpm": 1051.0826416015625,
+            "contributing_intervals": 63,
+            "reference_rpm": 1000
+          }
+        ],
+        "duration_us": 309323.0,
+        "mse_rpm2": 935.8296355518182,
+        "raw_Hall_RMSE_rpm": 30.591332686756527,
+        "peak_raw_Hall_speed_rpm": 1051.0826416015625,
+        "nominal_peak_current_a": 0.10986328125,
+        "telemetry_samples": 16,
+        "telemetry_current_squared_mean_a2": 0.003952905535697937,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 16
+      },
+      "baseline": {
+        "components": [
+          {
+            "begin_us": 18954438,
+            "end_us": 19263761,
+            "duration_us": 309323.0,
+            "mse_rpm2": 996.4479450688867,
+            "raw_Hall_RMSE_rpm": 31.56656371968426,
+            "mean_error_rpm": -0.6026312341239098,
+            "peak_raw_Hall_speed_rpm": 1054.6298828125,
+            "contributing_intervals": 62,
+            "reference_rpm": 1000
+          }
+        ],
+        "duration_us": 309323.0,
+        "mse_rpm2": 996.4479450688867,
+        "raw_Hall_RMSE_rpm": 31.56656371968426,
+        "peak_raw_Hall_speed_rpm": 1054.6298828125,
+        "nominal_peak_current_a": 0.06591796875,
+        "telemetry_samples": 16,
+        "telemetry_current_squared_mean_a2": 0.0027157366275787354,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 16
+      },
+      "RMSE_reduction_percent": 3.0894431259225086
+    },
+    {
+      "slot": 25,
+      "begin_ms": 18900.713,
+      "end_ms": 19200,
+      "probe_kp": 0.0025925850495696068,
+      "baseline_kp": 0.0033889999613165855,
+      "probe": {
+        "components": [
+          {
+            "begin_us": 19464474,
+            "end_us": 19763761,
+            "duration_us": 299287.0,
+            "mse_rpm2": 936.1732188968842,
+            "raw_Hall_RMSE_rpm": 30.596947868976805,
+            "mean_error_rpm": -0.9150671937303021,
+            "peak_raw_Hall_speed_rpm": 1055.5203857421875,
+            "contributing_intervals": 61,
+            "reference_rpm": 1000
+          }
+        ],
+        "duration_us": 299287.0,
+        "mse_rpm2": 936.1732188968842,
+        "raw_Hall_RMSE_rpm": 30.596947868976805,
+        "peak_raw_Hall_speed_rpm": 1055.5203857421875,
+        "nominal_peak_current_a": 0.10986328125,
+        "telemetry_samples": 15,
+        "telemetry_current_squared_mean_a2": 0.0038301944732666016,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 15
+      },
+      "baseline": {
+        "components": [
+          {
+            "begin_us": 19464474,
+            "end_us": 19763761,
+            "duration_us": 299287.0,
+            "mse_rpm2": 872.0858689596852,
+            "raw_Hall_RMSE_rpm": 29.53110002962445,
+            "mean_error_rpm": -0.8374166628566132,
+            "peak_raw_Hall_speed_rpm": 1049.758544921875,
+            "contributing_intervals": 61,
+            "reference_rpm": 1000
+          }
+        ],
+        "duration_us": 299287.0,
+        "mse_rpm2": 872.0858689596852,
+        "raw_Hall_RMSE_rpm": 29.53110002962445,
+        "peak_raw_Hall_speed_rpm": 1049.758544921875,
+        "nominal_peak_current_a": 0.06591796875,
+        "telemetry_samples": 15,
+        "telemetry_current_squared_mean_a2": 0.0024139881134033203,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 15
+      },
+      "RMSE_reduction_percent": -3.6092385257682214
+    },
+    {
+      "slot": 26,
+      "begin_ms": 19407.649,
+      "end_ms": 19700,
+      "probe_kp": 0.002724756021052599,
+      "baseline_kp": 0.0033889999613165855,
+      "probe": {
+        "components": [
+          {
+            "begin_us": 19971410,
+            "end_us": 20263761,
+            "duration_us": 292351.0,
+            "mse_rpm2": 930.6366532585295,
+            "raw_Hall_RMSE_rpm": 30.50633791949682,
+            "mean_error_rpm": 0.12635433176757402,
+            "peak_raw_Hall_speed_rpm": 1049.3179931640625,
+            "contributing_intervals": 59,
+            "reference_rpm": 1000
+          }
+        ],
+        "duration_us": 292351.0,
+        "mse_rpm2": 930.6366532585295,
+        "raw_Hall_RMSE_rpm": 30.50633791949682,
+        "peak_raw_Hall_speed_rpm": 1049.3179931640625,
+        "nominal_peak_current_a": 0.10986328125,
+        "telemetry_samples": 15,
+        "telemetry_current_squared_mean_a2": 0.0034439563751220703,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 15
+      },
+      "baseline": {
+        "components": [
+          {
+            "begin_us": 19971410,
+            "end_us": 20263761,
+            "duration_us": 292351.0,
+            "mse_rpm2": 901.7513733857535,
+            "raw_Hall_RMSE_rpm": 30.029175369725913,
+            "mean_error_rpm": -0.3775222323037392,
+            "peak_raw_Hall_speed_rpm": 1051.3035888671875,
+            "contributing_intervals": 59,
+            "reference_rpm": 1000
+          }
+        ],
+        "duration_us": 292351.0,
+        "mse_rpm2": 901.7513733857535,
+        "raw_Hall_RMSE_rpm": 30.029175369725913,
+        "peak_raw_Hall_speed_rpm": 1051.3035888671875,
+        "nominal_peak_current_a": 0.10986328125,
+        "telemetry_samples": 14,
+        "telemetry_current_squared_mean_a2": 0.00475900513785226,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 14
+      },
+      "RMSE_reduction_percent": -1.588996513876828
+    },
+    {
+      "slot": 27,
+      "begin_ms": 19924.623,
+      "end_ms": 20200,
+      "probe_kp": 0.002856926992535591,
+      "baseline_kp": 0.0033889999613165855,
+      "probe": {
+        "components": [
+          {
+            "begin_us": 20488384,
+            "end_us": 20563761,
+            "duration_us": 75377.0,
+            "mse_rpm2": 1051.7055463721422,
+            "raw_Hall_RMSE_rpm": 32.43000996564975,
+            "mean_error_rpm": -3.5499953429083453,
+            "peak_raw_Hall_speed_rpm": 1052.631591796875,
+            "contributing_intervals": 16,
+            "reference_rpm": 1000
+          },
+          {
+            "begin_us": 20563761,
+            "end_us": 20763761,
+            "duration_us": 200000.0,
+            "mse_rpm2": 1468.5619219513196,
+            "raw_Hall_RMSE_rpm": 38.321820441509814,
+            "mean_error_rpm": 11.314371766052247,
+            "peak_raw_Hall_speed_rpm": 1103.0223388671875,
+            "contributing_intervals": 43,
+            "reference_rpm": 1050
+          }
+        ],
+        "duration_us": 275377.0,
+        "mse_rpm2": 1354.4587723708112,
+        "raw_Hall_RMSE_rpm": 36.80297233065301,
+        "peak_raw_Hall_speed_rpm": 1103.0223388671875,
+        "nominal_peak_current_a": 0.087890625,
+        "telemetry_samples": 13,
+        "telemetry_current_squared_mean_a2": 0.0037509661454420825,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 13
+      },
+      "baseline": {
+        "components": [
+          {
+            "begin_us": 20488384,
+            "end_us": 20563761,
+            "duration_us": 75377.0,
+            "mse_rpm2": 944.8653989404552,
+            "raw_Hall_RMSE_rpm": 30.738662933518356,
+            "mean_error_rpm": 4.231023400109823,
+            "peak_raw_Hall_speed_rpm": 1049.97900390625,
+            "contributing_intervals": 16,
+            "reference_rpm": 1000
+          },
+          {
+            "begin_us": 20563761,
+            "end_us": 20763761,
+            "duration_us": 200000.0,
+            "mse_rpm2": 1322.3818815031275,
+            "raw_Hall_RMSE_rpm": 36.36456904052525,
+            "mean_error_rpm": 9.286334796142578,
+            "peak_raw_Hall_speed_rpm": 1098.65966796875,
+            "contributing_intervals": 43,
+            "reference_rpm": 1050
+          }
+        ],
+        "duration_us": 275377.0,
+        "mse_rpm2": 1219.0469628057542,
+        "raw_Hall_RMSE_rpm": 34.9148530400137,
+        "peak_raw_Hall_speed_rpm": 1098.65966796875,
+        "nominal_peak_current_a": 0.10986328125,
+        "telemetry_samples": 13,
+        "telemetry_current_squared_mean_a2": 0.0036766895881065955,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 13
+      },
+      "RMSE_reduction_percent": -5.407782437106223
+    },
+    {
+      "slot": 28,
+      "begin_ms": 20433.922,
+      "end_ms": 20700,
+      "probe_kp": 0.0029890979640185833,
+      "baseline_kp": 0.0033889999613165855,
+      "probe": {
+        "components": [
+          {
+            "begin_us": 20997683,
+            "end_us": 21263761,
+            "duration_us": 266078.0,
+            "mse_rpm2": 1009.5645799492657,
+            "raw_Hall_RMSE_rpm": 31.773645997103728,
+            "mean_error_rpm": -0.16413699290377845,
+            "peak_raw_Hall_speed_rpm": 1102.535888671875,
+            "contributing_intervals": 57,
+            "reference_rpm": 1050
+          }
+        ],
+        "duration_us": 266078.0,
+        "mse_rpm2": 1009.5645799492657,
+        "raw_Hall_RMSE_rpm": 31.773645997103728,
+        "peak_raw_Hall_speed_rpm": 1102.535888671875,
+        "nominal_peak_current_a": 0.087890625,
+        "telemetry_samples": 14,
+        "telemetry_current_squared_mean_a2": 0.002620901380266462,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 14
+      },
+      "baseline": {
+        "components": [
+          {
+            "begin_us": 20997683,
+            "end_us": 21263761,
+            "duration_us": 266078.0,
+            "mse_rpm2": 986.9897651112752,
+            "raw_Hall_RMSE_rpm": 31.41639325433897,
+            "mean_error_rpm": -0.03713385485103875,
+            "peak_raw_Hall_speed_rpm": 1105.2166748046875,
+            "contributing_intervals": 57,
+            "reference_rpm": 1050
+          }
+        ],
+        "duration_us": 266078.0,
+        "mse_rpm2": 986.9897651112752,
+        "raw_Hall_RMSE_rpm": 31.41639325433897,
+        "peak_raw_Hall_speed_rpm": 1105.2166748046875,
+        "nominal_peak_current_a": 0.06591796875,
+        "telemetry_samples": 14,
+        "telemetry_current_squared_mean_a2": 0.00234501702444894,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 14
+      },
+      "RMSE_reduction_percent": -1.1371539052001722
+    },
+    {
+      "slot": 29,
+      "begin_ms": 20892.064,
+      "end_ms": 21200,
+      "probe_kp": 0.0031212689355015755,
+      "baseline_kp": 0.0033889999613165855,
+      "probe": {
+        "components": [
+          {
+            "begin_us": 21455825,
+            "end_us": 21763761,
+            "duration_us": 307936.0,
+            "mse_rpm2": 1039.8971542287466,
+            "raw_Hall_RMSE_rpm": 32.247436397778145,
+            "mean_error_rpm": 1.9414839038454443,
+            "peak_raw_Hall_speed_rpm": 1107.1744384765625,
+            "contributing_intervals": 65,
+            "reference_rpm": 1050
+          }
+        ],
+        "duration_us": 307936.0,
+        "mse_rpm2": 1039.8971542287466,
+        "raw_Hall_RMSE_rpm": 32.247436397778145,
+        "peak_raw_Hall_speed_rpm": 1107.1744384765625,
+        "nominal_peak_current_a": 0.087890625,
+        "telemetry_samples": 16,
+        "telemetry_current_squared_mean_a2": 0.0024743378162384033,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 16
+      },
+      "baseline": {
+        "components": [
+          {
+            "begin_us": 21455825,
+            "end_us": 21763761,
+            "duration_us": 307936.0,
+            "mse_rpm2": 892.9009959999757,
+            "raw_Hall_RMSE_rpm": 29.8814490277827,
+            "mean_error_rpm": -1.0797488382944604,
+            "peak_raw_Hall_speed_rpm": 1110.370849609375,
+            "contributing_intervals": 65,
+            "reference_rpm": 1050
+          }
+        ],
+        "duration_us": 307936.0,
+        "mse_rpm2": 892.9009959999757,
+        "raw_Hall_RMSE_rpm": 29.8814490277827,
+        "peak_raw_Hall_speed_rpm": 1110.370849609375,
+        "nominal_peak_current_a": 0.087890625,
+        "telemetry_samples": 16,
+        "telemetry_current_squared_mean_a2": 0.002745911478996277,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 16
+      },
+      "RMSE_reduction_percent": -7.9179137792000365
+    },
+    {
+      "slot": 30,
+      "begin_ms": 21401.1,
+      "end_ms": 21700,
+      "probe_kp": 0.0032534399069845676,
+      "baseline_kp": 0.0033889999613165855,
+      "probe": {
+        "components": [
+          {
+            "begin_us": 21964861,
+            "end_us": 22263761,
+            "duration_us": 298900.0,
+            "mse_rpm2": 961.5509502398146,
+            "raw_Hall_RMSE_rpm": 31.008885020906742,
+            "mean_error_rpm": 0.8766087452086687,
+            "peak_raw_Hall_speed_rpm": 1106.439453125,
+            "contributing_intervals": 64,
+            "reference_rpm": 1050
+          }
+        ],
+        "duration_us": 298900.0,
+        "mse_rpm2": 961.5509502398146,
+        "raw_Hall_RMSE_rpm": 31.008885020906742,
+        "peak_raw_Hall_speed_rpm": 1106.439453125,
+        "nominal_peak_current_a": 0.10986328125,
+        "telemetry_samples": 15,
+        "telemetry_current_squared_mean_a2": 0.004216432571411133,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 15
+      },
+      "baseline": {
+        "components": [
+          {
+            "begin_us": 21964861,
+            "end_us": 22263761,
+            "duration_us": 298900.0,
+            "mse_rpm2": 1049.8867809143037,
+            "raw_Hall_RMSE_rpm": 32.401956436522525,
+            "mean_error_rpm": -0.8313955714001469,
+            "peak_raw_Hall_speed_rpm": 1114.8271484375,
+            "contributing_intervals": 63,
+            "reference_rpm": 1050
+          }
+        ],
+        "duration_us": 298900.0,
+        "mse_rpm2": 1049.8867809143037,
+        "raw_Hall_RMSE_rpm": 32.401956436522525,
+        "peak_raw_Hall_speed_rpm": 1114.8271484375,
+        "nominal_peak_current_a": 0.10986328125,
+        "telemetry_samples": 15,
+        "telemetry_current_squared_mean_a2": 0.0027358531951904297,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 15
+      },
+      "RMSE_reduction_percent": 4.299343523731036
+    },
+    {
+      "slot": 31,
+      "begin_ms": 21913.083,
+      "end_ms": 22200,
+      "probe_kp": 0.0033889999613165855,
+      "baseline_kp": 0.0033889999613165855,
+      "probe": {
+        "components": [
+          {
+            "begin_us": 22476844,
+            "end_us": 22563761,
+            "duration_us": 86917.0,
+            "mse_rpm2": 943.4567917620825,
+            "raw_Hall_RMSE_rpm": 30.715741758291994,
+            "mean_error_rpm": 2.725946838223715,
+            "peak_raw_Hall_speed_rpm": 1100.5943603515625,
+            "contributing_intervals": 19,
+            "reference_rpm": 1050
+          },
+          {
+            "begin_us": 22563761,
+            "end_us": 22763761,
+            "duration_us": 200000.0,
+            "mse_rpm2": 1332.7138033497638,
+            "raw_Hall_RMSE_rpm": 36.506352917673986,
+            "mean_error_rpm": -10.234949989318848,
+            "peak_raw_Hall_speed_rpm": 1100.5943603515625,
+            "contributing_intervals": 41,
+            "reference_rpm": 1000
+          }
+        ],
+        "duration_us": 286917.0,
+        "mse_rpm2": 1214.7945037747422,
+        "raw_Hall_RMSE_rpm": 34.8539022747058,
+        "peak_raw_Hall_speed_rpm": 1100.5943603515625,
+        "nominal_peak_current_a": 0.10986328125,
+        "telemetry_samples": 15,
+        "telemetry_current_squared_mean_a2": 0.0028002262115478516,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 15
+      },
+      "baseline": {
+        "components": [
+          {
+            "begin_us": 22476844,
+            "end_us": 22563761,
+            "duration_us": 86917.0,
+            "mse_rpm2": 745.1080084828983,
+            "raw_Hall_RMSE_rpm": 27.296666618525023,
+            "mean_error_rpm": -2.483832539401365,
+            "peak_raw_Hall_speed_rpm": 1101.8070068359375,
+            "contributing_intervals": 19,
+            "reference_rpm": 1050
+          },
+          {
+            "begin_us": 22563761,
+            "end_us": 22763761,
+            "duration_us": 200000.0,
+            "mse_rpm2": 1213.440882854958,
+            "raw_Hall_RMSE_rpm": 34.83447836346854,
+            "mean_error_rpm": -9.876836359863281,
+            "peak_raw_Hall_speed_rpm": 1094.810546875,
+            "contributing_intervals": 42,
+            "reference_rpm": 1000
+          }
+        ],
+        "duration_us": 286917.0,
+        "mse_rpm2": 1071.566792292892,
+        "raw_Hall_RMSE_rpm": 32.734794825886596,
+        "peak_raw_Hall_speed_rpm": 1101.8070068359375,
+        "nominal_peak_current_a": 0.06591796875,
+        "telemetry_samples": 15,
+        "telemetry_current_squared_mean_a2": 0.0022208690643310547,
+        "reconstructed_Iq_command_saturated_samples": 0,
+        "reconstructed_Iq_command_samples": 15
+      },
+      "RMSE_reduction_percent": -6.473562642107722
+    }
+  ],
+  "whole_trial_metrics": [
+    {
+      "nominal_peak_current_a": 1.0546875,
+      "peak_speed_rpm": 1505.117431640625,
+      "final_irq_fault": 0,
+      "final_tx_fault": 0
+    },
+    {
+      "nominal_peak_current_a": 1.03271484375,
+      "peak_speed_rpm": 1495.21533203125,
+      "final_irq_fault": 0,
+      "final_tx_fault": 0
+    }
+  ],
+  "independent_repetition": false,
+  "actor_applied": false,
+  "training_performed": false,
+  "causal_gain_performance_established": false,
+  "admission": false,
+  "deployment_allowed": false,
+  "performance_claim_allowed": false,
+  "current_conversion_independently_calibrated": false,
+  "sources": [
+    {
+      "contract0.json": "176cc5e337d7a3f8dd0b261bdacdfd486a3d314f7b97c2ba893a7ce9c2d5348d",
+      "round0/trial/summary.json": "121aa7cb27815ae1586c322ac5db72359014b457eddb6ec18115e7d81d70bac2",
+      "round0/schedule-audit.json": "e6fd5b72b96805de05bbeb9c459924e4a92f95751c02abee325b0e49bab2d936",
+      "round0/full-hall-audit/full-hall-edges.json": "3fabfeec38d4d20aafcc5b162dcb56d30e50607c8b22361724f9a44619d3a483",
+      "round0/trial/telemetry.jsonl": "a9d05737074e77a6c8a848e6dc0c37762ba65ceac818ca5a55ca118eb8dc5d33",
+      "round0/trial/commands.jsonl": "f18e6bcfcd4d58ec80bc485a68af106426aa1db466fcf6193e668ab114a9757a"
+    },
+    {
+      "contract1.json": "208adde4467f1edd16e6dc7e3c252e3b091e4b45125e6c59fde928df9f69552b",
+      "round1/trial/summary.json": "a898cab5b4e2e62436fdaa14fcc8d11b2e5d61f49d9e9e190c083340717239a3",
+      "round1/schedule-audit.json": "65f3c4a544a19b9038ffaac32b782bac4af65300121a54556b9ec3208cd7c463",
+      "round1/full-hall-audit/full-hall-edges.json": "eef27198c15da6996a8886a71785e19bce68a58788d7aa2c5b2c2e6ac7697ece",
+      "round1/trial/telemetry.jsonl": "246dcd7fe1e801b18f6c82919725b1df016a3fad134d97cb78fe7c4298c959af",
+      "round1/trial/commands.jsonl": "341437fff73c58b309ab9a96ae3682747d422478039b7adb226fa67b13e14a8c"
+    }
+  ]
+}

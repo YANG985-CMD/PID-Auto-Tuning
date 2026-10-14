@@ -1,0 +1,48 @@
+{
+  "passed": true,
+  "seeds": [
+    {
+      "seed": 7,
+      "noise_draws_exactly_matched": true,
+      "sampled_action_counts_matched": true,
+      "sampled_switch_count_matched": true,
+      "initial_critic_bootstrap_identical": true,
+      "raw_and_critic_coordinates_distinguished": true,
+      "final_mapping_zero_gradient_fraction": 0,
+      "saved_critic_iterations": 600,
+      "saved_Actor_updates": 300
+    },
+    {
+      "seed": 17,
+      "noise_draws_exactly_matched": true,
+      "sampled_action_counts_matched": true,
+      "sampled_switch_count_matched": true,
+      "initial_critic_bootstrap_identical": true,
+      "raw_and_critic_coordinates_distinguished": true,
+      "final_mapping_zero_gradient_fraction": 0,
+      "saved_critic_iterations": 600,
+      "saved_Actor_updates": 300
+    },
+    {
+      "seed": 27,
+      "noise_draws_exactly_matched": true,
+      "sampled_action_counts_matched": true,
+      "sampled_switch_count_matched": true,
+      "initial_critic_bootstrap_identical": true,
+      "raw_and_critic_coordinates_distinguished": true,
+      "final_mapping_zero_gradient_fraction": 0,
+      "saved_critic_iterations": 600,
+      "saved_Actor_updates": 300
+    }
+  ],
+  "raw_initial_actor_behavior_differs": true,
+  "same_replay_same_rewards_same_sampler": true,
+  "initial_critic_bootstrap_identical": true,
+  "gradient_clipping_dead_region_removed_without_STE": true,
+  "hardware_accessed": false,
+  "new_motor_trials": 0,
+  "new_optimizer_updates_in_audit": 0,
+  "actor_applied": false,
+  "deployment_allowed": false,
+  "performance_claim_allowed": false
+}

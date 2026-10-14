@@ -1,0 +1,17 @@
+{
+  "passed": false,
+  "screen_completed": true,
+  "candidate_admission": false,
+  "required_motor_speed_RMSE_improvement_percent": 5,
+  "single_action_model_prediction_percent": [
+    0.10674597550023313,
+    0.10099991941204811,
+    0.10111092925453313
+  ],
+  "full_closed_loop_model_or_real_motor_improvement_verified": false,
+  "independent_frozen_actor_motor_trials": 0,
+  "native_agent_exported": false,
+  "hardware_accessed": false,
+  "deployment_allowed": false,
+  "performance_claim_allowed": false
+}

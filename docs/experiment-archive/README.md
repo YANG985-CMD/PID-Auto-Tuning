@@ -3,6 +3,8 @@
 本目录集中保存工程调试、采集、训练及部署验证的过程记录。
 
 - [2026-10-11 至 2026-10-12：板卡接入、实机试验与 TD3 训练](20261011-20261012.md)
+- [2026-10-14：最新实机采集、PI 输入修正与 TD3 候选筛选（已暂停）](../../examples/td3-real-progress-20261014/README.md)
+- [共同电机的四种调参方法 Simulink 模型](../../simulink-comparison/README.md)
 - [四种方法对比的数据与报告](../../examples/controller-comparison-20261011/)
 - [速度环 v4 的原始实机数据](../../examples/speedloop-v4-real-20261012/)
 - [速度环 v5 的原始实机数据及训练报告](../../examples/speedloop-v5-real-20261012/)

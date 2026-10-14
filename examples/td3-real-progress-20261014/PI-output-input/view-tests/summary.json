@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "unique_actual_windows": 1792,
+  "physical_actions_rewards_split_and_keys_exact": true,
+  "first_nine_inputs_exact": true,
+  "normalization_training_boot_only": true,
+  "malformed_views_rejected": 4,
+  "replay_execution_roundtrip_max_action_error": 4.172325134277344e-07,
+  "action_mask": [
+    1,
+    0
+  ],
+  "Ki_fixed": 0.00144,
+  "hardware_accessed": false,
+  "training_performed": false,
+  "deployment_allowed": false,
+  "performance_claim_allowed": false
+}

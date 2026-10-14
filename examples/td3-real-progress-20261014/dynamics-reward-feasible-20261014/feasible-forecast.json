@@ -1,0 +1,103 @@
+{
+  "passed": true,
+  "results": [
+    {
+      "seed": 7,
+      "checkpoint_sha256": "6c5a2de38264f4c8f0dc336cb0033ce3b2c5ca83270bba1b8126a569477ef0b3",
+      "validation_states": 893,
+      "negative_forecast_states": 0,
+      "negative_predictions_not_clipped": true,
+      "one_decision_predicted_speed_RMSE_improvement_percent": 0.10674597550023313,
+      "one_decision_predicted_mean_peak_nominal_current_change_A": -3.911422047911395e-05,
+      "equal_validation_boot_mass": true,
+      "comparison_baseline_move_is_rate_clamped": true,
+      "comparison_is_not_fixed_PI_controller_performance": true,
+      "model_uncertainty_calibrated": false,
+      "actual_Actor_motor_responses": 0,
+      "candidate_admission": false,
+      "deployment_allowed": false,
+      "performance_claim_allowed": false
+    },
+    {
+      "seed": 17,
+      "checkpoint_sha256": "595a2a7a93bc085eb2fc94c8b0701370f3f63172f8f18de79559e0d487a5cb0c",
+      "validation_states": 893,
+      "negative_forecast_states": 0,
+      "negative_predictions_not_clipped": true,
+      "one_decision_predicted_speed_RMSE_improvement_percent": 0.10099991941204811,
+      "one_decision_predicted_mean_peak_nominal_current_change_A": -3.1983477146793615e-05,
+      "equal_validation_boot_mass": true,
+      "comparison_baseline_move_is_rate_clamped": true,
+      "comparison_is_not_fixed_PI_controller_performance": true,
+      "model_uncertainty_calibrated": false,
+      "actual_Actor_motor_responses": 0,
+      "candidate_admission": false,
+      "deployment_allowed": false,
+      "performance_claim_allowed": false
+    },
+    {
+      "seed": 27,
+      "checkpoint_sha256": "41aead696c708ea9793f2cd187dd5ab5be6719abd113094e75939b3a1defc85a",
+      "validation_states": 893,
+      "negative_forecast_states": 0,
+      "negative_predictions_not_clipped": true,
+      "one_decision_predicted_speed_RMSE_improvement_percent": 0.10111092925453313,
+      "one_decision_predicted_mean_peak_nominal_current_change_A": -3.248486315601817e-05,
+      "equal_validation_boot_mass": true,
+      "comparison_baseline_move_is_rate_clamped": true,
+      "comparison_is_not_fixed_PI_controller_performance": true,
+      "model_uncertainty_calibrated": false,
+      "actual_Actor_motor_responses": 0,
+      "candidate_admission": false,
+      "deployment_allowed": false,
+      "performance_claim_allowed": false
+    }
+  ],
+  "recorded_action_speed_prediction_RMSE_parity_error": 0,
+  "recorded_action_current_prediction_RMSE_parity_error": 0,
+  "component_proof": {
+    "passed": true,
+    "unique_windows": 1792,
+    "maximum_component_sum_error": 8.673617379884035e-19,
+    "replay_summary_sha256": "0924898ea68d32265b5fe59410521f4bf0978981356513482b7b09d82ee12fcc",
+    "component_names": [
+      "raw-Hall-speed-MSE",
+      "nominal-peak-current-square",
+      "overspeed",
+      "saturation"
+    ],
+    "training_reward_changed": false,
+    "hardware_accessed": false
+  },
+  "speed_model_sha256": "7be895b46d12d66de80e80b10bceedc726ad839b9f4ef30fb14256c6d8c0de61",
+  "current_model_sha256": "25d7fc43c5b5ae7b84aa9aff4caa49d0803ac28add026c7571c1fdea1cffd1fa",
+  "input_sha256": "2627feb51f0b0e17f3457e225ac13282a43827756a89cd290608f5e84c982a22",
+  "forecaster_source_sha256": "f7a5d6e610ae4b5064c5bf016ad6c07f48e339aa4a8c7ec670e13483c66f1208",
+  "optimistic_reachable_grid_envelope": {
+    "actual_supported_grid_levels": [
+      -0.981249988079071,
+      -0.737500011920929,
+      -0.49375006556510925,
+      -0.25000011920928955,
+      0,
+      0.12500005960464478,
+      0.25000011920928955,
+      0.37500014901161194,
+      0.5000002384185791
+    ],
+    "rate_limit_retained": true,
+    "negative_grid_predictions": 0,
+    "one_decision_model_room_percent": 0.45843663840595683,
+    "current_constraint_not_applied_to_optimistic_envelope": true,
+    "envelope_is_not_a_true_motor_performance_bound": true,
+    "grid_controller_created": false
+  },
+  "observed_state_one_decision_forecasts": true,
+  "forecasts_are_not_closed_loop_returns_or_motor_performance": true,
+  "training_performed": false,
+  "hardware_accessed": false,
+  "Actor_applied": false,
+  "candidate_admission": false,
+  "deployment_allowed": false,
+  "performance_claim_allowed": false
+}

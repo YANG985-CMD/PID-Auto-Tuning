@@ -1,0 +1,18 @@
+{
+  "native_vs_golden_gain_max_abs_error": [
+    0,
+    8.6736173798840355E-19,
+    8.6736173798840355E-19,
+    0
+  ],
+  "native_vs_actual_frozen_MATLAB_Actor_action_max_abs_error": 1.9776163928675317E-8,
+  "checkpoint": "E:/dianji/motor-td3-local-results/elapsed-decision-TD3-20261013/training/candidate-measured-time-seed-7.mat",
+  "checkpoint_sha256": "13ad4341ca5a917161157c6684f74cc01c12c7b374f37d0e685af3b7e01597b2",
+  "observation_profile": "history20-40",
+  "feature9": "Error two telemetry packets earlier, 40ms",
+  "samples_compared": 11,
+  "integral_feature": "Algebraic proxy iqRef-Kp*error; distribution shift explicitly retained",
+  "hardware_accessed": false,
+  "deployment_allowed": false,
+  "performance_claim_allowed": false
+}

@@ -1,0 +1,640 @@
+{
+  "passed": true,
+  "boot_id": "3c51cb3629fa53da",
+  "whole_boot_role": "validation",
+  "actual_motion_seconds": 23.814818,
+  "complete_packets": 1197,
+  "actual_gain_commands": 467,
+  "actual_slots": [
+    {
+      "slot": 0,
+      "level": 8,
+      "target_kp": 0.0033889999613165855,
+      "fixed_ki": 0.0014400000218302011,
+      "planned_begin_ms": 6250,
+      "planned_end_ms": 6750,
+      "first_actual_ack_ms": 6266.955078125,
+      "actual_apply_delay_ms": 4.581000000000131,
+      "telemetry_ACK_delay_ms": 16.955078125,
+      "target_effective_ms": 6254.581,
+      "response_packets": 17,
+      "actual_references_rpm": [
+        1000.0
+      ],
+      "first_seq": 320,
+      "last_seq": 336
+    },
+    {
+      "slot": 1,
+      "level": 8,
+      "target_kp": 0.0033889999613165855,
+      "fixed_ki": 0.0014400000218302011,
+      "planned_begin_ms": 6750,
+      "planned_end_ms": 7250,
+      "first_actual_ack_ms": 6766.091796875,
+      "actual_apply_delay_ms": 10.618000000000393,
+      "telemetry_ACK_delay_ms": 16.091796875,
+      "target_effective_ms": 6760.618,
+      "response_packets": 17,
+      "actual_references_rpm": [
+        1000.0
+      ],
+      "first_seq": 345,
+      "last_seq": 361
+    },
+    {
+      "slot": 2,
+      "level": 8,
+      "target_kp": 0.0033889999613165855,
+      "fixed_ki": 0.0014400000218302011,
+      "planned_begin_ms": 7250,
+      "planned_end_ms": 7750,
+      "first_actual_ack_ms": 7270.1298828125,
+      "actual_apply_delay_ms": 14.654999999999745,
+      "telemetry_ACK_delay_ms": 20.1298828125,
+      "target_effective_ms": 7264.655,
+      "response_packets": 17,
+      "actual_references_rpm": [
+        1000.0
+      ],
+      "first_seq": 370,
+      "last_seq": 386
+    },
+    {
+      "slot": 3,
+      "level": 8,
+      "target_kp": 0.0033889999613165855,
+      "fixed_ki": 0.0014400000218302011,
+      "planned_begin_ms": 7750,
+      "planned_end_ms": 8250,
+      "first_actual_ack_ms": 7768.173828125,
+      "actual_apply_delay_ms": 0,
+      "telemetry_ACK_delay_ms": 18.173828125,
+      "target_effective_ms": 7750,
+      "response_packets": 18,
+      "actual_references_rpm": [
+        950.0,
+        1000.0
+      ],
+      "first_seq": 394,
+      "last_seq": 411
+    },
+    {
+      "slot": 4,
+      "level": 8,
+      "target_kp": 0.0033889999613165855,
+      "fixed_ki": 0.0014400000218302011,
+      "planned_begin_ms": 8250,
+      "planned_end_ms": 8750,
+      "first_actual_ack_ms": 8254.9326171875,
+      "actual_apply_delay_ms": 0,
+      "telemetry_ACK_delay_ms": 4.9326171875,
+      "target_effective_ms": 8250,
+      "response_packets": 18,
+      "actual_references_rpm": [
+        950.0
+      ],
+      "first_seq": 419,
+      "last_seq": 436
+    },
+    {
+      "slot": 5,
+      "level": 8,
+      "target_kp": 0.0033889999613165855,
+      "fixed_ki": 0.0014400000218302011,
+      "planned_begin_ms": 8750,
+      "planned_end_ms": 9250,
+      "first_actual_ack_ms": 8758.716796875,
+      "actual_apply_delay_ms": 0,
+      "telemetry_ACK_delay_ms": 8.716796875,
+      "target_effective_ms": 8750,
+      "response_packets": 17,
+      "actual_references_rpm": [
+        950.0
+      ],
+      "first_seq": 444,
+      "last_seq": 460
+    },
+    {
+      "slot": 6,
+      "level": 8,
+      "target_kp": 0.0033889999613165855,
+      "fixed_ki": 0.0014400000218302011,
+      "planned_begin_ms": 9250,
+      "planned_end_ms": 9750,
+      "first_actual_ack_ms": 9264.0341796875,
+      "actual_apply_delay_ms": 0,
+      "telemetry_ACK_delay_ms": 14.0341796875,
+      "target_effective_ms": 9250,
+      "response_packets": 17,
+      "actual_references_rpm": [
+        950.0
+      ],
+      "first_seq": 469,
+      "last_seq": 485
+    },
+    {
+      "slot": 7,
+      "level": 8,
+      "target_kp": 0.0033889999613165855,
+      "fixed_ki": 0.0014400000218302011,
+      "planned_begin_ms": 9750,
+      "planned_end_ms": 10250,
+      "first_actual_ack_ms": 9758.6904296875,
+      "actual_apply_delay_ms": 6.3840000000000146,
+      "telemetry_ACK_delay_ms": 8.6904296875,
+      "target_effective_ms": 9756.384,
+      "response_packets": 17,
+      "actual_references_rpm": [
+        950.0,
+        1000.0
+      ],
+      "first_seq": 494,
+      "last_seq": 510
+    },
+    {
+      "slot": 8,
+      "level": 8,
+      "target_kp": 0.0033889999613165855,
+      "fixed_ki": 0.0014400000218302011,
+      "planned_begin_ms": 10250,
+      "planned_end_ms": 10750,
+      "first_actual_ack_ms": 10263.1171875,
+      "actual_apply_delay_ms": 0,
+      "telemetry_ACK_delay_ms": 13.1171875,
+      "target_effective_ms": 10250,
+      "response_packets": 17,
+      "actual_references_rpm": [
+        1000.0
+      ],
+      "first_seq": 519,
+      "last_seq": 535
+    },
+    {
+      "slot": 9,
+      "level": 8,
+      "target_kp": 0.0033889999613165855,
+      "fixed_ki": 0.0014400000218302011,
+      "planned_begin_ms": 10750,
+      "planned_end_ms": 11250,
+      "first_actual_ack_ms": 10764.8056640625,
+      "actual_apply_delay_ms": 0,
+      "telemetry_ACK_delay_ms": 14.8056640625,
+      "target_effective_ms": 10750,
+      "response_packets": 17,
+      "actual_references_rpm": [
+        1000.0
+      ],
+      "first_seq": 544,
+      "last_seq": 560
+    },
+    {
+      "slot": 10,
+      "level": 8,
+      "target_kp": 0.0033889999613165855,
+      "fixed_ki": 0.0014400000218302011,
+      "planned_begin_ms": 11250,
+      "planned_end_ms": 11750,
+      "first_actual_ack_ms": 11268.5654296875,
+      "actual_apply_delay_ms": 0,
+      "telemetry_ACK_delay_ms": 18.5654296875,
+      "target_effective_ms": 11250,
+      "response_packets": 17,
+      "actual_references_rpm": [
+        1000.0
+      ],
+      "first_seq": 569,
+      "last_seq": 585
+    },
+    {
+      "slot": 11,
+      "level": 8,
+      "target_kp": 0.0033889999613165855,
+      "fixed_ki": 0.0014400000218302011,
+      "planned_begin_ms": 11750,
+      "planned_end_ms": 12250,
+      "first_actual_ack_ms": 11765.8310546875,
+      "actual_apply_delay_ms": 0,
+      "telemetry_ACK_delay_ms": 15.8310546875,
+      "target_effective_ms": 11750,
+      "response_packets": 18,
+      "actual_references_rpm": [
+        1000.0,
+        1050.0
+      ],
+      "first_seq": 594,
+      "last_seq": 611
+    },
+    {
+      "slot": 12,
+      "level": 8,
+      "target_kp": 0.0033889999613165855,
+      "fixed_ki": 0.0014400000218302011,
+      "planned_begin_ms": 12250,
+      "planned_end_ms": 12750,
+      "first_actual_ack_ms": 12257.9326171875,
+      "actual_apply_delay_ms": 5.630999999999403,
+      "telemetry_ACK_delay_ms": 7.9326171875,
+      "target_effective_ms": 12255.631,
+      "response_packets": 17,
+      "actual_references_rpm": [
+        1050.0
+      ],
+      "first_seq": 619,
+      "last_seq": 635
+    },
+    {
+      "slot": 13,
+      "level": 8,
+      "target_kp": 0.0033889999613165855,
+      "fixed_ki": 0.0014400000218302011,
+      "planned_begin_ms": 12750,
+      "planned_end_ms": 13250,
+      "first_actual_ack_ms": 12764.109375,
+      "actual_apply_delay_ms": 12.667999999999665,
+      "telemetry_ACK_delay_ms": 14.109375,
+      "target_effective_ms": 12762.668,
+      "response_packets": 16,
+      "actual_references_rpm": [
+        1050.0
+      ],
+      "first_seq": 645,
+      "last_seq": 660
+    },
+    {
+      "slot": 14,
+      "level": 8,
+      "target_kp": 0.0033889999613165855,
+      "fixed_ki": 0.0014400000218302011,
+      "planned_begin_ms": 13250,
+      "planned_end_ms": 13750,
+      "first_actual_ack_ms": 13263.9130859375,
+      "actual_apply_delay_ms": 0,
+      "telemetry_ACK_delay_ms": 13.9130859375,
+      "target_effective_ms": 13250,
+      "response_packets": 17,
+      "actual_references_rpm": [
+        1050.0
+      ],
+      "first_seq": 669,
+      "last_seq": 685
+    },
+    {
+      "slot": 15,
+      "level": 8,
+      "target_kp": 0.0033889999613165855,
+      "fixed_ki": 0.0014400000218302011,
+      "planned_begin_ms": 13750,
+      "planned_end_ms": 14250,
+      "first_actual_ack_ms": 13770.537109375,
+      "actual_apply_delay_ms": 0,
+      "telemetry_ACK_delay_ms": 20.537109375,
+      "target_effective_ms": 13750,
+      "response_packets": 18,
+      "actual_references_rpm": [
+        1000.0,
+        1050.0
+      ],
+      "first_seq": 693,
+      "last_seq": 710
+    },
+    {
+      "slot": 16,
+      "level": 8,
+      "target_kp": 0.0033889999613165855,
+      "fixed_ki": 0.0014400000218302011,
+      "planned_begin_ms": 14250,
+      "planned_end_ms": 14750,
+      "first_actual_ack_ms": 14264.2177734375,
+      "actual_apply_delay_ms": 0,
+      "telemetry_ACK_delay_ms": 14.2177734375,
+      "target_effective_ms": 14250,
+      "response_packets": 17,
+      "actual_references_rpm": [
+        1000.0
+      ],
+      "first_seq": 719,
+      "last_seq": 735
+    },
+    {
+      "slot": 17,
+      "level": 8,
+      "target_kp": 0.0033889999613165855,
+      "fixed_ki": 0.0014400000218302011,
+      "planned_begin_ms": 14750,
+      "planned_end_ms": 15250,
+      "first_actual_ack_ms": 14767.4931640625,
+      "actual_apply_delay_ms": 0,
+      "telemetry_ACK_delay_ms": 17.4931640625,
+      "target_effective_ms": 14750,
+      "response_packets": 17,
+      "actual_references_rpm": [
+        1000.0
+      ],
+      "first_seq": 744,
+      "last_seq": 760
+    },
+    {
+      "slot": 18,
+      "level": 8,
+      "target_kp": 0.0033889999613165855,
+      "fixed_ki": 0.0014400000218302011,
+      "planned_begin_ms": 15250,
+      "planned_end_ms": 15750,
+      "first_actual_ack_ms": 15265.1015625,
+      "actual_apply_delay_ms": 1.6569999999992433,
+      "telemetry_ACK_delay_ms": 15.1015625,
+      "target_effective_ms": 15251.657,
+      "response_packets": 17,
+      "actual_references_rpm": [
+        1000.0
+      ],
+      "first_seq": 769,
+      "last_seq": 785
+    },
+    {
+      "slot": 19,
+      "level": 8,
+      "target_kp": 0.0033889999613165855,
+      "fixed_ki": 0.0014400000218302011,
+      "planned_begin_ms": 15750,
+      "planned_end_ms": 16250,
+      "first_actual_ack_ms": 15760.9677734375,
+      "actual_apply_delay_ms": 10.692999999999302,
+      "telemetry_ACK_delay_ms": 10.9677734375,
+      "target_effective_ms": 15760.693,
+      "response_packets": 18,
+      "actual_references_rpm": [
+        950.0,
+        1000.0
+      ],
+      "first_seq": 794,
+      "last_seq": 811
+    },
+    {
+      "slot": 20,
+      "level": 8,
+      "target_kp": 0.0033889999613165855,
+      "fixed_ki": 0.0014400000218302011,
+      "planned_begin_ms": 16250,
+      "planned_end_ms": 16750,
+      "first_actual_ack_ms": 16260.3662109375,
+      "actual_apply_delay_ms": 0,
+      "telemetry_ACK_delay_ms": 10.3662109375,
+      "target_effective_ms": 16250,
+      "response_packets": 18,
+      "actual_references_rpm": [
+        950.0
+      ],
+      "first_seq": 819,
+      "last_seq": 836
+    },
+    {
+      "slot": 21,
+      "level": 8,
+      "target_kp": 0.0033889999613165855,
+      "fixed_ki": 0.0014400000218302011,
+      "planned_begin_ms": 16750,
+      "planned_end_ms": 17250,
+      "first_actual_ack_ms": 16750.44140625,
+      "actual_apply_delay_ms": 0,
+      "telemetry_ACK_delay_ms": 0.44140625,
+      "target_effective_ms": 16750,
+      "response_packets": 18,
+      "actual_references_rpm": [
+        950.0
+      ],
+      "first_seq": 844,
+      "last_seq": 861
+    },
+    {
+      "slot": 22,
+      "level": 8,
+      "target_kp": 0.0033889999613165855,
+      "fixed_ki": 0.0014400000218302011,
+      "planned_begin_ms": 17250,
+      "planned_end_ms": 17750,
+      "first_actual_ack_ms": 17254.634765625,
+      "actual_apply_delay_ms": 0,
+      "telemetry_ACK_delay_ms": 4.634765625,
+      "target_effective_ms": 17250,
+      "response_packets": 18,
+      "actual_references_rpm": [
+        950.0
+      ],
+      "first_seq": 869,
+      "last_seq": 886
+    },
+    {
+      "slot": 23,
+      "level": 8,
+      "target_kp": 0.0033889999613165855,
+      "fixed_ki": 0.0014400000218302011,
+      "planned_begin_ms": 17750,
+      "planned_end_ms": 18250,
+      "first_actual_ack_ms": 17755.81640625,
+      "actual_apply_delay_ms": 0,
+      "telemetry_ACK_delay_ms": 5.81640625,
+      "target_effective_ms": 17750,
+      "response_packets": 18,
+      "actual_references_rpm": [
+        950.0,
+        1000.0
+      ],
+      "first_seq": 894,
+      "last_seq": 911
+    },
+    {
+      "slot": 24,
+      "level": 8,
+      "target_kp": 0.0033889999613165855,
+      "fixed_ki": 0.0014400000218302011,
+      "planned_begin_ms": 18250,
+      "planned_end_ms": 18750,
+      "first_actual_ack_ms": 18257.76171875,
+      "actual_apply_delay_ms": 1.981999999999971,
+      "telemetry_ACK_delay_ms": 7.76171875,
+      "target_effective_ms": 18251.982,
+      "response_packets": 18,
+      "actual_references_rpm": [
+        1000.0
+      ],
+      "first_seq": 919,
+      "last_seq": 936
+    },
+    {
+      "slot": 25,
+      "level": 8,
+      "target_kp": 0.0033889999613165855,
+      "fixed_ki": 0.0014400000218302011,
+      "planned_begin_ms": 18750,
+      "planned_end_ms": 19250,
+      "first_actual_ack_ms": 18758.064453125,
+      "actual_apply_delay_ms": 0,
+      "telemetry_ACK_delay_ms": 8.064453125,
+      "target_effective_ms": 18750,
+      "response_packets": 18,
+      "actual_references_rpm": [
+        1000.0
+      ],
+      "first_seq": 944,
+      "last_seq": 961
+    },
+    {
+      "slot": 26,
+      "level": 8,
+      "target_kp": 0.0033889999613165855,
+      "fixed_ki": 0.0014400000218302011,
+      "planned_begin_ms": 19250,
+      "planned_end_ms": 19750,
+      "first_actual_ack_ms": 19258.439453125,
+      "actual_apply_delay_ms": 0,
+      "telemetry_ACK_delay_ms": 8.439453125,
+      "target_effective_ms": 19250,
+      "response_packets": 17,
+      "actual_references_rpm": [
+        1000.0
+      ],
+      "first_seq": 969,
+      "last_seq": 985
+    },
+    {
+      "slot": 27,
+      "level": 8,
+      "target_kp": 0.0033889999613165855,
+      "fixed_ki": 0.0014400000218302011,
+      "planned_begin_ms": 19750,
+      "planned_end_ms": 20250,
+      "first_actual_ack_ms": 19759.4921875,
+      "actual_apply_delay_ms": 0,
+      "telemetry_ACK_delay_ms": 9.4921875,
+      "target_effective_ms": 19750,
+      "response_packets": 17,
+      "actual_references_rpm": [
+        1000.0,
+        1050.0
+      ],
+      "first_seq": 994,
+      "last_seq": 1010
+    },
+    {
+      "slot": 28,
+      "level": 8,
+      "target_kp": 0.0033889999613165855,
+      "fixed_ki": 0.0014400000218302011,
+      "planned_begin_ms": 20250,
+      "planned_end_ms": 20750,
+      "first_actual_ack_ms": 20257.931640625,
+      "actual_apply_delay_ms": 0,
+      "telemetry_ACK_delay_ms": 7.931640625,
+      "target_effective_ms": 20250,
+      "response_packets": 18,
+      "actual_references_rpm": [
+        1050.0
+      ],
+      "first_seq": 1019,
+      "last_seq": 1036
+    },
+    {
+      "slot": 29,
+      "level": 8,
+      "target_kp": 0.0033889999613165855,
+      "fixed_ki": 0.0014400000218302011,
+      "planned_begin_ms": 20750,
+      "planned_end_ms": 21250,
+      "first_actual_ack_ms": 20758.17578125,
+      "actual_apply_delay_ms": 0.9690000000009604,
+      "telemetry_ACK_delay_ms": 8.17578125,
+      "target_effective_ms": 20750.969,
+      "response_packets": 18,
+      "actual_references_rpm": [
+        1050.0
+      ],
+      "first_seq": 1044,
+      "last_seq": 1061
+    },
+    {
+      "slot": 30,
+      "level": 8,
+      "target_kp": 0.0033889999613165855,
+      "fixed_ki": 0.0014400000218302011,
+      "planned_begin_ms": 21250,
+      "planned_end_ms": 21750,
+      "first_actual_ack_ms": 21255.580078125,
+      "actual_apply_delay_ms": 0,
+      "telemetry_ACK_delay_ms": 5.580078125,
+      "target_effective_ms": 21250,
+      "response_packets": 18,
+      "actual_references_rpm": [
+        1050.0
+      ],
+      "first_seq": 1069,
+      "last_seq": 1086
+    },
+    {
+      "slot": 31,
+      "level": 8,
+      "target_kp": 0.0033889999613165855,
+      "fixed_ki": 0.0014400000218302011,
+      "planned_begin_ms": 21750,
+      "planned_end_ms": 22250,
+      "first_actual_ack_ms": 21756.123046875,
+      "actual_apply_delay_ms": 0,
+      "telemetry_ACK_delay_ms": 6.123046875,
+      "target_effective_ms": 21750,
+      "response_packets": 18,
+      "actual_references_rpm": [
+        1000.0,
+        1050.0
+      ],
+      "first_seq": 1094,
+      "last_seq": 1111
+    }
+  ],
+  "reference_target_packet_counts": [
+    {
+      "reference_rpm": 950.0,
+      "target_level": 8,
+      "packets": 143
+    },
+    {
+      "reference_rpm": 1000.0,
+      "target_level": 8,
+      "packets": 276
+    },
+    {
+      "reference_rpm": 1050.0,
+      "target_level": 8,
+      "packets": 139
+    }
+  ],
+  "reference_changes_inside_gain_slots_allowed": true,
+  "required_reference_target_categories": [
+    [
+      950.0,
+      8
+    ],
+    [
+      1000.0,
+      8
+    ],
+    [
+      1050.0,
+      8
+    ]
+  ],
+  "reference_crossing_training_windows_must_be_rejected": true,
+  "training_data_capture_only": true,
+  "independent_performance_evaluation": false,
+  "actor_applied": false,
+  "training_performed": false,
+  "candidate_admission": false,
+  "deployment_allowed": false,
+  "performance_claim_allowed": false,
+  "hashes": {
+    "temporary-execution/td3-lower31-v28-20261014/contract1.json": "208adde4467f1edd16e6dc7e3c252e3b091e4b45125e6c59fde928df9f69552b",
+    "temporary-execution/td3-lower31-v28-20261014/round1/trial/summary.json": "a898cab5b4e2e62436fdaa14fcc8d11b2e5d61f49d9e9e190c083340717239a3",
+    "temporary-execution/td3-lower31-v28-20261014/round1/stream/events.jsonl": "a67848a1b02572a6b9179dd52dff708e8d3966b15c2af08e0e9a3224b0c2b215",
+    "temporary-execution/td3-lower31-v28-20261014/round1/trial/telemetry.jsonl": "246dcd7fe1e801b18f6c82919725b1df016a3fad134d97cb78fe7c4298c959af"
+  }
+}

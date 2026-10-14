@@ -1,0 +1,22 @@
+{
+  "passed": true,
+  "boot_id": "3c51cb3629fa53da",
+  "total_actual_edges": 4528,
+  "live_edges": 4528,
+  "hall_read_profile": "pipelined-chunk8-v2",
+  "halted_tail_overlap_verified": 832,
+  "tail_completion_edges": 0,
+  "complete_telemetry_packets": 1197,
+  "maximum_read_ms": 3.295400005299598,
+  "mean_read_ms": 1.9443065160423487,
+  "hardware_written": false,
+  "gain_exploration": false,
+  "training_performed": false,
+  "actor_applied": false,
+  "deployment_allowed": false,
+  "performance_claim_allowed": false,
+  "hashes": {
+    "events.jsonl": "a67848a1b02572a6b9179dd52dff708e8d3966b15c2af08e0e9a3224b0c2b215",
+    "hall-edges.json": "41b109952bbc9a59ef64c0cc1f811aa9b11962ac0cf063b50111ffbd5dded977"
+  }
+}

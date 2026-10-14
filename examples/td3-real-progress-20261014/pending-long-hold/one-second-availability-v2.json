@@ -1,0 +1,2128 @@
+{
+  "passed": true,
+  "diagnostic_horizon_us": 1000000,
+  "source_replay_sha256": "2e7c5874de71d4d4f9521caa8d4e6747e36155078aca320f4b5682629fdafb39",
+  "independent_physical_boots": 42,
+  "counts": [
+    {
+      "split": "train",
+      "actual_kp": 0.002856926992535591,
+      "optimistic_nonoverlapping_windows": 16,
+      "independent_boots": 2,
+      "actual_stable_spans": 6
+    },
+    {
+      "split": "train",
+      "actual_kp": 0.0029890979640185833,
+      "optimistic_nonoverlapping_windows": 12,
+      "independent_boots": 2,
+      "actual_stable_spans": 6
+    },
+    {
+      "split": "train",
+      "actual_kp": 0.0031212689355015755,
+      "optimistic_nonoverlapping_windows": 14,
+      "independent_boots": 3,
+      "actual_stable_spans": 4
+    },
+    {
+      "split": "train",
+      "actual_kp": 0.0032534399069845676,
+      "optimistic_nonoverlapping_windows": 4,
+      "independent_boots": 1,
+      "actual_stable_spans": 2
+    },
+    {
+      "split": "train",
+      "actual_kp": 0.0033889999613165855,
+      "optimistic_nonoverlapping_windows": 157,
+      "independent_boots": 21,
+      "actual_stable_spans": 46
+    },
+    {
+      "split": "train",
+      "actual_kp": 0.0034567799884825945,
+      "optimistic_nonoverlapping_windows": 19,
+      "independent_boots": 3,
+      "actual_stable_spans": 3
+    },
+    {
+      "split": "train",
+      "actual_kp": 0.0035245600156486034,
+      "optimistic_nonoverlapping_windows": 25,
+      "independent_boots": 2,
+      "actual_stable_spans": 9
+    },
+    {
+      "split": "train",
+      "actual_kp": 0.0035923400428146124,
+      "optimistic_nonoverlapping_windows": 10,
+      "independent_boots": 2,
+      "actual_stable_spans": 2
+    },
+    {
+      "split": "train",
+      "actual_kp": 0.0036601200699806213,
+      "optimistic_nonoverlapping_windows": 27,
+      "independent_boots": 4,
+      "actual_stable_spans": 5
+    },
+    {
+      "split": "validation",
+      "actual_kp": 0.002856926992535591,
+      "optimistic_nonoverlapping_windows": 16,
+      "independent_boots": 2,
+      "actual_stable_spans": 7
+    },
+    {
+      "split": "validation",
+      "actual_kp": 0.0029890979640185833,
+      "optimistic_nonoverlapping_windows": 14,
+      "independent_boots": 3,
+      "actual_stable_spans": 7
+    },
+    {
+      "split": "validation",
+      "actual_kp": 0.0031212689355015755,
+      "optimistic_nonoverlapping_windows": 12,
+      "independent_boots": 3,
+      "actual_stable_spans": 5
+    },
+    {
+      "split": "validation",
+      "actual_kp": 0.0033889999613165855,
+      "optimistic_nonoverlapping_windows": 155,
+      "independent_boots": 21,
+      "actual_stable_spans": 44
+    },
+    {
+      "split": "validation",
+      "actual_kp": 0.0034567799884825945,
+      "optimistic_nonoverlapping_windows": 19,
+      "independent_boots": 3,
+      "actual_stable_spans": 3
+    },
+    {
+      "split": "validation",
+      "actual_kp": 0.0035245600156486034,
+      "optimistic_nonoverlapping_windows": 29,
+      "independent_boots": 3,
+      "actual_stable_spans": 11
+    },
+    {
+      "split": "validation",
+      "actual_kp": 0.0035923400428146124,
+      "optimistic_nonoverlapping_windows": 10,
+      "independent_boots": 2,
+      "actual_stable_spans": 2
+    },
+    {
+      "split": "validation",
+      "actual_kp": 0.0036601200699806213,
+      "optimistic_nonoverlapping_windows": 27,
+      "independent_boots": 4,
+      "actual_stable_spans": 6
+    }
+  ],
+  "missing_existing_balanced_hold_support": [
+    {
+      "actual_kp": 0.002856926992535591,
+      "optimistic_training_windows": 16,
+      "training_boots": 2
+    },
+    {
+      "actual_kp": 0.0029890979640185833,
+      "optimistic_training_windows": 12,
+      "training_boots": 2
+    },
+    {
+      "actual_kp": 0.0031212689355015755,
+      "optimistic_training_windows": 14,
+      "training_boots": 3
+    },
+    {
+      "actual_kp": 0.0032534399069845676,
+      "optimistic_training_windows": 4,
+      "training_boots": 1
+    },
+    {
+      "actual_kp": 0.0034567799884825945,
+      "optimistic_training_windows": 19,
+      "training_boots": 3
+    },
+    {
+      "actual_kp": 0.0035245600156486034,
+      "optimistic_training_windows": 25,
+      "training_boots": 2
+    },
+    {
+      "actual_kp": 0.0035923400428146124,
+      "optimistic_training_windows": 10,
+      "training_boots": 2
+    },
+    {
+      "actual_kp": 0.0036601200699806213,
+      "optimistic_training_windows": 27,
+      "training_boots": 4
+    }
+  ],
+  "existing_nine_held_targets": [
+    0.002856926992535591,
+    0.0029890979640185833,
+    0.0031212689355015755,
+    0.0032534399069845676,
+    0.0033889999613165855,
+    0.0034567799884825945,
+    0.0035245600156486034,
+    0.0035923400428146124,
+    0.0036601200699806213
+  ],
+  "optimistic_counting_rule": "floor(span/horizon)+1 for spans at least horizon long",
+  "optimistic_hold_gate_met": false,
+  "exact_command_ACK_reconstruction_still_required": true,
+  "switching_support_not_evaluated": true,
+  "counts_are_not_training_experiences": true,
+  "rows": [
+    {
+      "boot_id": "355a64c57f55a79d",
+      "split": "train",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 4476303,
+      "end_us": 8611855,
+      "retained_packets": 208,
+      "optimistic_nonoverlapping_windows": 5
+    },
+    {
+      "boot_id": "355a64c57f55a79d",
+      "split": "train",
+      "actual_kp": 0.0036601200699806213,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 8671113,
+      "end_us": 12622786,
+      "retained_packets": 198,
+      "optimistic_nonoverlapping_windows": 4
+    },
+    {
+      "boot_id": "355a64c57f55a79d",
+      "split": "train",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 12682378,
+      "end_us": 16620790,
+      "retained_packets": 198,
+      "optimistic_nonoverlapping_windows": 4
+    },
+    {
+      "boot_id": "355a64c57f55a79d",
+      "split": "train",
+      "actual_kp": 0.0036601200699806213,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 16701377,
+      "end_us": 20643004,
+      "retained_packets": 198,
+      "optimistic_nonoverlapping_windows": 4
+    },
+    {
+      "boot_id": "355a64c57f55a79d",
+      "split": "train",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 20721899,
+      "end_us": 24362137,
+      "retained_packets": 183,
+      "optimistic_nonoverlapping_windows": 4
+    },
+    {
+      "boot_id": "eefefa4562663267",
+      "split": "train",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 4476336,
+      "end_us": 7084987,
+      "retained_packets": 132,
+      "optimistic_nonoverlapping_windows": 3
+    },
+    {
+      "boot_id": "eefefa4562663267",
+      "split": "train",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 22631672,
+      "end_us": 24361977,
+      "retained_packets": 87,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "7ccb06366104f1c2",
+      "split": "train",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 4475340,
+      "end_us": 13602984,
+      "retained_packets": 457,
+      "optimistic_nonoverlapping_windows": 10
+    },
+    {
+      "boot_id": "7ccb06366104f1c2",
+      "split": "train",
+      "actual_kp": 0.0036601200699806213,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 13682725,
+      "end_us": 22591002,
+      "retained_packets": 447,
+      "optimistic_nonoverlapping_windows": 9
+    },
+    {
+      "boot_id": "7ccb06366104f1c2",
+      "split": "train",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 22671671,
+      "end_us": 24361049,
+      "retained_packets": 85,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "586b1c48897edae8",
+      "split": "train",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 4480012,
+      "end_us": 9123197,
+      "retained_packets": 233,
+      "optimistic_nonoverlapping_windows": 5
+    },
+    {
+      "boot_id": "586b1c48897edae8",
+      "split": "train",
+      "actual_kp": 0.0034567799884825945,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 9141963,
+      "end_us": 13607491,
+      "retained_packets": 224,
+      "optimistic_nonoverlapping_windows": 5
+    },
+    {
+      "boot_id": "586b1c48897edae8",
+      "split": "train",
+      "actual_kp": 0.0035923400428146124,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 13628592,
+      "end_us": 18142426,
+      "retained_packets": 227,
+      "optimistic_nonoverlapping_windows": 5
+    },
+    {
+      "boot_id": "586b1c48897edae8",
+      "split": "train",
+      "actual_kp": 0.0036601200699806213,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 18161229,
+      "end_us": 22635288,
+      "retained_packets": 225,
+      "optimistic_nonoverlapping_windows": 5
+    },
+    {
+      "boot_id": "586b1c48897edae8",
+      "split": "train",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 22718194,
+      "end_us": 24365478,
+      "retained_packets": 83,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "2a8f27a25a3eb7eb",
+      "split": "train",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 4477911,
+      "end_us": 13626816,
+      "retained_packets": 458,
+      "optimistic_nonoverlapping_windows": 10
+    },
+    {
+      "boot_id": "2a8f27a25a3eb7eb",
+      "split": "train",
+      "actual_kp": 0.0034567799884825945,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 13646171,
+      "end_us": 22593195,
+      "retained_packets": 449,
+      "optimistic_nonoverlapping_windows": 9
+    },
+    {
+      "boot_id": "2a8f27a25a3eb7eb",
+      "split": "train",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 22611862,
+      "end_us": 24363143,
+      "retained_packets": 88,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "a8452b62503aba64",
+      "split": "train",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 4478927,
+      "end_us": 13627845,
+      "retained_packets": 458,
+      "optimistic_nonoverlapping_windows": 10
+    },
+    {
+      "boot_id": "a8452b62503aba64",
+      "split": "train",
+      "actual_kp": 0.0035245600156486034,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 13647207,
+      "end_us": 22634318,
+      "retained_packets": 451,
+      "optimistic_nonoverlapping_windows": 9
+    },
+    {
+      "boot_id": "a8452b62503aba64",
+      "split": "train",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 22655081,
+      "end_us": 24364493,
+      "retained_packets": 86,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "1548f3d56d8b3836",
+      "split": "train",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 4479010,
+      "end_us": 7109055,
+      "retained_packets": 133,
+      "optimistic_nonoverlapping_windows": 3
+    },
+    {
+      "boot_id": "1548f3d56d8b3836",
+      "split": "train",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 22159001,
+      "end_us": 24364023,
+      "retained_packets": 111,
+      "optimistic_nonoverlapping_windows": 3
+    },
+    {
+      "boot_id": "1ab6272841cca939",
+      "split": "train",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 4477908,
+      "end_us": 9139867,
+      "retained_packets": 234,
+      "optimistic_nonoverlapping_windows": 5
+    },
+    {
+      "boot_id": "1ab6272841cca939",
+      "split": "train",
+      "actual_kp": 0.0034567799884825945,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 9159312,
+      "end_us": 13626279,
+      "retained_packets": 224,
+      "optimistic_nonoverlapping_windows": 5
+    },
+    {
+      "boot_id": "1ab6272841cca939",
+      "split": "train",
+      "actual_kp": 0.0035923400428146124,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 13645680,
+      "end_us": 18140139,
+      "retained_packets": 226,
+      "optimistic_nonoverlapping_windows": 5
+    },
+    {
+      "boot_id": "1ab6272841cca939",
+      "split": "train",
+      "actual_kp": 0.0036601200699806213,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 18158940,
+      "end_us": 22611475,
+      "retained_packets": 224,
+      "optimistic_nonoverlapping_windows": 5
+    },
+    {
+      "boot_id": "1ab6272841cca939",
+      "split": "train",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 22694564,
+      "end_us": 24362976,
+      "retained_packets": 84,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "f9db6b2a63cd33dd",
+      "split": "validation",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 4476305,
+      "end_us": 6631477,
+      "retained_packets": 109,
+      "optimistic_nonoverlapping_windows": 3
+    },
+    {
+      "boot_id": "f9db6b2a63cd33dd",
+      "split": "validation",
+      "actual_kp": 0.0036601200699806213,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 6709951,
+      "end_us": 8611785,
+      "retained_packets": 96,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "f9db6b2a63cd33dd",
+      "split": "validation",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 8692284,
+      "end_us": 12581330,
+      "retained_packets": 195,
+      "optimistic_nonoverlapping_windows": 4
+    },
+    {
+      "boot_id": "f9db6b2a63cd33dd",
+      "split": "validation",
+      "actual_kp": 0.0036601200699806213,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 12661695,
+      "end_us": 16620021,
+      "retained_packets": 199,
+      "optimistic_nonoverlapping_windows": 4
+    },
+    {
+      "boot_id": "f9db6b2a63cd33dd",
+      "split": "validation",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 16681387,
+      "end_us": 20642138,
+      "retained_packets": 199,
+      "optimistic_nonoverlapping_windows": 4
+    },
+    {
+      "boot_id": "f9db6b2a63cd33dd",
+      "split": "validation",
+      "actual_kp": 0.0036601200699806213,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 20700692,
+      "end_us": 22609850,
+      "retained_packets": 97,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "f9db6b2a63cd33dd",
+      "split": "validation",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 22692927,
+      "end_us": 24361273,
+      "retained_packets": 84,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "b3e93fb9517e7c00",
+      "split": "validation",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 4474404,
+      "end_us": 6629479,
+      "retained_packets": 109,
+      "optimistic_nonoverlapping_windows": 3
+    },
+    {
+      "boot_id": "b3e93fb9517e7c00",
+      "split": "validation",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 22629104,
+      "end_us": 24359349,
+      "retained_packets": 87,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "f3f4d11c75ade039",
+      "split": "validation",
+      "actual_kp": 0.0036601200699806213,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 4675105,
+      "end_us": 13604108,
+      "retained_packets": 447,
+      "optimistic_nonoverlapping_windows": 9
+    },
+    {
+      "boot_id": "f3f4d11c75ade039",
+      "split": "validation",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 13663292,
+      "end_us": 24361879,
+      "retained_packets": 536,
+      "optimistic_nonoverlapping_windows": 11
+    },
+    {
+      "boot_id": "f3cac15d4af65065",
+      "split": "validation",
+      "actual_kp": 0.0036601200699806213,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 4677740,
+      "end_us": 9141393,
+      "retained_packets": 224,
+      "optimistic_nonoverlapping_windows": 5
+    },
+    {
+      "boot_id": "f3cac15d4af65065",
+      "split": "validation",
+      "actual_kp": 0.0035923400428146124,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 9160835,
+      "end_us": 13627989,
+      "retained_packets": 224,
+      "optimistic_nonoverlapping_windows": 5
+    },
+    {
+      "boot_id": "f3cac15d4af65065",
+      "split": "validation",
+      "actual_kp": 0.0034567799884825945,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 13647363,
+      "end_us": 18100278,
+      "retained_packets": 224,
+      "optimistic_nonoverlapping_windows": 5
+    },
+    {
+      "boot_id": "f3cac15d4af65065",
+      "split": "validation",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 18121347,
+      "end_us": 24364988,
+      "retained_packets": 313,
+      "optimistic_nonoverlapping_windows": 7
+    },
+    {
+      "boot_id": "d9ca584d07500c95",
+      "split": "validation",
+      "actual_kp": 0.0034567799884825945,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 4618394,
+      "end_us": 13606389,
+      "retained_packets": 450,
+      "optimistic_nonoverlapping_windows": 9
+    },
+    {
+      "boot_id": "d9ca584d07500c95",
+      "split": "validation",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 13627491,
+      "end_us": 24364286,
+      "retained_packets": 538,
+      "optimistic_nonoverlapping_windows": 11
+    },
+    {
+      "boot_id": "50e4bbb87fb2e91d",
+      "split": "validation",
+      "actual_kp": 0.0035245600156486034,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 4638126,
+      "end_us": 13606420,
+      "retained_packets": 449,
+      "optimistic_nonoverlapping_windows": 9
+    },
+    {
+      "boot_id": "50e4bbb87fb2e91d",
+      "split": "validation",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 13627522,
+      "end_us": 24364349,
+      "retained_packets": 538,
+      "optimistic_nonoverlapping_windows": 11
+    },
+    {
+      "boot_id": "70e7de69dd1ee43d",
+      "split": "validation",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 4477781,
+      "end_us": 7086296,
+      "retained_packets": 132,
+      "optimistic_nonoverlapping_windows": 3
+    },
+    {
+      "boot_id": "70e7de69dd1ee43d",
+      "split": "validation",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 22157501,
+      "end_us": 24362849,
+      "retained_packets": 111,
+      "optimistic_nonoverlapping_windows": 3
+    },
+    {
+      "boot_id": "9348ab78c380fc60",
+      "split": "validation",
+      "actual_kp": 0.0036601200699806213,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 4677025,
+      "end_us": 9121812,
+      "retained_packets": 223,
+      "optimistic_nonoverlapping_windows": 5
+    },
+    {
+      "boot_id": "9348ab78c380fc60",
+      "split": "validation",
+      "actual_kp": 0.0035923400428146124,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 9140542,
+      "end_us": 13605601,
+      "retained_packets": 224,
+      "optimistic_nonoverlapping_windows": 5
+    },
+    {
+      "boot_id": "9348ab78c380fc60",
+      "split": "validation",
+      "actual_kp": 0.0034567799884825945,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 13626703,
+      "end_us": 18140614,
+      "retained_packets": 227,
+      "optimistic_nonoverlapping_windows": 5
+    },
+    {
+      "boot_id": "9348ab78c380fc60",
+      "split": "validation",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 18159449,
+      "end_us": 24363363,
+      "retained_packets": 311,
+      "optimistic_nonoverlapping_windows": 7
+    },
+    {
+      "boot_id": "3b2cb220a1c58cdd",
+      "split": "train",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 4478671,
+      "end_us": 7350311,
+      "retained_packets": 145,
+      "optimistic_nonoverlapping_windows": 3
+    },
+    {
+      "boot_id": "3b2cb220a1c58cdd",
+      "split": "train",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 22574547,
+      "end_us": 24364049,
+      "retained_packets": 90,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "9fdcd54c23b6b79b",
+      "split": "validation",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 4478945,
+      "end_us": 7371982,
+      "retained_packets": 146,
+      "optimistic_nonoverlapping_windows": 3
+    },
+    {
+      "boot_id": "9fdcd54c23b6b79b",
+      "split": "validation",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 22575383,
+      "end_us": 24364722,
+      "retained_packets": 90,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "adea5a032aed0723",
+      "split": "train",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 4478945,
+      "end_us": 7391145,
+      "retained_packets": 147,
+      "optimistic_nonoverlapping_windows": 3
+    },
+    {
+      "boot_id": "adea5a032aed0723",
+      "split": "train",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 22574679,
+      "end_us": 24364223,
+      "retained_packets": 90,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "b0c032fb93dfe1ac",
+      "split": "validation",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 4479481,
+      "end_us": 7372448,
+      "retained_packets": 146,
+      "optimistic_nonoverlapping_windows": 3
+    },
+    {
+      "boot_id": "b0c032fb93dfe1ac",
+      "split": "validation",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 22575479,
+      "end_us": 24364685,
+      "retained_packets": 90,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "62f3a2e1a0773b94",
+      "split": "train",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 4478908,
+      "end_us": 7371864,
+      "retained_packets": 146,
+      "optimistic_nonoverlapping_windows": 3
+    },
+    {
+      "boot_id": "62f3a2e1a0773b94",
+      "split": "train",
+      "actual_kp": 0.0035245600156486034,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 7391144,
+      "end_us": 8554673,
+      "retained_packets": 59,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "62f3a2e1a0773b94",
+      "split": "train",
+      "actual_kp": 0.0035245600156486034,
+      "actual_reference_rpm": 950.0,
+      "begin_us": 8573196,
+      "end_us": 10562748,
+      "retained_packets": 100,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "62f3a2e1a0773b94",
+      "split": "train",
+      "actual_kp": 0.0035245600156486034,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 10582883,
+      "end_us": 12563735,
+      "retained_packets": 100,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "62f3a2e1a0773b94",
+      "split": "train",
+      "actual_kp": 0.0035245600156486034,
+      "actual_reference_rpm": 1050.0,
+      "begin_us": 12584226,
+      "end_us": 14551682,
+      "retained_packets": 99,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "62f3a2e1a0773b94",
+      "split": "train",
+      "actual_kp": 0.0035245600156486034,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 14572299,
+      "end_us": 16564425,
+      "retained_packets": 101,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "62f3a2e1a0773b94",
+      "split": "train",
+      "actual_kp": 0.0035245600156486034,
+      "actual_reference_rpm": 950.0,
+      "begin_us": 16582926,
+      "end_us": 18556361,
+      "retained_packets": 100,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "62f3a2e1a0773b94",
+      "split": "train",
+      "actual_kp": 0.0035245600156486034,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 18575992,
+      "end_us": 20560568,
+      "retained_packets": 100,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "62f3a2e1a0773b94",
+      "split": "train",
+      "actual_kp": 0.0035245600156486034,
+      "actual_reference_rpm": 1050.0,
+      "begin_us": 20581855,
+      "end_us": 22376530,
+      "retained_packets": 91,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "62f3a2e1a0773b94",
+      "split": "train",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 22574847,
+      "end_us": 24364143,
+      "retained_packets": 90,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "b8131fd485011278",
+      "split": "validation",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 4478509,
+      "end_us": 7350177,
+      "retained_packets": 145,
+      "optimistic_nonoverlapping_windows": 3
+    },
+    {
+      "boot_id": "b8131fd485011278",
+      "split": "validation",
+      "actual_kp": 0.0035245600156486034,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 7371679,
+      "end_us": 8554435,
+      "retained_packets": 60,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "b8131fd485011278",
+      "split": "validation",
+      "actual_kp": 0.0035245600156486034,
+      "actual_reference_rpm": 950.0,
+      "begin_us": 8572952,
+      "end_us": 10562417,
+      "retained_packets": 100,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "b8131fd485011278",
+      "split": "validation",
+      "actual_kp": 0.0035245600156486034,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 10582550,
+      "end_us": 12563433,
+      "retained_packets": 100,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "b8131fd485011278",
+      "split": "validation",
+      "actual_kp": 0.0035245600156486034,
+      "actual_reference_rpm": 1050.0,
+      "begin_us": 12583924,
+      "end_us": 14551180,
+      "retained_packets": 99,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "b8131fd485011278",
+      "split": "validation",
+      "actual_kp": 0.0035245600156486034,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 14571798,
+      "end_us": 16544114,
+      "retained_packets": 100,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "b8131fd485011278",
+      "split": "validation",
+      "actual_kp": 0.0035245600156486034,
+      "actual_reference_rpm": 950.0,
+      "begin_us": 16564097,
+      "end_us": 18556271,
+      "retained_packets": 101,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "b8131fd485011278",
+      "split": "validation",
+      "actual_kp": 0.0035245600156486034,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 18575902,
+      "end_us": 20560298,
+      "retained_packets": 100,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "b8131fd485011278",
+      "split": "validation",
+      "actual_kp": 0.0035245600156486034,
+      "actual_reference_rpm": 1050.0,
+      "begin_us": 20581595,
+      "end_us": 22356803,
+      "retained_packets": 90,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "b8131fd485011278",
+      "split": "validation",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 22574547,
+      "end_us": 24364045,
+      "retained_packets": 90,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "cd58b7ae2edaa3ad",
+      "split": "train",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 4476451,
+      "end_us": 6847679,
+      "retained_packets": 120,
+      "optimistic_nonoverlapping_windows": 3
+    },
+    {
+      "boot_id": "cd58b7ae2edaa3ad",
+      "split": "train",
+      "actual_kp": 0.0032534399069845676,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 6867158,
+      "end_us": 7873857,
+      "retained_packets": 51,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "cd58b7ae2edaa3ad",
+      "split": "train",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 10580095,
+      "end_us": 11890306,
+      "retained_packets": 66,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "cd58b7ae2edaa3ad",
+      "split": "train",
+      "actual_kp": 0.0032534399069845676,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 14569600,
+      "end_us": 15846857,
+      "retained_packets": 65,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "cd58b7ae2edaa3ad",
+      "split": "train",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 22572051,
+      "end_us": 24361286,
+      "retained_packets": 90,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "9aba32aac738042b",
+      "split": "validation",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 4477550,
+      "end_us": 6848922,
+      "retained_packets": 120,
+      "optimistic_nonoverlapping_windows": 3
+    },
+    {
+      "boot_id": "9aba32aac738042b",
+      "split": "validation",
+      "actual_kp": 0.0035245600156486034,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 6868445,
+      "end_us": 7875189,
+      "retained_packets": 51,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "9aba32aac738042b",
+      "split": "validation",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 10581554,
+      "end_us": 11891696,
+      "retained_packets": 66,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "9aba32aac738042b",
+      "split": "validation",
+      "actual_kp": 0.0035245600156486034,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 14571013,
+      "end_us": 15848413,
+      "retained_packets": 65,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "9aba32aac738042b",
+      "split": "validation",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 22573580,
+      "end_us": 24362821,
+      "retained_packets": 90,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "ee45fc545a6fa39f",
+      "split": "train",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 4479045,
+      "end_us": 8593895,
+      "retained_packets": 207,
+      "optimistic_nonoverlapping_windows": 5
+    },
+    {
+      "boot_id": "ee45fc545a6fa39f",
+      "split": "train",
+      "actual_kp": 0.0031212689355015755,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 8614559,
+      "end_us": 12625158,
+      "retained_packets": 201,
+      "optimistic_nonoverlapping_windows": 5
+    },
+    {
+      "boot_id": "ee45fc545a6fa39f",
+      "split": "train",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 12645226,
+      "end_us": 16602457,
+      "retained_packets": 199,
+      "optimistic_nonoverlapping_windows": 4
+    },
+    {
+      "boot_id": "ee45fc545a6fa39f",
+      "split": "train",
+      "actual_kp": 0.0031212689355015755,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 16622960,
+      "end_us": 20644953,
+      "retained_packets": 202,
+      "optimistic_nonoverlapping_windows": 5
+    },
+    {
+      "boot_id": "ee45fc545a6fa39f",
+      "split": "train",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 20664305,
+      "end_us": 24363790,
+      "retained_packets": 186,
+      "optimistic_nonoverlapping_windows": 4
+    },
+    {
+      "boot_id": "a3bdb763bae31c23",
+      "split": "validation",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 4479046,
+      "end_us": 6634041,
+      "retained_packets": 109,
+      "optimistic_nonoverlapping_windows": 3
+    },
+    {
+      "boot_id": "a3bdb763bae31c23",
+      "split": "validation",
+      "actual_kp": 0.0031212689355015755,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 6654038,
+      "end_us": 8614696,
+      "retained_packets": 99,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "a3bdb763bae31c23",
+      "split": "validation",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 8634600,
+      "end_us": 12604321,
+      "retained_packets": 199,
+      "optimistic_nonoverlapping_windows": 4
+    },
+    {
+      "boot_id": "a3bdb763bae31c23",
+      "split": "validation",
+      "actual_kp": 0.0031212689355015755,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 12625694,
+      "end_us": 16623359,
+      "retained_packets": 201,
+      "optimistic_nonoverlapping_windows": 4
+    },
+    {
+      "boot_id": "a3bdb763bae31c23",
+      "split": "validation",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 16644824,
+      "end_us": 20645444,
+      "retained_packets": 201,
+      "optimistic_nonoverlapping_windows": 5
+    },
+    {
+      "boot_id": "a3bdb763bae31c23",
+      "split": "validation",
+      "actual_kp": 0.0031212689355015755,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 20664796,
+      "end_us": 22634053,
+      "retained_packets": 100,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "a3bdb763bae31c23",
+      "split": "validation",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 22654806,
+      "end_us": 24364246,
+      "retained_packets": 86,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "6fb27a39a7bc9ccd",
+      "split": "train",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 4479046,
+      "end_us": 8594198,
+      "retained_packets": 207,
+      "optimistic_nonoverlapping_windows": 5
+    },
+    {
+      "boot_id": "6fb27a39a7bc9ccd",
+      "split": "train",
+      "actual_kp": 0.002856926992535591,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 8674119,
+      "end_us": 12625703,
+      "retained_packets": 198,
+      "optimistic_nonoverlapping_windows": 4
+    },
+    {
+      "boot_id": "6fb27a39a7bc9ccd",
+      "split": "train",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 12704509,
+      "end_us": 16602949,
+      "retained_packets": 196,
+      "optimistic_nonoverlapping_windows": 4
+    },
+    {
+      "boot_id": "6fb27a39a7bc9ccd",
+      "split": "train",
+      "actual_kp": 0.002856926992535591,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 16684807,
+      "end_us": 20645509,
+      "retained_packets": 199,
+      "optimistic_nonoverlapping_windows": 4
+    },
+    {
+      "boot_id": "6fb27a39a7bc9ccd",
+      "split": "train",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 20704046,
+      "end_us": 24364921,
+      "retained_packets": 184,
+      "optimistic_nonoverlapping_windows": 4
+    },
+    {
+      "boot_id": "44cb147c1edd65f6",
+      "split": "validation",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 4479850,
+      "end_us": 6613792,
+      "retained_packets": 108,
+      "optimistic_nonoverlapping_windows": 3
+    },
+    {
+      "boot_id": "44cb147c1edd65f6",
+      "split": "validation",
+      "actual_kp": 0.002856926992535591,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 6674743,
+      "end_us": 8635394,
+      "retained_packets": 99,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "44cb147c1edd65f6",
+      "split": "validation",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 8715854,
+      "end_us": 12626093,
+      "retained_packets": 196,
+      "optimistic_nonoverlapping_windows": 4
+    },
+    {
+      "boot_id": "44cb147c1edd65f6",
+      "split": "validation",
+      "actual_kp": 0.002856926992535591,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 12704894,
+      "end_us": 16603043,
+      "retained_packets": 196,
+      "optimistic_nonoverlapping_windows": 4
+    },
+    {
+      "boot_id": "44cb147c1edd65f6",
+      "split": "validation",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 16684902,
+      "end_us": 20624454,
+      "retained_packets": 198,
+      "optimistic_nonoverlapping_windows": 4
+    },
+    {
+      "boot_id": "44cb147c1edd65f6",
+      "split": "validation",
+      "actual_kp": 0.002856926992535591,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 20704246,
+      "end_us": 22613385,
+      "retained_packets": 97,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "44cb147c1edd65f6",
+      "split": "validation",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 22675369,
+      "end_us": 24364781,
+      "retained_packets": 85,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "4b778a0336f6ec45",
+      "split": "train",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 4476707,
+      "end_us": 7348450,
+      "retained_packets": 145,
+      "optimistic_nonoverlapping_windows": 3
+    },
+    {
+      "boot_id": "4b778a0336f6ec45",
+      "split": "train",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 22874415,
+      "end_us": 24362348,
+      "retained_packets": 75,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "2a2e514750785778",
+      "split": "validation",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 4476608,
+      "end_us": 7348249,
+      "retained_packets": 145,
+      "optimistic_nonoverlapping_windows": 3
+    },
+    {
+      "boot_id": "2a2e514750785778",
+      "split": "validation",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 22873318,
+      "end_us": 24361223,
+      "retained_packets": 75,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "057d0fe27b1db24a",
+      "split": "train",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 4478279,
+      "end_us": 7086995,
+      "retained_packets": 132,
+      "optimistic_nonoverlapping_windows": 3
+    },
+    {
+      "boot_id": "057d0fe27b1db24a",
+      "split": "train",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 22611960,
+      "end_us": 24363359,
+      "retained_packets": 88,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "e91b321f3cf34a35",
+      "split": "validation",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 4478952,
+      "end_us": 7087583,
+      "retained_packets": 132,
+      "optimistic_nonoverlapping_windows": 3
+    },
+    {
+      "boot_id": "e91b321f3cf34a35",
+      "split": "validation",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 22613460,
+      "end_us": 24365024,
+      "retained_packets": 88,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "0450b55d5784e734",
+      "split": "train",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 4475672,
+      "end_us": 7347519,
+      "retained_packets": 145,
+      "optimistic_nonoverlapping_windows": 3
+    },
+    {
+      "boot_id": "0450b55d5784e734",
+      "split": "train",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 22894107,
+      "end_us": 24361882,
+      "retained_packets": 74,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "109c722c18469d88",
+      "split": "validation",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 4475749,
+      "end_us": 7368897,
+      "retained_packets": 146,
+      "optimistic_nonoverlapping_windows": 3
+    },
+    {
+      "boot_id": "109c722c18469d88",
+      "split": "validation",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 22912058,
+      "end_us": 24361190,
+      "retained_packets": 73,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "f805c50e7361d3b5",
+      "split": "train",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 4480721,
+      "end_us": 7352257,
+      "retained_packets": 145,
+      "optimistic_nonoverlapping_windows": 3
+    },
+    {
+      "boot_id": "f805c50e7361d3b5",
+      "split": "train",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 23038096,
+      "end_us": 24365783,
+      "retained_packets": 67,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "a6557a8e6ca61553",
+      "split": "validation",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 4479916,
+      "end_us": 7372706,
+      "retained_packets": 146,
+      "optimistic_nonoverlapping_windows": 3
+    },
+    {
+      "boot_id": "a6557a8e6ca61553",
+      "split": "validation",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 23037048,
+      "end_us": 24364886,
+      "retained_packets": 67,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "69d548f73b3bc109",
+      "split": "train",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 4480952,
+      "end_us": 7352320,
+      "retained_packets": 145,
+      "optimistic_nonoverlapping_windows": 3
+    },
+    {
+      "boot_id": "69d548f73b3bc109",
+      "split": "train",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 23038692,
+      "end_us": 24366586,
+      "retained_packets": 67,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "007e8e64161ce82e",
+      "split": "validation",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 4480490,
+      "end_us": 7352024,
+      "retained_packets": 145,
+      "optimistic_nonoverlapping_windows": 3
+    },
+    {
+      "boot_id": "007e8e64161ce82e",
+      "split": "validation",
+      "actual_kp": 0.0029890979640185833,
+      "actual_reference_rpm": 1050.0,
+      "begin_us": 13367803,
+      "end_us": 14375528,
+      "retained_packets": 51,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "007e8e64161ce82e",
+      "split": "validation",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 22997573,
+      "end_us": 24365993,
+      "retained_packets": 69,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "601515e361912b5f",
+      "split": "train",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 4480555,
+      "end_us": 7352099,
+      "retained_packets": 145,
+      "optimistic_nonoverlapping_windows": 3
+    },
+    {
+      "boot_id": "601515e361912b5f",
+      "split": "train",
+      "actual_kp": 0.0031212689355015755,
+      "actual_reference_rpm": 950.0,
+      "begin_us": 8574858,
+      "end_us": 10564025,
+      "retained_packets": 100,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "601515e361912b5f",
+      "split": "train",
+      "actual_kp": 0.0029890979640185833,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 10887989,
+      "end_us": 12565048,
+      "retained_packets": 85,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "601515e361912b5f",
+      "split": "train",
+      "actual_kp": 0.0029890979640185833,
+      "actual_reference_rpm": 1050.0,
+      "begin_us": 12585539,
+      "end_us": 14552987,
+      "retained_packets": 99,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "601515e361912b5f",
+      "split": "train",
+      "actual_kp": 0.0029890979640185833,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 14573605,
+      "end_us": 16565834,
+      "retained_packets": 101,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "601515e361912b5f",
+      "split": "train",
+      "actual_kp": 0.0029890979640185833,
+      "actual_reference_rpm": 950.0,
+      "begin_us": 16584334,
+      "end_us": 18557957,
+      "retained_packets": 100,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "601515e361912b5f",
+      "split": "train",
+      "actual_kp": 0.0029890979640185833,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 18577589,
+      "end_us": 20562174,
+      "retained_packets": 100,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "601515e361912b5f",
+      "split": "train",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 22576688,
+      "end_us": 24366153,
+      "retained_packets": 90,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "fc4762ab8a846594",
+      "split": "validation",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 4481616,
+      "end_us": 7353317,
+      "retained_packets": 145,
+      "optimistic_nonoverlapping_windows": 3
+    },
+    {
+      "boot_id": "fc4762ab8a846594",
+      "split": "validation",
+      "actual_kp": 0.0031212689355015755,
+      "actual_reference_rpm": 950.0,
+      "begin_us": 8576239,
+      "end_us": 10565687,
+      "retained_packets": 100,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "fc4762ab8a846594",
+      "split": "validation",
+      "actual_kp": 0.0029890979640185833,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 10889686,
+      "end_us": 12566806,
+      "retained_packets": 85,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "fc4762ab8a846594",
+      "split": "validation",
+      "actual_kp": 0.0029890979640185833,
+      "actual_reference_rpm": 1050.0,
+      "begin_us": 12587302,
+      "end_us": 14554587,
+      "retained_packets": 99,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "fc4762ab8a846594",
+      "split": "validation",
+      "actual_kp": 0.0029890979640185833,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 14575206,
+      "end_us": 16567452,
+      "retained_packets": 101,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "fc4762ab8a846594",
+      "split": "validation",
+      "actual_kp": 0.0029890979640185833,
+      "actual_reference_rpm": 950.0,
+      "begin_us": 16585952,
+      "end_us": 18559483,
+      "retained_packets": 100,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "fc4762ab8a846594",
+      "split": "validation",
+      "actual_kp": 0.0029890979640185833,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 18579115,
+      "end_us": 20563532,
+      "retained_packets": 100,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "fc4762ab8a846594",
+      "split": "validation",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 22577788,
+      "end_us": 24367150,
+      "retained_packets": 90,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "c79766b534450acc",
+      "split": "train",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 4482489,
+      "end_us": 7375606,
+      "retained_packets": 146,
+      "optimistic_nonoverlapping_windows": 3
+    },
+    {
+      "boot_id": "c79766b534450acc",
+      "split": "train",
+      "actual_kp": 0.002856926992535591,
+      "actual_reference_rpm": 950.0,
+      "begin_us": 8903619,
+      "end_us": 10565966,
+      "retained_packets": 84,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "c79766b534450acc",
+      "split": "train",
+      "actual_kp": 0.002856926992535591,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 10586100,
+      "end_us": 12567042,
+      "retained_packets": 100,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "c79766b534450acc",
+      "split": "train",
+      "actual_kp": 0.002856926992535591,
+      "actual_reference_rpm": 1050.0,
+      "begin_us": 12587538,
+      "end_us": 14554974,
+      "retained_packets": 99,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "c79766b534450acc",
+      "split": "train",
+      "actual_kp": 0.002856926992535591,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 14575594,
+      "end_us": 16568006,
+      "retained_packets": 101,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "c79766b534450acc",
+      "split": "train",
+      "actual_kp": 0.0029890979640185833,
+      "actual_reference_rpm": 950.0,
+      "begin_us": 16904294,
+      "end_us": 18560276,
+      "retained_packets": 84,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "c79766b534450acc",
+      "split": "train",
+      "actual_kp": 0.0031212689355015755,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 18884425,
+      "end_us": 20564247,
+      "retained_packets": 85,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "c79766b534450acc",
+      "split": "train",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 22578389,
+      "end_us": 24367759,
+      "retained_packets": 90,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "47f54c5f3a57ca66",
+      "split": "validation",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 4481059,
+      "end_us": 7373964,
+      "retained_packets": 146,
+      "optimistic_nonoverlapping_windows": 3
+    },
+    {
+      "boot_id": "47f54c5f3a57ca66",
+      "split": "validation",
+      "actual_kp": 0.002856926992535591,
+      "actual_reference_rpm": 950.0,
+      "begin_us": 8862769,
+      "end_us": 10564724,
+      "retained_packets": 86,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "47f54c5f3a57ca66",
+      "split": "validation",
+      "actual_kp": 0.002856926992535591,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 10584859,
+      "end_us": 12565939,
+      "retained_packets": 100,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "47f54c5f3a57ca66",
+      "split": "validation",
+      "actual_kp": 0.002856926992535591,
+      "actual_reference_rpm": 1050.0,
+      "begin_us": 12586430,
+      "end_us": 14553766,
+      "retained_packets": 99,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "47f54c5f3a57ca66",
+      "split": "validation",
+      "actual_kp": 0.002856926992535591,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 14574386,
+      "end_us": 16546672,
+      "retained_packets": 100,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "47f54c5f3a57ca66",
+      "split": "validation",
+      "actual_kp": 0.0029890979640185833,
+      "actual_reference_rpm": 950.0,
+      "begin_us": 16883339,
+      "end_us": 18558756,
+      "retained_packets": 85,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "47f54c5f3a57ca66",
+      "split": "validation",
+      "actual_kp": 0.0031212689355015755,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 18882932,
+      "end_us": 20562841,
+      "retained_packets": 85,
+      "optimistic_nonoverlapping_windows": 2
+    },
+    {
+      "boot_id": "47f54c5f3a57ca66",
+      "split": "validation",
+      "actual_kp": 0.0033889999613165855,
+      "actual_reference_rpm": 1000.0,
+      "begin_us": 22576861,
+      "end_us": 24365985,
+      "retained_packets": 90,
+      "optimistic_nonoverlapping_windows": 2
+    }
+  ],
+  "sources": [
+    {
+      "boot_id": "355a64c57f55a79d",
+      "split": "train",
+      "journal": "local-archive/upper8-20261014/round0/stream/events.jsonl",
+      "sha256": "34a69472989e6d168da44bb856746a2e52c901709d8a894d962be2a801e64c0f"
+    },
+    {
+      "boot_id": "eefefa4562663267",
+      "split": "train",
+      "journal": "local-archive/upper8-20261014/switching/round0/stream/events.jsonl",
+      "sha256": "55df458b101c5026f123f2c31dd0f49d42378b49f4f756cff969ba98e600965b"
+    },
+    {
+      "boot_id": "7ccb06366104f1c2",
+      "split": "train",
+      "journal": "local-archive/upper8-longhold-20261014/round0/stream/events.jsonl",
+      "sha256": "c030a7ac1a10b4cf637de50cfc486513e15d0beba2382f529fc8afe9c0fd0b53"
+    },
+    {
+      "boot_id": "586b1c48897edae8",
+      "split": "train",
+      "journal": "local-archive/continuous-upper8-interface-20261014/batch2-approved/round0/stream/events.jsonl",
+      "sha256": "f99419d6c4e87f4d6906dc340da3f5a0cb012e9a980d09d69d5dfe6fc89c3031"
+    },
+    {
+      "boot_id": "2a8f27a25a3eb7eb",
+      "split": "train",
+      "journal": "local-archive/plus2-longhold-20261014/round0/stream/events.jsonl",
+      "sha256": "ed171b825127964892b97ac497b33d273fcbd279a72833e39b545ed735d73f78"
+    },
+    {
+      "boot_id": "a8452b62503aba64",
+      "split": "train",
+      "journal": "local-archive/plus4-longhold-20261014/round0/stream/events.jsonl",
+      "sha256": "355c00764b61c7f963ee8f0259470ebe3e44570fe05754708f8f85da65ad5d3a"
+    },
+    {
+      "boot_id": "1548f3d56d8b3836",
+      "split": "train",
+      "journal": "local-archive/switch-sampling-20261014/round0/stream/events.jsonl",
+      "sha256": "4fa4ce2f2fd8af5fd7e0a0dc2eb5fad36e371d91f23b073ad99692adb89bda2f"
+    },
+    {
+      "boot_id": "1ab6272841cca939",
+      "split": "train",
+      "journal": "local-archive/long-window-capture-20261014/round0/stream/events.jsonl",
+      "sha256": "b768e0cdc61a06f2e2fc3edb7f07c7dda1cb09ca9cc2627ad00d35dbde5e67bd"
+    },
+    {
+      "boot_id": "f9db6b2a63cd33dd",
+      "split": "validation",
+      "journal": "local-archive/upper8-20261014/round1/stream/events.jsonl",
+      "sha256": "c6702e3edd7c10acae4a94919aad43c30bf5047c3dc219cee913ca28739b8253"
+    },
+    {
+      "boot_id": "b3e93fb9517e7c00",
+      "split": "validation",
+      "journal": "local-archive/upper8-20261014/switching/round1/stream/events.jsonl",
+      "sha256": "68840250f323039e9ddad30d57d88648670f03102b85ea4c2ccaa653b36ee970"
+    },
+    {
+      "boot_id": "f3f4d11c75ade039",
+      "split": "validation",
+      "journal": "local-archive/upper8-longhold-20261014/round1/stream/events.jsonl",
+      "sha256": "9713d8f34d1075f56d9700ca4ffffd7b6ffc4a0262b6a9dc996757a79bf7890a"
+    },
+    {
+      "boot_id": "f3cac15d4af65065",
+      "split": "validation",
+      "journal": "local-archive/continuous-upper8-interface-20261014/batch2-approved/round1/stream/events.jsonl",
+      "sha256": "5c1a37f25d6522e1e7b5a1b47e0db4327ec95c74b8ffb131cc233b12770ff04c"
+    },
+    {
+      "boot_id": "d9ca584d07500c95",
+      "split": "validation",
+      "journal": "local-archive/plus2-longhold-20261014/round1/stream/events.jsonl",
+      "sha256": "64f32cfde34fb13bb0340e533d814fdebfd635f49ed85260500fbbd5c34964a1"
+    },
+    {
+      "boot_id": "50e4bbb87fb2e91d",
+      "split": "validation",
+      "journal": "local-archive/plus4-longhold-20261014/round1/stream/events.jsonl",
+      "sha256": "4621d429184c902335d50b25fe119b4fd5d3e43e47ddc0eb9e1935edf7f87fc5"
+    },
+    {
+      "boot_id": "70e7de69dd1ee43d",
+      "split": "validation",
+      "journal": "local-archive/switch-sampling-20261014/round1/stream/events.jsonl",
+      "sha256": "10db241d863e74d7795793d4dcda4007dd1ef32d96d7b78719d21532c5d9be58"
+    },
+    {
+      "boot_id": "9348ab78c380fc60",
+      "split": "validation",
+      "journal": "local-archive/long-window-capture-20261014/round1/stream/events.jsonl",
+      "sha256": "5010775dc3057d80c285e9d2ac1a1684ffa1f59de56d1d26b6d8285172220ad2"
+    },
+    {
+      "boot_id": "3b2cb220a1c58cdd",
+      "split": "train",
+      "journal": "local-archive/reference-v26-capture-20261014/dynamic-round0/stream/events.jsonl",
+      "sha256": "3703e93717adf79ac2e5607694f3f936d2a5f18ebdd5220c0ed8d3511b022f53"
+    },
+    {
+      "boot_id": "9fdcd54c23b6b79b",
+      "split": "validation",
+      "journal": "local-archive/reference-v26-capture-20261014/dynamic-round1/stream/events.jsonl",
+      "sha256": "a921a924a80831e19a9f04a701ee27abd2d4ee32b6dd802d6297afd44f190ba8"
+    },
+    {
+      "boot_id": "adea5a032aed0723",
+      "split": "train",
+      "journal": "local-archive/reference-joint-support-20261014/round0/stream/events.jsonl",
+      "sha256": "62333405985a56062f3e8a72dda151d0d2d405e12f064bb99ed12dcc7026011e"
+    },
+    {
+      "boot_id": "b0c032fb93dfe1ac",
+      "split": "validation",
+      "journal": "local-archive/reference-joint-support-20261014/round1/stream/events.jsonl",
+      "sha256": "b1ccaea779623a4a2a657bdba5d18164d5b943ba846f1bd9beda8308ab7aa0c5"
+    },
+    {
+      "boot_id": "62f3a2e1a0773b94",
+      "split": "train",
+      "journal": "local-archive/reference-plus4-300ms-20261014/round0/stream/events.jsonl",
+      "sha256": "27ecca6b8efa5cddaaaef5cf464c734121af06570a535b537b116dc75527f3de"
+    },
+    {
+      "boot_id": "b8131fd485011278",
+      "split": "validation",
+      "journal": "local-archive/reference-plus4-300ms-20261014/round1/stream/events.jsonl",
+      "sha256": "35e2e2071a05d172a6dc3a6082ebb16c7f17cee712dc248c8a4c2467fcdda901"
+    },
+    {
+      "boot_id": "cd58b7ae2edaa3ad",
+      "split": "train",
+      "journal": "local-archive/complete-pairs-20261013/round0/stream/events.jsonl",
+      "sha256": "175578d93c3196aeec7c19d7638802133923113ade15b95c51295b2acea36a9b"
+    },
+    {
+      "boot_id": "9aba32aac738042b",
+      "split": "validation",
+      "journal": "local-archive/complete-pairs-20261013/round1/stream/events.jsonl",
+      "sha256": "3639f2805ffd19377753c8514ebed80d7ba02d08c1708c0d07be7f8dc69e5c86"
+    },
+    {
+      "boot_id": "ee45fc545a6fa39f",
+      "split": "train",
+      "journal": "local-archive/full-hall-middle-upper4-20261013/middle-original/round0/stream/events.jsonl",
+      "sha256": "cb81d8df4d848eca85fc436b569e56639a3695f39ac28267aef5596f8dfef510"
+    },
+    {
+      "boot_id": "a3bdb763bae31c23",
+      "split": "validation",
+      "journal": "local-archive/full-hall-middle-upper4-20261013/middle-replacement/round1/stream/events.jsonl",
+      "sha256": "deee65ef6ad433c2e29e56d471450bb946a7918aa139620532d87933988a4dac"
+    },
+    {
+      "boot_id": "6fb27a39a7bc9ccd",
+      "split": "train",
+      "journal": "local-archive/full-hall-retraining-20261013/round0/stream/events.jsonl",
+      "sha256": "1514c6ae72efabd6e2d1755160992d204709c78c27029d1347c47c4054766431"
+    },
+    {
+      "boot_id": "44cb147c1edd65f6",
+      "split": "validation",
+      "journal": "local-archive/full-hall-retraining-20261013/round1/stream/events.jsonl",
+      "sha256": "c2c8cc69bad525cb74f4d02f954de423dd2164e0a63620de01a33252629b3e1b"
+    },
+    {
+      "boot_id": "4b778a0336f6ec45",
+      "split": "train",
+      "journal": "local-archive/reference-balanced-20261013/round0/stream/events.jsonl",
+      "sha256": "9b751eb2fb31cbfdbd687ef04719d302b8eb78a9943c3dc5a33ce049c10cc79f"
+    },
+    {
+      "boot_id": "2a2e514750785778",
+      "split": "validation",
+      "journal": "local-archive/reference-balanced-20261013/round1/stream/events.jsonl",
+      "sha256": "aa40c3d258f17f639557b69d3932cc46dc5c2935c1743600a29e72674409ddf9"
+    },
+    {
+      "boot_id": "057d0fe27b1db24a",
+      "split": "train",
+      "journal": "local-archive/reference-excitation-20261013/prior-session-round0/stream/events.jsonl",
+      "sha256": "8d47c2c7d4ea41ed3d1939068f527a8b8dde6e660ce861c3075050d4a5f3343e"
+    },
+    {
+      "boot_id": "e91b321f3cf34a35",
+      "split": "validation",
+      "journal": "local-archive/reference-excitation-20261013/prior-session-round1/stream/events.jsonl",
+      "sha256": "228ce3fb1244877c287d91d5bd6b0ca19443a7b2982781e5fbff8fa195a321ef"
+    },
+    {
+      "boot_id": "0450b55d5784e734",
+      "split": "train",
+      "journal": "local-archive/reference-excitation-20261013/round0/stream/events.jsonl",
+      "sha256": "683f6280c8966dba8890794776a6e97a5d56b944332c8c24a51a57c0d1df2afd"
+    },
+    {
+      "boot_id": "109c722c18469d88",
+      "split": "validation",
+      "journal": "local-archive/reference-excitation-20261013/round1/stream/events.jsonl",
+      "sha256": "e21cbc754c97b0f72a6e0b53367112d0fbfd9ac6dcda568dbe92fb68d1884135"
+    },
+    {
+      "boot_id": "f805c50e7361d3b5",
+      "split": "train",
+      "journal": "local-archive/bidirectional-capture-v27-20261014/round0/stream/events.jsonl",
+      "sha256": "89696774e5dd32d0f34a2fc63bb3fb96c738ca607c331cf1d924a46ab9c5c76d"
+    },
+    {
+      "boot_id": "a6557a8e6ca61553",
+      "split": "validation",
+      "journal": "local-archive/bidirectional-capture-v27-20261014/round1/stream/events.jsonl",
+      "sha256": "71eeb6bb68bb4fa0f3d0dda2b7df6f0465b7ad464c9de106ab5ae89b9fbec957"
+    },
+    {
+      "boot_id": "69d548f73b3bc109",
+      "split": "train",
+      "journal": "local-archive/bidirectional-repeat-v27-20261014/round0/stream/events.jsonl",
+      "sha256": "bd5be2e5aef0c99b127aa708c952b38e0f270e7aa0e50ca16a7c9fff90981236"
+    },
+    {
+      "boot_id": "007e8e64161ce82e",
+      "split": "validation",
+      "journal": "local-archive/bidirectional-repeat-v27-20261014/round1/stream/events.jsonl",
+      "sha256": "d4b23c1f4c904ec7eeca17043eb48b077559599828746b4d54836410ff66b143"
+    },
+    {
+      "boot_id": "601515e361912b5f",
+      "split": "train",
+      "journal": "local-archive/bidirectional-longhold-20261014/batch0/round0/stream/events.jsonl",
+      "sha256": "03fbd43f177304a917faf702c5ae605599e0227fe4e34607ea01592d56a38a4b"
+    },
+    {
+      "boot_id": "fc4762ab8a846594",
+      "split": "validation",
+      "journal": "local-archive/bidirectional-longhold-20261014/batch0/round1/stream/events.jsonl",
+      "sha256": "ea67d3dddc39b7617e543c5005f59eb51d4c39f3e75de12a2bdc6acbc2e4b4a0"
+    },
+    {
+      "boot_id": "c79766b534450acc",
+      "split": "train",
+      "journal": "local-archive/bidirectional-longhold-20261014/batch1/round0/stream/events.jsonl",
+      "sha256": "6d226321cfa339c9effdea8bd3db7d941838e2de2f881e8e5086de981d33b733"
+    },
+    {
+      "boot_id": "47f54c5f3a57ca66",
+      "split": "validation",
+      "journal": "local-archive/bidirectional-longhold-20261014/batch1/round1/stream/events.jsonl",
+      "sha256": "d3b73f7c5c23b7812d24793e168ed06ea86cba204bbaab3f22df30f35c88b532"
+    }
+  ],
+  "hardware_accessed": false,
+  "new_motor_trials": 0,
+  "physical_actions_rewards_and_primary_metric_unchanged": true,
+  "training_performed": false,
+  "candidate_admission": false,
+  "deployment_allowed": false,
+  "performance_claim_allowed": false
+}

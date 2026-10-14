@@ -16,6 +16,7 @@ IDENTITY='g431-speedloop-pi-motion-v5'
 ENERGIZED_IMAGE_SHA='45ad8fcd5039822741d888cb54eaea909cfc55d3e13dc8da0cdfcfc98703cce5'
 
 OLD_SHA='902b5dd09f9873a1143798852e55414102e131fa0ab16ad983e145cde0e45ef2'
+OLD_BYTES=49628
 
 
 def flash(a):
@@ -40,7 +41,7 @@ def flash(a):
     if first is None: raise RuntimeError('Selected STLink is disconnected; no reset/programming')
     with first as s:
         target=s.target
-        old=bytes(target.read_memory_block8(0x08000000,49628))
+        old=bytes(target.read_memory_block8(0x08000000,OLD_BYTES))
         values={name:target.read32(addr) for name,addr in REGS.items()}
         if (hashlib.sha256(old).hexdigest()!=OLD_SHA or
             values['device_id']&0xfff!=0x468 or values['tim1_bdtr']&0x8000 or

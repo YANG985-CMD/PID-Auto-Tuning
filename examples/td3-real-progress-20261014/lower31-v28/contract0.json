@@ -1,0 +1,187 @@
+{
+  "version": "lower31-staged-probe-baseline-v28-v1",
+  "requested_rounds": 1,
+  "reserved_motion_seconds": 24,
+  "maximum_batch_rounds": 2,
+  "maximum_batch_motion_seconds": 48,
+  "minimum_cooldown_seconds": 30,
+  "exact_kp_levels": [
+    0.0023282431066036224,
+    0.0024604140780866146,
+    0.0025925850495696068,
+    0.002724756021052599,
+    0.002856926992535591,
+    0.0029890979640185833,
+    0.0031212689355015755,
+    0.0032534399069845676,
+    0.0033889999613165855,
+    0.003422890091314912,
+    0.0034567799884825945,
+    0.003490669885650277,
+    0.0035245600156486034,
+    0.003558449912816286,
+    0.0035923400428146124,
+    0.003626229939982295,
+    0.0036601200699806213
+  ],
+  "fixed_ki": 0.0014400000218302011,
+  "initial_reference_rpm": 1000,
+  "reference_profile": "exogenous-v28-lower31-950-1000-1050",
+  "reference_levels_rpm": [
+    950,
+    1000,
+    1050
+  ],
+  "reference_pattern_rpm": [
+    1000,
+    950,
+    1000,
+    1050,
+    1000,
+    950,
+    1000,
+    1050
+  ],
+  "reference_start_ms": 6000,
+  "reference_slot_ms": 2000,
+  "reference_finish_ms": 22000,
+  "pattern": [
+    8,
+    7,
+    6,
+    5,
+    4,
+    3,
+    2,
+    1,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8
+  ],
+  "plateau_start_ms": 6250,
+  "plateau_end_ms": 22250,
+  "planned_reference_target_categories": [
+    [
+      950.0,
+      0
+    ],
+    [
+      950.0,
+      1
+    ],
+    [
+      950.0,
+      2
+    ],
+    [
+      950.0,
+      3
+    ],
+    [
+      950.0,
+      4
+    ],
+    [
+      1000.0,
+      0
+    ],
+    [
+      1000.0,
+      1
+    ],
+    [
+      1000.0,
+      2
+    ],
+    [
+      1000.0,
+      3
+    ],
+    [
+      1000.0,
+      4
+    ],
+    [
+      1000.0,
+      5
+    ],
+    [
+      1000.0,
+      6
+    ],
+    [
+      1000.0,
+      7
+    ],
+    [
+      1000.0,
+      8
+    ],
+    [
+      1050.0,
+      0
+    ],
+    [
+      1050.0,
+      5
+    ],
+    [
+      1050.0,
+      6
+    ],
+    [
+      1050.0,
+      7
+    ],
+    [
+      1050.0,
+      8
+    ]
+  ],
+  "plateau_ms": 500,
+  "gain_reference_clock_offset_ms": 250,
+  "analysis_settle_ms": 100,
+  "analysis_end_margin_ms": 50,
+  "whole_boot_role": "train",
+  "actor_applied": false,
+  "fault_automatic_retry": false,
+  "fault_ends_entire_batch": true,
+  "training_performed": false,
+  "independent_performance_evaluation": false,
+  "action_mapping_redefinition_required": true,
+  "live_hall_capture": true,
+  "hall_read_profile": "pipelined-chunk8-v2",
+  "debug_read_frequency_hz": 4000000,
+  "host_single_kp_step_limit": 0.00013556,
+  "firmware_single_kp_step_limit": 0.00027112,
+  "exact_image_sha256": "35f22db78fbba9e3372e44705ffbe4b9a5f719f1d3bfe7b4a6b31e499bcc4c11",
+  "thermal_gate_modified": false,
+  "deployment_allowed": false,
+  "performance_claim_allowed": false,
+  "declared_utc": "2026-10-14T08:18:50.802539+00:00",
+  "authority": "Human approved autonomous bounded Kp exploration; restored maintained field state",
+  "bounded_reader_benchmark_sha256": "b1d0beb2e135daf743151c1a6f2994607e7579b5c21211b4334ce9bac8059c97",
+  "debug_read_benchmark_sha256": "09e22617e0c9022049478999ccb3705c36c9ab287af6f89f9806798ee41959b3",
+  "Hall_reader_source_sha256": "a2d6e543e825945e801b03e97da4aa7af0a6d2575c9060ccc96229a61143ec12"
+}

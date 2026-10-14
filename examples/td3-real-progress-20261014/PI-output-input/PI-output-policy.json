@@ -1,0 +1,101 @@
+{
+  "passed": true,
+  "results": [
+    {
+      "seed": 7,
+      "checkpoint_sha256": "b60d53d6b61f8ecc715f2ce408e29d69392e660b593074e1745e0fd9058286b9",
+      "raw_suggestion_range": [
+        -0.6195486783981323,
+        0.8605250716209412
+      ],
+      "executed_float32_Kp_range": [
+        0.0028906019870191813,
+        0.0036506664473563433
+      ],
+      "executed_distinct_float32_Kp_count": 893,
+      "mean_relative_Kp_change_percent": -0.018328036312272405,
+      "exact_execution_bounds_and_Ki_passed": true,
+      "mean_predicted_executed_advantage_over_reachable_baseline_move": 2.5561087025503636e-05,
+      "positive_predicted_advantage_fraction": 0.5117581187010078,
+      "mean_executed_twin_disagreement": 2.5105786750725107e-06,
+      "target_noise_executed_changes": 19200,
+      "target_action_samples": 19200,
+      "no_nearest_grid_quantization": true,
+      "no_straight_through_surrogate": true,
+      "independent_frozen_actor_response_verified": false,
+      "candidate_admission": false,
+      "deployment_allowed": false,
+      "performance_claim_allowed": false
+    },
+    {
+      "seed": 17,
+      "checkpoint_sha256": "3b24a102ff448a4b85816e02a78c65a389ca2fdeafd4f2f1233b66213122f545",
+      "raw_suggestion_range": [
+        -0.6084662079811096,
+        0.7521647810935974
+      ],
+      "executed_float32_Kp_range": [
+        0.0029010497964918613,
+        0.003643321804702282
+      ],
+      "executed_distinct_float32_Kp_count": 892,
+      "mean_relative_Kp_change_percent": -0.00036667412664924745,
+      "exact_execution_bounds_and_Ki_passed": true,
+      "mean_predicted_executed_advantage_over_reachable_baseline_move": 2.2301143070490986e-05,
+      "positive_predicted_advantage_fraction": 0.48376259798432253,
+      "mean_executed_twin_disagreement": 9.249800221456375e-06,
+      "target_noise_executed_changes": 19200,
+      "target_action_samples": 19200,
+      "no_nearest_grid_quantization": true,
+      "no_straight_through_surrogate": true,
+      "independent_frozen_actor_response_verified": false,
+      "candidate_admission": false,
+      "deployment_allowed": false,
+      "performance_claim_allowed": false
+    },
+    {
+      "seed": 27,
+      "checkpoint_sha256": "6c8fe2bf27e835c8633bbf7455718e59becf596eb31d5eb8161acad7500f68f1",
+      "raw_suggestion_range": [
+        -0.5149874687194824,
+        0.6602997779846191
+      ],
+      "executed_float32_Kp_range": [
+        0.002901226282119751,
+        0.0036370952147990465
+      ],
+      "executed_distinct_float32_Kp_count": 893,
+      "mean_relative_Kp_change_percent": -0.10273928835845458,
+      "exact_execution_bounds_and_Ki_passed": true,
+      "mean_predicted_executed_advantage_over_reachable_baseline_move": 1.8861671778804145e-05,
+      "positive_predicted_advantage_fraction": 0.4568868980963046,
+      "mean_executed_twin_disagreement": 1.6267165022277485e-05,
+      "target_noise_executed_changes": 19200,
+      "target_action_samples": 19200,
+      "no_nearest_grid_quantization": true,
+      "no_straight_through_surrogate": true,
+      "independent_frozen_actor_response_verified": false,
+      "candidate_admission": false,
+      "deployment_allowed": false,
+      "performance_claim_allowed": false
+    }
+  ],
+  "validation_states": 893,
+  "mean_cross_seed_executed_Kp_spread": 2.1424015185066726e-05,
+  "maximum_cross_seed_executed_Kp_spread": 7.43356067687273e-05,
+  "fraction_states_positive_advantage_for_all_seeds": 0.3885778275475924,
+  "all_policies_constant_after_execution": false,
+  "total_target_noise_executed_changes": 57600,
+  "total_target_action_samples": 57600,
+  "primary_physical_speed_RMSE_improvement_percent": null,
+  "Q_contrast_is_one_step_action_under_the_trained_future_policy": true,
+  "Q_contrast_is_not_baseline_controller_performance": true,
+  "surrogate_derivative_used": false,
+  "method": "TD3+BC with continuous magnitude/rate clipping",
+  "counterfactual_Q_is_not_measured_motor_performance": true,
+  "hardware_accessed": false,
+  "actor_applied": false,
+  "candidate_admission": false,
+  "deployment_allowed": false,
+  "performance_claim_allowed": false
+}

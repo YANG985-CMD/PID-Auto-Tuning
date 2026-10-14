@@ -1,0 +1,18 @@
+{
+  "screen_completed": true,
+  "passed": false,
+  "required_independent_motor_RMSE_improvement_percent": 5,
+  "single_action_model_prediction_percent": [
+    0.10233740265370717,
+    0.11376868827623898,
+    0.10376966814139577
+  ],
+  "independent_Actor_motor_trials": 0,
+  "closed_loop_counterfactual_verified": false,
+  "model_uncertainty_calibrated": false,
+  "observation_live_service_integrated": false,
+  "physical_boots_reused_not_new_data": true,
+  "candidate_admission": false,
+  "deployment_allowed": false,
+  "performance_claim_allowed": false
+}

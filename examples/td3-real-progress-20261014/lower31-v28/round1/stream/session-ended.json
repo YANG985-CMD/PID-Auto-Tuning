@@ -1,0 +1,8 @@
+{
+  "physical_trial_passed": true,
+  "stop_acknowledged": true,
+  "core_halted": true,
+  "can_released": true,
+  "final_irq_fault": 0,
+  "final_tx_fault": 0
+}

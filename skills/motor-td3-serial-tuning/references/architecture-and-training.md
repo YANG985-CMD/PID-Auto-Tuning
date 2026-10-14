@@ -77,6 +77,8 @@ PPO 的部署形态与 TD3 相同：只部署确定的 Actor 均值推理，策�
 
 ## 实现路线
 
+已接入 SpeedLoop 工程的持续采集、自定义测时训练和候选准入见 [evidence-driven-tuning.md](evidence-driven-tuning.md)。下面的通用 TCP/mock 路线与后续特定工程实验分别记录能力；原生 `trainFromData` 的固定折扣和自定义测时 TD3 不混用恢复接口。
+
 本包使用 MATLAB Reinforcement Learning Toolbox 的 `rlTD3Agent`，按实际安装版本核对接口。Python 监督器通过 pyserial 占用串口；MATLAB 通过认证的本机 TCP 请求状态和动作窗口。MCU 参考协议和保护见 [firmware-integration.md](firmware-integration.md)。
 
 本包已包含监督器、CRC 串口适配器、状态/奖励模块、真实 MATLAB TD3 训练、固定策略评估、小型 Actor C 导出与 mock/MCU 主机测试；操作见 [matlab-runtime.md](matlab-runtime.md)。默认入口只运行 mock。MCU 快速保护独立执行，梯度更新安排在已确认禁能的回合间；候选策略在实机不会自动接管。特定工程的 HAL、参数写入点、无扰切换与烧录流程仍需实际接入和验证。

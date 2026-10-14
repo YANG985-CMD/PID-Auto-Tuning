@@ -1,0 +1,17 @@
+{
+  "maximum_rounds": 2,
+  "maximum_round_motion_seconds": 24,
+  "maximum_batch_motion_seconds": 48,
+  "minimum_cooldown_seconds": 30,
+  "Kp_domain": [
+    0.0023282431066036224,
+    0.0033889999613165855
+  ],
+  "host_single_Kp_step": 0.00013556,
+  "fixed_Ki": 0.0014400000218302011,
+  "actor_applied": false,
+  "automatic_retry": false,
+  "fault_ends_entire_batch": true,
+  "thermal_gate_modified": false,
+  "deployment_allowed": false
+}

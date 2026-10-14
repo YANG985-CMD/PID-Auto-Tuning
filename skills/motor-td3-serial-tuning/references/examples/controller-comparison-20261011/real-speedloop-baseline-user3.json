@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "experiment": "real-hardware-speedloop-baseline-user3-20261011",
+  "board": "STM32G431 + 17.SpeedLoop image",
+  "port": "COM9",
+  "baud": 921600,
+  "power_v": 24,
+  "current_limit_a": 3,
+  "load": "empty",
+  "operator_action": "USER3 pressed once",
+  "capture_seconds": 5,
+  "raw_bytes": 404882,
+  "valid_frames": 16865,
+  "frame_format": "5 little-endian float32 values + 00 00 80 7f",
+  "fields": [
+    "ia_a",
+    "hall_period_ticks",
+    "hall_theta_rad",
+    "speed_ref_rpm",
+    "hall_speed_rpm"
+  ],
+  "speed_ref_rpm": {
+    "min": 1000,
+    "max": 1000,
+    "mean": 1000
+  },
+  "hall_speed_rpm": {
+    "min": 939.90478515625,
+    "max": 1053.8101806640625,
+    "mean": 1000.2714052410108
+  },
+  "speed_error_rpm": {
+    "mae": 25.179479021422416,
+    "rmse": 30.622234150723333,
+    "peak_abs": 60.09521484375
+  },
+  "hall_period_ticks": {
+    "min": 15183,
+    "max": 17023
+  },
+  "ia_a_legacy_channel": {
+    "min": -0.10986328125,
+    "max": 0.10986328125,
+    "mean": 0.014111251672721566
+  },
+  "protection_status": "not observable in legacy UART frame; no gain/action ACK",
+  "controller_mode": "17.SpeedLoop embedded baseline",
+  "training_ready": false,
+  "notes": "This is a real hardware baseline only. The legacy image has no selector for AI skill, fuzzy PID, NN PID, or TD3 and no applied-gain feedback."
+}

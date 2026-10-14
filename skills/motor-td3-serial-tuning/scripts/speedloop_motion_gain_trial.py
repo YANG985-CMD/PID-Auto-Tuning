@@ -27,6 +27,10 @@ GAIN_CUTOFF_SECONDS = 2.70
 FINAL_GAIN_SECONDS = 2.72
 FINAL_GAIN_DEADLINE_SECONDS = 2.75
 GAIN_INTERVAL_SECONDS = .050
+MAX_MOTION_SECONDS = 3
+CAPTURE_SECONDS = 5
+TIMING_EVIDENCE_SYMBOL = None
+HALL_TRACE_CAPACITY = 512
 
 
 def f32(value):
@@ -121,7 +125,7 @@ def trial(a):
                   temperature_c=None, thermal_exception='user authorized this bounded trial only',
                   current_conversion_independently_calibrated=False,
                   independent_cpu_stall_watchdog_integrated=False,
-                  speed_ref_rpm=1000, maximum_motion_seconds=3, host_stop_seconds=STOP_SECONDS)
+                  speed_ref_rpm=1000, maximum_motion_seconds=MAX_MOTION_SECONDS, host_stop_seconds=STOP_SECONDS)
     result['gain_interval_ms'] = GAIN_INTERVAL_SECONDS*1000
     result['ki_probe_sign'] = int(getattr(a, 'ki_probe_sign', 0))
     result['ki_probe_fraction_of_local_step'] = .25 if result['ki_probe_sign'] else 0
@@ -138,6 +142,7 @@ def trial(a):
     shadow = None
     shadow_records = []
     shadow_by_seq = {}
+    observer = getattr(a, 'runtime_observer', None)
     apply_actor_kp = bool(getattr(a, 'apply_shadow_kp', False))
     ki_probe_sign = int(getattr(a, 'ki_probe_sign', 0))
     if ki_probe_sign not in (-1, 0, 1):
@@ -148,7 +153,7 @@ def trial(a):
         raise ValueError('Ki collection cannot be combined with an Actor/shadow trial')
     result['gain_mode'] = 'actor_kp' if apply_actor_kp else 'baseline' if getattr(a, 'shadow_port', None) else gain_mode
     session = ConnectHelper.session_with_chosen_probe(unique_id=a.uid, target_override='cortex_m',
-        connect_mode='attach', frequency=1000000, no_config=True,
+        connect_mode='attach', frequency=getattr(a,'debug_read_frequency_hz',1000000), no_config=True,
         options={'resume_on_disconnect': False,'cache.enable_memory':False,'cache.enable_register':False}, blocking=False)
     if session is None:
         raise RuntimeError('No selected probe')
@@ -167,6 +172,7 @@ def trial(a):
             for frame in wire.fragment(packet, transfer):
                 link.send(frame)
                 time.sleep(.001)
+            if observer: observer.command(record, source)
         try:
             shadow_port = getattr(a, 'shadow_port', None)
             shadow_token = getattr(a, 'shadow_token_file', None)
@@ -207,7 +213,7 @@ def trial(a):
             rx = wire.Reassembler(allow_missing_temperature=True)
             target.resume()
             send(dict(type='hello', profile_id=IDENTITY))
-            due = time.perf_counter() + 5
+            due = time.perf_counter() + CAPTURE_SECONDS
             while time.perf_counter() < due:
                 if shadow:
                     fresh_shadow = shadow.drain()
@@ -216,6 +222,7 @@ def trial(a):
                         if record.get('accepted') and record.get('telemetry_seq') is not None:
                             shadow_by_seq[int(record['telemetry_seq'])] = record
                 now = time.perf_counter()
+                if observer: observer.check_progress(now)
                 if begin_at and not stop_at and now-begin_at >= STOP_SECONDS:
                     send(dict(type='stop')); stop_at = time.perf_counter()
                 final_due = final_gain_due(now, begin_at, stop_at, final_gain_sent)
@@ -272,6 +279,7 @@ def trial(a):
                         raise
                     obj['host_received_monotonic'] = time.perf_counter()
                     telemetry.append(obj)
+                    if observer: observer.telemetry(obj, target, symbols)
                     if shadow:
                         shadow.submit(obj, obj['host_received_monotonic'])
                     if begin_at is None:
@@ -297,7 +305,7 @@ def trial(a):
                           nominal_peak_current_a=max(t['current'] for t in active),
                           peak_speed_rpm=max(abs(t['speed']) for t in active),
                           expected_post_start_snapshots=len(post_start),
-                          expected_post_start_window_rmse_rpm=(sum((t['speed']-1000)**2 for t in post_start)/len(post_start))**.5 if post_start else None,
+                          expected_post_start_window_rmse_rpm=(sum((t['speed']-t['speed_ref'])**2 for t in post_start)/len(post_start))**.5 if post_start else None,
                           post_start_is_steady_state_score=False)
         except Exception as exc:
             result['error'] = str(exc)
@@ -311,10 +319,19 @@ def trial(a):
                     result['core_halted_after_physical_shutdown'] = True
                     result['final_irq_fault'] = target.read32(symbols['irq_fault'])
                     result['final_tx_fault'] = target.read32(symbols['motor_td3_g431_tx_fault'])
+                    if result['final_irq_fault'] or result['final_tx_fault']:
+                        raise RuntimeError('A board fault was latched before shutdown verification')
+                    if TIMING_EVIDENCE_SYMBOL:
+                        raw = bytes(target.read_memory_block8(symbols[TIMING_EVIDENCE_SYMBOL],36))
+                        values = struct.unpack('<QQQIII',raw)
+                        timing = dict(zip(('started_us','run_started_us','last_us','started','run_seen','fault'),values))
+                        result['trial_timing'] = timing
+                        if not timing['started'] or not timing['run_seen'] or timing['fault']:
+                            raise RuntimeError('MCU stage timing evidence did not pass')
                     count = target.read32(symbols['motor_td3_g431_hall_edge_count'])
                     records = []
                     capacity = summary['hall_trace_capacity']
-                    if capacity != 512: raise RuntimeError('Unexpected Hall trace capacity')
+                    if capacity != HALL_TRACE_CAPACITY: raise RuntimeError('Unexpected Hall trace capacity')
                     for index in range(max(0, count-capacity), count):
                         raw = bytes(target.read_memory_block8(symbols['motor_td3_g431_hall_edges']+(index%capacity)*24,24))
                         timestamp, ticks, period, rpm, code, previous, stage, valid = struct.unpack('<QIIf4B',raw)

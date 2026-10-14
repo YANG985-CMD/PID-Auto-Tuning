@@ -1,0 +1,47 @@
+{
+  "passed": true,
+  "seeds": [
+    {
+      "seed": 7,
+      "checkpoint_sha256": "b60d53d6b61f8ecc715f2ce408e29d69392e660b593074e1745e0fd9058286b9",
+      "target_noise_and_boot_masses_equal": true,
+      "actual_action_sampling_and_switch_counts_equal": true,
+      "value_centering_equal": true,
+      "initial_critic_coefficients_expected_to_change": true,
+      "saved_double_Critic_iterations": 600,
+      "saved_Actor_updates": 300
+    },
+    {
+      "seed": 17,
+      "checkpoint_sha256": "3b24a102ff448a4b85816e02a78c65a389ca2fdeafd4f2f1233b66213122f545",
+      "target_noise_and_boot_masses_equal": true,
+      "actual_action_sampling_and_switch_counts_equal": true,
+      "value_centering_equal": true,
+      "initial_critic_coefficients_expected_to_change": true,
+      "saved_double_Critic_iterations": 600,
+      "saved_Actor_updates": 300
+    },
+    {
+      "seed": 27,
+      "checkpoint_sha256": "6c8fe2bf27e835c8633bbf7455718e59becf596eb31d5eb8161acad7500f68f1",
+      "target_noise_and_boot_masses_equal": true,
+      "actual_action_sampling_and_switch_counts_equal": true,
+      "value_centering_equal": true,
+      "initial_critic_coefficients_expected_to_change": true,
+      "saved_double_Critic_iterations": 600,
+      "saved_Actor_updates": 300
+    }
+  ],
+  "original_trainer_unchanged": true,
+  "rewards_actions_bounds_optimizer_settings_unchanged": true,
+  "normalization_and_input10_changed": true,
+  "masked_clock_replaced_by_actual_PI_command": true,
+  "replay_rows_not_new_physical_data": true,
+  "hardware_accessed": false,
+  "new_physical_trials": 0,
+  "new_optimizer_updates_in_audit": 0,
+  "actor_applied": false,
+  "candidate_admission": false,
+  "deployment_allowed": false,
+  "performance_claim_allowed": false
+}

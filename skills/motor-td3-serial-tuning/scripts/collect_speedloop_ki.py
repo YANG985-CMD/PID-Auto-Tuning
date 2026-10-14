@@ -12,6 +12,7 @@ import sys
 import time
 
 ORDER = ("baseline", "ki_plus", "baseline", "ki_minus", "ki_plus", "ki_minus")
+KP_ORDER = ("baseline", "kp_probe", "baseline", "kp_probe", "baseline", "kp_probe")
 SIGN = {"baseline": 0, "ki_plus": 1, "ki_minus": -1}
 TRIAL_SECONDS = 3.0
 COOLDOWN_SECONDS = 30.0
@@ -24,9 +25,12 @@ def run(args):
         raise ValueError("Use the approved temporary root")
     output.mkdir(parents=True, exist_ok=True)
     scripts = Path(__file__).resolve().parent
+    kind = getattr(args, "probe_kind", "ki")
+    if kind not in ("ki", "kp"):raise ValueError("Unsupported probe kind")
+    order = ORDER if kind == "ki" else KP_ORDER
     records = []
     failure = None
-    for index, policy in enumerate(ORDER, 1):
+    for index, policy in enumerate(order, 1):
         if index > 1:
             time.sleep(COOLDOWN_SECONDS)
         round_dir = output / f"round-{index:02d}-{policy}"
@@ -47,8 +51,8 @@ def run(args):
             "--build", args.build, "--output", str(trial_dir), "--nm", args.nm,
             "--boot-token-file", str(prepare_dir / "boot-token.txt"),
             "--power-confirmed", "--authorized-no-thermal-trial",
-            "--ki-probe-sign", str(SIGN[policy]),
-            "--gain-mode", "baseline" if policy == "baseline" else "ki_probe",
+            "--ki-probe-sign", str(SIGN.get(policy, 0)),
+            "--gain-mode", "baseline" if policy == "baseline" else "ki_probe" if kind == "ki" else "kp_probe",
         ], capture_output=True, text=True, check=False)
         (round_dir / "trial.stdout.txt").write_text(
             trial.stdout + trial.stderr, encoding="utf-8")
@@ -57,7 +61,7 @@ def run(args):
             "passed": False, "error": "trial summary missing"}
         summary["comparison_policy"] = policy
         summary["round_index"] = index
-        summary["ki_probe_sign"] = SIGN[policy]
+        summary["ki_probe_sign"] = SIGN.get(policy, 0)
         summary_path.write_text(json.dumps(summary, indent=2, allow_nan=False) + "\n",
                                encoding="utf-8")
         records.append(summary)
@@ -66,19 +70,20 @@ def run(args):
             break
     report = {
         "schema_version": 1,
-        "source": "real_motor_ki_coverage",
+        "source": "real_motor_ki_coverage" if kind == "ki" else "real_motor_kp_probe_comparison",
+        "probe_kind": kind,
         "utc": datetime.now(timezone.utc).isoformat(),
-        "order": list(ORDER),
+        "order": list(order),
         "completed_rounds": len(records),
-        "requested_rounds": len(ORDER),
-        "reserved_motion_seconds": len(ORDER) * TRIAL_SECONDS,
+        "requested_rounds": len(order),
+        "reserved_motion_seconds": len(order) * TRIAL_SECONDS,
         "cooldown_seconds": COOLDOWN_SECONDS,
         "hardware_accessed": True,
         "td3_training_performed": False,
         "actor_flash_written": False,
         "thermal_gate_modified": False,
         "failure": failure,
-        "passed": failure is None and len(records) == len(ORDER) and
+        "passed": failure is None and len(records) == len(order) and
                   all(row.get("passed") for row in records),
         "rounds": [{
             "round_index": row.get("round_index"),
@@ -102,5 +107,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ("build", "output", "nm"):
         parser.add_argument("--" + name, required=True)
+    parser.add_argument("--probe-kind", choices=("ki", "kp"), default="ki",
+                        help="Existing signed Ki pulses or the previously measured +4%% Kp pulse")
     args = parser.parse_args()
     raise SystemExit(0 if run(args)["passed"] else 1)

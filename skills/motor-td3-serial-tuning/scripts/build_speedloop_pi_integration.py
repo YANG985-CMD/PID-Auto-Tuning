@@ -307,6 +307,8 @@ def build(a):
         '-DSTM32G431xx','-DUSE_HAL_DRIVER','-DARM_MATH_CM4','-Wall','-Wextra']
     if a.can_pi:flags+=['-DMOTOR_TD3_SPEEDLOOP_DIAGNOSTIC','-DMOTOR_TD3_SPEEDLOOP_PI_CAN']
     if a.motion_can:flags+=['-DMOTOR_TD3_SPEEDLOOP_PI_MOTION','-DMOTOR_TD3_CAN_NO_TEMPERATURE']
+    if getattr(a,'baseline_duration_review',False):
+        flags+=['-DMOTOR_TD3_BASELINE_DURATION_REVIEW']
     objects=[]
     for i,p in enumerate(sources):
         obj=out/(f'{i:02d}_'+p.stem+'.o');objects.append(obj)

@@ -1,30 +1,59 @@
-function result=diagnoseMotorTD3Policy(agent,rows)
+function result=diagnoseMotorTD3Policy(agent,rows,learningTask,supportedKpActions)
 % Holdout diagnostics on recorded states. Q/self-consistency are not plant RMSE.
+if nargin<3,learningTask="continuing";end
+if nargin<4,supportedKpActions=[0 .5];end
+assert(numel(supportedKpActions)==2 && all(isfinite(supportedKpActions)) && ...
+    all(supportedKpActions>=-1 & supportedKpActions<=1));
+assert(any(string(learningTask)==["continuing","bounded-trial"]));
 obs=single(cell2mat(cellfun(@(r)r.observation(:),rows,UniformOutput=false)'));
 nextObs=single(cell2mat(cellfun(@(r)r.next_observation(:),rows,UniformOutput=false)'));
 actual=single(cell2mat(cellfun(@(r)r.action_normalized(:),rows,UniformOutput=false)'));
 actor=getActor(agent); critics=getCritic(agent);
 chosen=getAction(actor,{obs}); policy=reshape(double(chosen{1}),2,[]);
 chosenNext=getAction(actor,{nextObs}); nextPolicy=reshape(single(chosenNext{1}),2,[]);
-q=zeros(2,numel(rows)); policyQ=q; nextQ=q;
+q=zeros(2,numel(rows)); policyQ=q; nextQ=q; supportedActionDifference=q;
+supportLow=zeros(size(actual),'single');supportHigh=supportLow;
+supportLow(1,:)=single(supportedKpActions(1));supportHigh(1,:)=single(supportedKpActions(2));
 for k=1:2
     q(k,:)=reshape(double(getValue(critics(k),{obs},{actual})),1,[]);
     policyQ(k,:)=reshape(double(getValue(critics(k),{obs},{single(policy)})),1,[]);
     nextQ(k,:)=reshape(double(getValue(critics(k),{nextObs},{nextPolicy})),1,[]);
+    lowQ=reshape(double(getValue(critics(k),{obs},{supportLow})),1,[]);
+    highQ=reshape(double(getValue(critics(k),{obs},{supportHigh})),1,[]);
+    supportedActionDifference(k,:)=highQ-lowQ;
 end
 reward=cellfun(@(r)r.reward,rows)';
-target=reward+.99*min(nextQ,[],1);
+terminal=cellfun(@(r)isfield(r,'learning_is_done') && r.learning_is_done,rows)';
+target=reward+.99*(1-terminal).*min(nextQ,[],1);
 assert(all(isfinite([policy(:);q(:);policyQ(:);target(:)])));
 residual=q-target;
 metrics=struct(action_mean=mean(policy,2)',action_std=std(policy,0,2)', ...
     behavior_action_mse=mean((policy-double(actual)).^2,2)', ...
     zero_action_mse=mean(double(actual).^2,2)', ...
     logged_q_mean=mean(q,2)',policy_q_mean=mean(policyQ,2)', ...
+    logged_q_std=std(q,0,2)',policy_q_std=std(policyQ,0,2)', ...
+    supported_kp_q_difference_mean=mean(supportedActionDifference,2)', ...
+    supported_kp_q_difference_max_abs=max(abs(supportedActionDifference),[],2)', ...
+    tested_kp_actions=supportedKpActions, ...
+    action_sensitivity_basis="Explicit normalized Kp endpoints with Ki zero; interpretation requires recorded action support", ...
     critic_disagreement_mean=mean(abs(q(1,:)-q(2,:))), ...
     online_bellman_residual_rmse=sqrt(mean(residual.^2,2))', ...
-    observed_reward_mean=mean(reward), ...
+    observed_reward_mean=mean(reward),observed_reward_std=std(reward), ...
+    learning_terminal_rows=sum(terminal), ...
+    learning_task=string(learningTask), ...
     metrics_are_physical_performance=false, ...
-    residual_basis="Current critics + deterministic next Actor; no target noise or target-network access");
+    residual_basis="Current critics + deterministic next Actor with explicit learning task terminal mask; no target noise or target-network access");
+if string(learningTask)=="bounded-trial" && all(cellfun(@(r)isfield(r,'logged_bounded_return'),rows))
+    metrics.finite_logged_return_calibration_performed=true;
+    returns=cellfun(@(r)r.logged_bounded_return,rows)';
+    metrics.logged_behavior_return_rmse=sqrt(mean((q-returns).^2,2))';
+    metrics.logged_behavior_return_std=std(returns);
+    metrics.logged_behavior_return_mean=mean(returns);
+    metrics.return_calibration_basis="Recorded behavior continuation, not new-policy counterfactual return";
+else
+    metrics.finite_logged_return_calibration_performed=false;
+    metrics.return_calibration_basis="Continuing-task Q cannot be calibrated against finite experiment returns";
+end
 boot=cellfun(@(r)string(r.boot_id),rows); seq=cellfun(@(r)r.telemetry_seq_start,rows);
 predictions=table(boot(:),seq(:),policy(1,:)',policy(2,:)', ...
     double(actual(1,:))',double(actual(2,:))',q(1,:)',q(2,:)', ...

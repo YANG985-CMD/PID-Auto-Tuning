@@ -1,0 +1,155 @@
+{
+  "standard_named_Goto_From_feedback": true,
+  "scopes": [
+    {
+      "scope": "MotorTunerComparison",
+      "line_through_block_count": 0,
+      "block_overlap_count": 0
+    },
+    {
+      "scope": "MotorTunerComparison/AI_Skill_Replay",
+      "line_through_block_count": 0,
+      "block_overlap_count": 0
+    },
+    {
+      "scope": "MotorTunerComparison/Common_Gain_Guard",
+      "line_through_block_count": 0,
+      "block_overlap_count": 0
+    },
+    {
+      "scope": "MotorTunerComparison/Fuzzy_PID",
+      "line_through_block_count": 0,
+      "block_overlap_count": 0
+    },
+    {
+      "scope": "MotorTunerComparison/Gains_To_FOC",
+      "line_through_block_count": 0,
+      "block_overlap_count": 0
+    },
+    {
+      "scope": "MotorTunerComparison/Neural_PID",
+      "line_through_block_count": 0,
+      "block_overlap_count": 0
+    },
+    {
+      "scope": "MotorTunerComparison/Observation_Builder",
+      "line_through_block_count": 0,
+      "block_overlap_count": 0
+    },
+    {
+      "scope": "MotorTunerComparison/TD3_Actor",
+      "line_through_block_count": 0,
+      "block_overlap_count": 0
+    },
+    {
+      "scope": "MotorTunerComparison/TD3_Actor/Frozen_Actor_Network",
+      "line_through_block_count": 0,
+      "block_overlap_count": 0
+    },
+    {
+      "scope": "MotorTunerComparison/TD3_Actor/State_Normalization",
+      "line_through_block_count": 0,
+      "block_overlap_count": 0
+    },
+    {
+      "scope": "MotorTunerComparison/TD3_Actor/Supported_Action_Map",
+      "line_through_block_count": 0,
+      "block_overlap_count": 0
+    },
+    {
+      "scope": "MotorFOCShared",
+      "line_through_block_count": 0,
+      "block_overlap_count": 0
+    },
+    {
+      "scope": "MotorFOCShared/FOC_Model",
+      "line_through_block_count": 0,
+      "block_overlap_count": 0
+    },
+    {
+      "scope": "MotorFOCShared/FOC_Model/currloop",
+      "line_through_block_count": 0,
+      "block_overlap_count": 0
+    },
+    {
+      "scope": "MotorFOCShared/FOC_Model/currloop/AntiPark",
+      "line_through_block_count": 0,
+      "block_overlap_count": 0
+    },
+    {
+      "scope": "MotorFOCShared/FOC_Model/currloop/Chart",
+      "line_through_block_count": 0,
+      "block_overlap_count": 0
+    },
+    {
+      "scope": "MotorFOCShared/FOC_Model/currloop/Clark",
+      "line_through_block_count": 0,
+      "block_overlap_count": 0
+    },
+    {
+      "scope": "MotorFOCShared/FOC_Model/currloop/If Action\nSubsystem",
+      "line_through_block_count": 0,
+      "block_overlap_count": 0
+    },
+    {
+      "scope": "MotorFOCShared/FOC_Model/currloop/If Action\nSubsystem1",
+      "line_through_block_count": 0,
+      "block_overlap_count": 0
+    },
+    {
+      "scope": "MotorFOCShared/FOC_Model/currloop/If Action\nSubsystem2",
+      "line_through_block_count": 0,
+      "block_overlap_count": 0
+    },
+    {
+      "scope": "MotorFOCShared/FOC_Model/currloop/If Action\nSubsystem3",
+      "line_through_block_count": 0,
+      "block_overlap_count": 0
+    },
+    {
+      "scope": "MotorFOCShared/FOC_Model/currloop/Park",
+      "line_through_block_count": 0,
+      "block_overlap_count": 0
+    },
+    {
+      "scope": "MotorFOCShared/FOC_Model/currloop/SVPWM",
+      "line_through_block_count": 0,
+      "block_overlap_count": 0
+    },
+    {
+      "scope": "MotorFOCShared/FOC_Model/currloop/SVPWM/AntiClark",
+      "line_through_block_count": 0,
+      "block_overlap_count": 0
+    },
+    {
+      "scope": "MotorFOCShared/FOC_Model/currloop/SVPWM/ei_t",
+      "line_through_block_count": 0,
+      "block_overlap_count": 0
+    },
+    {
+      "scope": "MotorFOCShared/FOC_Model/currloop/idq_Controller",
+      "line_through_block_count": 0,
+      "block_overlap_count": 0
+    },
+    {
+      "scope": "MotorFOCShared/FOC_Model/speedloop",
+      "line_through_block_count": 0,
+      "block_overlap_count": 0
+    },
+    {
+      "scope": "MotorFOCShared/Measurement_Extractor",
+      "line_through_block_count": 0,
+      "block_overlap_count": 0
+    },
+    {
+      "scope": "MotorFOCShared/Subsystem",
+      "line_through_block_count": 0,
+      "block_overlap_count": 0
+    }
+  ],
+  "total_line_through_block_count": 0,
+  "total_block_overlap_count": 0,
+  "subsystem_content_previews_disabled": true,
+  "sample_time_coloring_disabled": true,
+  "Trigger_to_SpeedRef_label_clearance_px": 26
+}

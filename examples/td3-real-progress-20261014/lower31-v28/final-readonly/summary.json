@@ -1,0 +1,46 @@
+{
+  "passed": true,
+  "hardware_accessed": true,
+  "hardware_written": false,
+  "reset": false,
+  "resume": false,
+  "firmware_id": "g431-speedloop-pi-lower31-ref-24s-v28",
+  "full_readback_sha256": "35f22db78fbba9e3372e44705ffbe4b9a5f719f1d3bfe7b4a6b31e499bcc4c11",
+  "core_halted": true,
+  "irq_fault": 0,
+  "tx_fault": 0,
+  "Motor_state": 0,
+  "registers": {
+    "tim1_ccer": 4096,
+    "tim1_bdtr": 33697912,
+    "gpioa_moder": 2861957119,
+    "gpiob_moder": 1471065791,
+    "gpioa_odr": 0,
+    "gpiob_odr": 0,
+    "device_id": 537093224
+  },
+  "diagnostic": {
+    "initialized": 1,
+    "endpoint_ready": 1,
+    "motion_enabled": 0,
+    "adc_samples": 243727,
+    "hall_bad": 0,
+    "ring_write": 6110,
+    "ring_read": 6110,
+    "motor_td3_g431_hall_edge_count": 4528,
+    "now_us": 24513618,
+    "main_seen_us": 24513848,
+    "adc_seen_us": 24378578,
+    "bus_seen_us": 24513649,
+    "motor_td3_g431_debugger_boot_token": 0,
+    "trial_timing": {
+      "started_us": 563800,
+      "run_started_us": 2764618,
+      "last_us": 24378618,
+      "started": 1,
+      "run_seen": 1,
+      "fault": 0
+    }
+  },
+  "fault_cause_verified": false
+}

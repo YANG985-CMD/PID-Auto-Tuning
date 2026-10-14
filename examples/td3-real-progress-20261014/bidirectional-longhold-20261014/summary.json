@@ -1,0 +1,73 @@
+{
+  "passed": true,
+  "physical_boots": 42,
+  "new_physical_boots": 4,
+  "batch_motion_seconds": [
+    47.629524,
+    47.628660999999994
+  ],
+  "maximum_motion_seconds_per_batch": 48,
+  "minimum_cooldown_seconds": 30,
+  "short_view_unique_windows": 5686,
+  "old_short_windows_preserved": 5139,
+  "new_short_windows": 547,
+  "short_training_windows": 2840,
+  "short_validation_windows": 2846,
+  "new_complete_Hall_edges": 18063,
+  "maximum_Hall_read_ms": 3.1233999907271937,
+  "alternative_views": [
+    {
+      "response_span_ms": 200,
+      "unique_windows": 2526,
+      "train": 1268,
+      "validation": 1258,
+      "single_action_prediction_percent": [
+        0.1557172293573661,
+        0.0866569025899544,
+        0.16726529620869623
+      ],
+      "saved_Critic_iterations": 1800,
+      "saved_Actor_updates": 900,
+      "candidate_admission": false
+    },
+    {
+      "response_span_ms": 300,
+      "unique_windows": 1792,
+      "train": 899,
+      "validation": 893,
+      "single_action_prediction_percent": [
+        0.09258878970413997,
+        0.017695948268603434,
+        0.0670985880382946
+      ],
+      "saved_Critic_iterations": 1800,
+      "saved_Actor_updates": 900,
+      "candidate_admission": false
+    }
+  ],
+  "views_not_appended_as_new_independent_data": true,
+  "actual_unique_saved_candidates": 6,
+  "saved_double_Critic_iterations": 3600,
+  "saved_Actor_updates": 1800,
+  "target_noise_exactly_matched": true,
+  "sampling_gate_relaxed": false,
+  "actual_Actor_motor_trials": 0,
+  "final_fault": 0,
+  "STOP_confirmed": true,
+  "six_outputs_off": true,
+  "core_halted": true,
+  "CAN_released": true,
+  "current_board_firmware": "g431-speedloop-pi-bidirectional-ref-24s-v27",
+  "baseline_PI_retained": true,
+  "action_mask": [
+    1,
+    0
+  ],
+  "fixed_Ki": 0.00144,
+  "SKILL_sha256": "282a2be36249066cc909ac62028d980f2e32f3a692d7f0be6928f42d67acff4a",
+  "thermal_gate_modified": false,
+  "candidate_admission": false,
+  "deployment_allowed": false,
+  "performance_claim_allowed": false,
+  "GitHub_uploaded": false
+}

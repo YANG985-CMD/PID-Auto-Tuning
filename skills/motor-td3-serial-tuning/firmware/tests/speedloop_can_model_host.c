@@ -17,7 +17,7 @@ static int begin(void *p,float ref,float kp,float ki) {
     (void)p;(void)kp;(void)ki;enabled=1;rtU.SpeedRef=ref;rtU.Motor_OnOff=1;Motor_state=1;return 1;
 }
 static int snapshot(void *p,motor_td3_telemetry *t) {
-    (void)p;memset(t,0,sizeof(*t));t->enabled=enabled;
+    (void)p;memset(t,0,sizeof(*t));t->enabled=enabled;t->t_us=now_us;
     t->kp=spd_kpki.spd_kp;t->ki=spd_kpki.spd_ki;t->speed_ref=rtU.SpeedRef;t->speed=rtU.SpeedFd;
     t->error_history=link.previous_error;t->integral_output=rtDW.Integrator_DSTATE_h;
     t->current=current;t->vbus=rtU.v_bus;t->temperature_c=temperature;

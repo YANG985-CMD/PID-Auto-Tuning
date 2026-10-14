@@ -2,6 +2,8 @@
 
 ## 实际实现的链路
 
+本文件描述通用 TCP/mock 运行器。已经完成特定 SpeedLoop 接入后的持续真实采集、独立训练进程、测时 TD3 和候选筛选，读 [evidence-driven-tuning.md](evidence-driven-tuning.md)；历史“尚未接入”说明只适用于本文件原来的通用/诊断入口。
+
 ```mermaid
 flowchart LR
     MCU[MCU：FOC、PI、独立保护] <--> Bridge[Python 串口监督器]

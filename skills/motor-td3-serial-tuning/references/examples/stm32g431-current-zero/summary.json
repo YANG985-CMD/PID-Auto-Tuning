@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "mode": "g431-current-zero-sram-observation",
+  "date": "2026-10-11",
+  "hardware": {
+    "device": "STM32G431",
+    "dbgmcu_idcode": "0x20036468",
+    "flash_kb": 128,
+    "power_stage_disconnected": true,
+    "usb_stlink_power": true
+  },
+  "verified": true,
+  "powered_idle_repeat": {
+    "verified": true,
+    "power_connected_confirmed_by_user": true,
+    "pwm_disabled_acknowledged": true,
+    "adc": {
+      "a": {"mean": 2021.359375, "min": 2020, "max": 2023, "stddev_population": 0.6700556763247365, "span": 3, "delta_from_unpowered_mean": 0.28125},
+      "b": {"mean": 2029.359375, "min": 2027, "max": 2031, "stddev_population": 0.7977935882012339, "span": 4, "delta_from_unpowered_mean": 0.578125},
+      "c": {"mean": 2024.46875, "min": 2023, "max": 2026, "stddev_population": 0.8654614015078893, "span": 3, "delta_from_unpowered_mean": -0.15625}
+    },
+    "tim1_cr1": 0,
+    "tim1_ccer": 0,
+    "tim1_bdtr": 0,
+    "gpio_clocks": 0,
+    "flash_unchanged": true,
+    "core_left_halted": true
+  },
+  "checks": 7,
+  "passed": 7,
+  "samples_per_phase": 64,
+  "adc": {
+    "a": {"mean": 2021.078125, "min": 2019, "max": 2022, "stddev_population": 0.6685966529792083, "span": 3},
+    "b": {"mean": 2028.78125, "min": 2027, "max": 2031, "stddev_population": 0.7388494010960556, "span": 4},
+    "c": {"mean": 2024.625, "min": 2023, "max": 2026, "stddev_population": 0.6959705453537527, "span": 3}
+  },
+  "calfact": {"adc1": 61, "adc2": 62},
+  "safety": {
+    "unsafe_samples": 0,
+    "tim1_cr1": 0,
+    "tim1_ccer": 0,
+    "tim1_bdtr": 0,
+    "gpio_clocks": 0,
+    "flash_unchanged": true,
+    "core_left_halted": true,
+    "motor_control_approved": false,
+    "current_gain_calibrated": false,
+    "current_threshold_calibrated": false,
+    "device_write": false
+  },
+  "nominal_plan": {
+    "previous_comp_crossing_dac": [2033, 2034],
+    "existing_dac3000_nominal_positive_current_a": [21.2255859375, 21.24755859375],
+    "illustrative_positive_3a_code": 2170,
+    "is_approved_protection_threshold": false
+  },
+  "scope": [
+    "Static zero-current ADC observation with 24V disconnected",
+    "Not a current-gain calibration",
+    "Not a measured overcurrent trip threshold",
+    "Not a MOSFET or motor temperature measurement",
+    "Not a MOE-from-one shutoff or latency test"
+  ],
+  "software_tests": {"test_g431_current_zero.py": {"tests": 18, "passed": true, "hardware_accessed": false}},
+  "first_attempt": "Rejected before sampling because factory OPAMP trim bits were incorrectly treated as configuration bits; corrected run passed."
+}

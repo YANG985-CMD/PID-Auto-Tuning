@@ -1,0 +1,46 @@
+{
+  "compile_passed": true,
+  "structural_counts": [
+    {
+      "model": "MotorTunerComparison",
+      "block_count": 205,
+      "model_references": 1,
+      "MATLABFcn_count": 0,
+      "MATLABSystem_count": 0
+    },
+    {
+      "model": "MotorFOCShared",
+      "block_count": 238,
+      "model_references": 0,
+      "MATLABFcn_count": 0,
+      "MATLABSystem_count": 0
+    }
+  ],
+  "native_library_references": [
+    "autolibpmsmexterior/Surface Mount PMSM",
+    "mcbplantlib/Average-Value Inverter",
+    "simulink/Ports &\nSubsystems/Function-Call\nGenerator",
+    "slpidlib/PID Controller"
+  ],
+  "custom_library_models_created": false,
+  "opaque_custom_masks_created": false,
+  "maximum_Mux_Demux_BusSelector_width_px": 5,
+  "parameters_from_reference_dictionary": {
+    "Rs": 6.97,
+    "L": 0.00535,
+    "flux": 0.016884,
+    "Pn": 2,
+    "Udc": 24,
+    "CurrKp": 0.26,
+    "CurrKi": 35,
+    "spd_kp": 0.003389,
+    "spd_ki": 0.00144
+  },
+  "mechanical_J_kgm2": 7.5E-5,
+  "mechanical_viscous_B_Nms": 8E-5,
+  "mechanical_parameters_hardware_identified": false,
+  "speed_PI_integral_definition": "UseKiTs off: Ki multiplied by the 0.001s internal integrator step",
+  "speed_PI_source": "Original FOC_Model.c integral update: 0.001F * speedloop_ELAPS_T * Integrator_PREV_U",
+  "hardware_accessed": false,
+  "deployment_allowed": false
+}

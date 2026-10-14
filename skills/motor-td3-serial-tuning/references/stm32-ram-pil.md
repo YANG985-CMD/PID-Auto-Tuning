@@ -2,7 +2,7 @@
 
 此入口用于验证“MATLAB 训练出的网络，能否在 MCU 上正确计算”。Codex 导出小型 Actor，调用目标编译器，经 STLink 把计算镜像放入 SRAM，执行测试输入并读取结果，再分析数值、周期和栈占用。训练仍在 MATLAB；MCU 仅执行 Actor。
 
-已在 STM32G431 上验证。[实测记录](../../../docs/stm32g431-validation.md) 包含结果和范围。
+已在 STM32G431 上验证。[实测记录](evidence/stm32g431-validation.md) 包含结果和范围。
 
 ## 条件与实际影响
 

@@ -1,0 +1,13 @@
+{
+  "passed": true,
+  "actual_observation_vectors": 3584,
+  "maximum_input_difference": 0,
+  "incompatible_old_profile_rejected": true,
+  "observation_dimension": 10,
+  "PI_command_is_not_measured_current": true,
+  "new_physical_trials": 0,
+  "hardware_accessed": false,
+  "actor_applied": false,
+  "deployment_allowed": false,
+  "performance_claim_allowed": false
+}

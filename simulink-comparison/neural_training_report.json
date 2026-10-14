@@ -1,0 +1,12 @@
+{
+  "seed": 17,
+  "architecture": "2-12-tanh-2-tanh",
+  "iterations": 2500,
+  "training_samples": 1681,
+  "holdout_samples": 1600,
+  "label_source": "Declared 25 Sugeno rules; synthetic normalized error grid",
+  "training_mse": 0.000753475251333059,
+  "holdout_rmse": 0.025572887743748659,
+  "hardware_training": false,
+  "online_learning": false
+}

@@ -1,0 +1,60 @@
+{
+  "passed": true,
+  "firmware_id": "g431-speedloop-pi-lower31-ref-24s-v28",
+  "exact_image_sha256": "35f22db78fbba9e3372e44705ffbe4b9a5f719f1d3bfe7b4a6b31e499bcc4c11",
+  "immutable_firmware_review": "local-archive/lower31-v28-review-20261014",
+  "firmware_review_manifest_sha256": "7dc9806899f06e9e6bf9b0c3d51b31b5331939feb48915d889f59d42905ea2de",
+  "whole_boot_split": [
+    {
+      "boot_id": "75d1f48593c80ee8",
+      "frozen_role": "train",
+      "raw_folder": "round0",
+      "actual_motion_seconds": 23.813847,
+      "faults": 0,
+      "actual_commands": 467,
+      "STOP_acknowledged": true,
+      "six_phase_outputs_off": true,
+      "core_halted": true,
+      "CAN_released": true
+    },
+    {
+      "boot_id": "3c51cb3629fa53da",
+      "frozen_role": "validation",
+      "raw_folder": "round1",
+      "actual_motion_seconds": 23.814818,
+      "faults": 0,
+      "actual_commands": 467,
+      "STOP_acknowledged": true,
+      "six_phase_outputs_off": true,
+      "core_halted": true,
+      "CAN_released": true
+    }
+  ],
+  "physical_boots": 2,
+  "actual_batch_motion_seconds": 47.628665,
+  "maximum_batch_motion_seconds": 48,
+  "qualification_separate_motion_seconds": 2.814824,
+  "complete_raw_Hall_edges": 9040,
+  "raw_provisional_collector_windows": 291,
+  "new_TD3_experiences_admitted": 0,
+  "current_conversion_independently_calibrated": false,
+  "Ki_fixed": 0.00144,
+  "action_mask": [
+    1,
+    0
+  ],
+  "SKILL_sha256": "282a2be36249066cc909ac62028d980f2e32f3a692d7f0be6928f42d67acff4a",
+  "thermal_gate_modified": false,
+  "actor_applied": false,
+  "training_performed": false,
+  "candidate_admission": false,
+  "deployment_allowed": false,
+  "performance_claim_allowed": false,
+  "GitHub_uploaded": false,
+  "baseline_PI_retained": true,
+  "new_mapping_and_multiboot_action_support_required": true,
+  "lower31_hold_descriptive_RMSE_reduction_percent": -1.556704104437756,
+  "uninterrupted_hold_descriptive_RMSE_reduction_percent": -1.2348823881006776,
+  "validation_is_fixed_baseline_capture_not_frozen_Actor_validation": true,
+  "reason": "Lower Kp capture did not establish speed improvement; no Actor executed and no independent repetition"
+}

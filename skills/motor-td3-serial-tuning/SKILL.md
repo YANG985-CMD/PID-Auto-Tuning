@@ -38,7 +38,9 @@ description: "Build or run a Codex-managed motor serial/CAN-to-MATLAB TD3 workfl
 
 每次先确定“每个试验选择一组固定参数”还是“运行中多次调整参数”。后一种才是此 skill 默认的动态参数策略；不要把单步参数搜索的结果描述为已学会运行中的自适应控制。
 
-本包运行器目前支持 mock、`train-live` 和 `evaluate`；只读采集/旁路预测是工作模式建议，执行前需补相应入口，不要声称已有命令。
+本包的通用运行器支持 mock、`train-live` 和 `evaluate`；已接入的 SpeedLoop 工程另有持续遥测、实际增益回读、采集和旁路入口。继续已有实机实验时读 [evidence-driven-tuning.md](references/evidence-driven-tuning.md)，以本次精确固件、数据与停止摘要判断能力；不要把旧诊断入口的限制套到后续已验证入口。
+
+用户要求持续推进时，沿用已有授权和有限批次预算，完成本批分析、修正、采集或训练再汇报。只有现场状态改变、超出已有授权或故障后重启需要新信息；不要让用户反复发送“下一步”。按用户的发布偏好保留本地结果，未要求逐批上传时不重复写 GitHub。
 
 ## 工作流程
 
@@ -48,6 +50,7 @@ description: "Build or run a Codex-managed motor serial/CAN-to-MATLAB TD3 workfl
 4. 按 [serial-and-safety.md](references/serial-and-safety.md) 检查固件、协议和保护。先完成 mock、错误注入和只读检查。使用 `scripts/session_checks.py check-profile CONFIG --live` 检查配置完整性；脚本通过只表示配置齐全，不能替代设备验证或本次授权。
 5. 使用 `scripts/session_checks.py audit-transitions LOG --profile CONFIG` 检查实际用于学习的 JSONL 数据。脚本不打开串口、不下发命令、也不训练网络；详细格式在安全参考中。
 6. 实机允许后，先用已验证基准完成有界试验，再在已验证局部参数范围内逐步探索。禁止沿用库的全范围随机动作默认值。限制单轮时间、动作次数和累计通电预算；不因训练分数较低自动放宽限制。
+   用户明确授权继续扩大探索时，预先声明具体有限范围和预算；新点通过实际参数回读后分步到达，原单步限制和保护阈值保持。启动、过渡和稳态分开评价，按实际响应决定保持时长。新范围未审查动作映射前只采集，不进入旧 TD3 训练入口。
 7. 每次策略更新先形成候选检查点。当前实现每轮确认停机后做梯度更新；实机候选不会自动替换基准行为。通过 `--approved-policy` 明确选定已有候选后，使用 `matlab/evaluateCheckpoint.m` 评估，验证输入尺度和输出映射；恶化时回退到已验证控制器。严重故障先停机，禁止自动重启。
 8. 用未参与训练的工况比较固定 PI、现有模糊 PI 和 TD3。交付原始数据、实际生效参数、故障和拒绝记录、检查点、归一化配置、测试结果及尚未验证的部分。
 
@@ -62,7 +65,7 @@ CAN 训练接入读 [can-runtime.md](references/can-runtime.md)。已有 PCAN �
 
 用户指定 `17.SpeedLoop` 时按 [speedloop-diagnostic.md](references/speedloop-diagnostic.md) 创建禁止运动的 GNU Arm 诊断副本，不复用 PID/NNSMC 的状态字段。该版本取消 TIM1/CH4 启动，使用约 100Hz 软件 ADC 诊断；不是 10kHz FOC 或训练遥测。原 CH4 触发依赖 MOE；调试器暂停也不会自动关闭 PWM。允许运动前应先禁能再确认停机，不能把 halt 当急停或把逐个 HAL Start 声称为原子输出使能。
 
-用户明确选择已正常运行的 `17.SpeedLoop` 做基线试转时，可使用 `scripts/build_speedloop_baseline.py` 生成独立的 `g431-speedloop-baseline-3s-v1` 副本。它只保留原模糊 PI，不接入 Actor 或 CAN 增益命令；USER3 是人工启动门，试验固定 3 s，MCU 自动关闭六路输出并锁存收尾状态。`scripts/test_speedloop_baseline.py` 在主机替身寄存器上检查启动门、Break/失联/进展停机和一次性运行。实测基线结果见 [speedloop-baseline-run-20261011.md](../../docs/speedloop-baseline-run-20261011.md)；名义电流换算和无温度传感器的限制必须保留，不能把这次基线运行写成 TD3 训练或热保护验收。
+用户明确选择已正常运行的 `17.SpeedLoop` 做基线试转时，可使用 `scripts/build_speedloop_baseline.py` 生成独立的 `g431-speedloop-baseline-3s-v1` 副本。它只保留原模糊 PI，不接入 Actor 或 CAN 增益命令；USER3 是人工启动门，试验固定 3 s，MCU 自动关闭六路输出并锁存收尾状态。`scripts/test_speedloop_baseline.py` 在主机替身寄存器上检查启动门、Break/失联/进展停机和一次性运行。实测基线结果见 [speedloop-baseline-run-20261011.md](references/evidence/speedloop-baseline-run-20261011.md)；名义电流换算和无温度传感器的限制必须保留，不能把这次基线运行写成 TD3 训练或热保护验收。
 
 用户选择已正常运行的 `17.SpeedLoop` 为工程基准时，按 [speedloop-pi-integration.md](references/speedloop-pi-integration.md) 使用其实际参数、名义电流换算和 COMP/Break 配置推进代码接入。已有 `motor_td3_speedloop_pi` 与绑定层：保留默认模糊模式，在真实 1ms PI 边界成对提交外部增益并保持积分输出连续，记录实际应用序号/时间。离线构建器的 `--can-pi` 已把现有 CAN 协议与 HAL 端口接到真实 PI 边界，10 项 CAN→原模型检查与 19 项 CAN 回归通过，49 单元目标编译完成；板级 hooks 的运动能力仍为 0，复核副本没有烧录或连接 Actor。已有物理 CAN 验证保留，不重复作为前置工作；后续集中实现同一运行固件的采样/启动、独立进展和停机保护。名义换算不标成实测校准，模糊规则范围不标成 TD3 安全域；原例程没有的热限值仍为未知。不要因缺少实测标定而反复阻塞这些独立的软件接入工作，也不要用软件结果解除实机门槛。
 

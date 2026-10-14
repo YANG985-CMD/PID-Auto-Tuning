@@ -122,7 +122,7 @@ int main(void) {
 '''
 
 
-def run(build, output, compiler):
+def run(build, output, compiler, duration_review=False, harness=None):
     build, output = Path(build).resolve(), Path(output).resolve()
     root = Path('E:/simulink/_codex_tmp').resolve()
     if root not in output.parents:
@@ -151,15 +151,18 @@ def run(build, output, compiler):
         host = host.replace(line, '')
     host = host.replace('GPIO_TypeDef test_gpio;', 'GPIO_TypeDef test_gpio,test_gpioa;')
     (output / 'adapter_host.c').write_text(host, encoding='utf-8')
-    (output / 'startup_test.c').write_text(HARNESS, encoding='utf-8')
+    (output / 'startup_test.c').write_text(HARNESS if harness is None else harness, encoding='utf-8')
     files = [own / name for name in ('motor_td3_can.c','motor_td3_can_control.c','motor_td3_guard.c',
              'motor_td3_speedloop_pi.c','motor_td3_speedloop_pi_bind.c','motor_td3_speedloop_can.c',
              'motor_td3_speedloop_hall.c')]
+    if duration_review: files.append(own/'motor_td3_trial_timing.c')
+    if (own/'motor_td3_startup_handover.c').exists():files.append(own/'motor_td3_startup_handover.c')
     flags = ['-std=c99','-O2','-Wall','-Wextra','-ffp-contract=off','-fno-fast-math',
              '-DMOTOR_TD3_SPEEDLOOP_PI_HOST','-DMOTOR_TD3_SPEEDLOOP_DIAGNOSTIC',
              '-DMOTOR_TD3_SPEEDLOOP_PI_CAN','-DMOTOR_TD3_SPEEDLOOP_PI_MOTION',
              '-DMOTOR_TD3_CAN_NO_TEMPERATURE',
              '-I'+str(output),'-I'+str(private/'MATLAB'),'-I'+str(private/'Core/Inc'),'-I'+str(own)]
+    if duration_review: flags.append('-DMOTOR_TD3_BASELINE_DURATION_REVIEW')
     exe = output / ('startup-test.exe' if os.name == 'nt' else 'startup-test')
     args = [compiler,*flags,*map(str,files),str(private/'MATLAB/FOC_Model.c'),
             str(private/'Core/Src/fuzzy_pid.c'),str(output/'startup_test.c'),'-lm','-o',str(exe)]

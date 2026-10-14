@@ -1,0 +1,38 @@
+{
+  "passed": true,
+  "physical_boots_reused": 42,
+  "unique_short_windows": 5686,
+  "unique_300ms_windows": 1792,
+  "actual_PI_observations": 41790,
+  "new_motor_trials": 0,
+  "new_optimizer_critic_iterations": 1800,
+  "new_Actor_updates": 900,
+  "unique_saved_candidates": 3,
+  "replay_rewards_and_bounds_unchanged": true,
+  "initial_loss_gradient_blockage_range": [
+    0.5108156129562194,
+    0.580156502286503
+  ],
+  "new_final_loss_gradient_blockage": 0,
+  "old_initial_actor_and_new_feasible_midpoint_initial_actor_differ": true,
+  "actual_generated_model_tests": 35000,
+  "model_Iq_reconstruction_error": 0,
+  "reconstructed_Iq_is_not_measured_current": true,
+  "empirical_dynamics_not_approved_for_rollouts": true,
+  "current_reward_share_validation": 0.2768214184542957,
+  "speed_reward_share_validation": 0.7231785815457042,
+  "forecast_not_real_motor_improvement": true,
+  "actual_Actor_motor_trials": 0,
+  "baseline_PI_retained": true,
+  "Ki_fixed": 0.00144,
+  "action_mask": [
+    1,
+    0
+  ],
+  "SKILL_sha256": "282a2be36249066cc909ac62028d980f2e32f3a692d7f0be6928f42d67acff4a",
+  "thermal_gate_modified": false,
+  "candidate_admission": false,
+  "deployment_allowed": false,
+  "performance_claim_allowed": false,
+  "GitHub_uploaded": false
+}

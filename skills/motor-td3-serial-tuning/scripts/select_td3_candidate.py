@@ -84,6 +84,10 @@ def select(training_path, repeated_path, output, *, quiet=False):
     for seed in seeds:
         sha = seed.get("checkpoint_sha256")
         reasons = list(global_reasons)
+        if training.get('source') == 'local-causal-real-data-td3':
+            numerical = seed.get('critic_numerical_screen', {})
+            if numerical.get('passed') is not True:
+                reasons.append('Missing or failed critic state/action sensitivity screen')
         for field in ("action_bounds_passed", "gain_bounds_passed"):
             if seed.get(field) is not True:
                 reasons.append("Candidate failed " + field)

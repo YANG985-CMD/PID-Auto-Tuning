@@ -47,3 +47,10 @@ Thumbs.db
 !examples/speedloop-v5-real-20261012/offline-study-20261012/**/*.jsonl
 !examples/speedloop-v5-real-20261012/response-window-20261012/**/*.jsonl
 
+# Explicitly published, stopped experiments and frozen experimental inputs.
+!examples/td3-real-progress-20261014/**/*.jsonl
+!examples/td3-real-progress-20261014/PI-output-input/audited-pi-output.mat
+!examples/td3-real-progress-20261014/PI-output-input/train-PI-output/*.mat
+!simulink-comparison/*.mat
+!simulink-comparison/**/*.mat
+

@@ -53,3 +53,18 @@ verifySize(testCase,result.metrics.action_mean,[1 2]);
 verifyEqual(testCase,height(result.predictions),3);
 verifyFalse(testCase,result.metrics.metrics_are_physical_performance);
 end
+
+function testFiniteReturnCalibrationNeedsSameLearningTask(testCase)
+agent=createMotorTD3(7);
+r=struct(observation=ones(10,1),next_observation=ones(10,1), ...
+    action_normalized=[0;0],reward=-.01,boot_id="test-only",telemetry_seq_start=1, ...
+    logged_bounded_return=-.03,learning_is_done=false);
+continuing=diagnoseMotorTD3Policy(agent,{r;r;r},"continuing");
+verifyFalse(testCase,continuing.metrics.finite_logged_return_calibration_performed);
+verifyFalse(testCase,isfield(continuing.metrics,'logged_behavior_return_rmse'));
+r.learning_is_done=true;
+bounded=diagnoseMotorTD3Policy(agent,{r;r;r},"bounded-trial");
+verifyTrue(testCase,bounded.metrics.finite_logged_return_calibration_performed);
+verifyTrue(testCase,isfield(bounded.metrics,'logged_behavior_return_rmse'));
+verifyFalse(testCase,bounded.metrics.metrics_are_physical_performance);
+end

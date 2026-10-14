@@ -1,0 +1,23 @@
+{
+  "passed": true,
+  "source_trainer_unchanged": true,
+  "seeds": [
+    7,
+    17,
+    27
+  ],
+  "new_saved_candidates": 3,
+  "new_double_Critic_iterations": 1800,
+  "new_Actor_updates": 900,
+  "first_nine_inputs_actions_rewards_splits_unchanged": true,
+  "same_sampling_seed_and_absolute_action_target_noise": true,
+  "only_input10_and_its_mask_and_training_normalization_changed": true,
+  "input_sha256": "907e84525b41561fc9a8e3399bdbddd0cb024dd21c0cf73dd5f3c774b8ab2508",
+  "PI_command_is_not_measured_current": true,
+  "native_agent_exported": false,
+  "hardware_accessed": false,
+  "new_physical_trials": 0,
+  "actor_applied": false,
+  "deployment_allowed": false,
+  "performance_claim_allowed": false
+}

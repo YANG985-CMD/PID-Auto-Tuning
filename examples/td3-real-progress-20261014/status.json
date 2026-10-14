@@ -1,0 +1,27 @@
+{
+  "status": "paused",
+  "paused_utc": "2026-10-14T10:14:28.182306+00:00",
+  "requested_by_user": true,
+  "baseline_PI_retained": true,
+  "Ki_fixed": 0.00144,
+  "action_mask": [
+    1,
+    0
+  ],
+  "current_firmware_id": "g431-speedloop-pi-lower31-ref-24s-v28",
+  "current_firmware_sha256": "35f22db78fbba9e3372e44705ffbe4b9a5f719f1d3bfe7b4a6b31e499bcc4c11",
+  "last_readonly_check_core_halted": true,
+  "last_readonly_check_six_outputs_off": true,
+  "last_readonly_irq_fault": 0,
+  "last_readonly_tx_fault": 0,
+  "extended_hold_batch_started": false,
+  "extended_hold_new_motor_trials": 0,
+  "actor_applied": false,
+  "candidate_admission": false,
+  "deployment_allowed": false,
+  "performance_claim_allowed": false,
+  "SKILL_sha256": "282a2be36249066cc909ac62028d980f2e32f3a692d7f0be6928f42d67acff4a",
+  "thermal_gate_modified": false,
+  "publication_hardware_accessed": false,
+  "publication_training_started": false
+}

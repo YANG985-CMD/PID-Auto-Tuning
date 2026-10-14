@@ -20,4 +20,4 @@
 
 ## 已完成结果
 
-见 [STM32G431 电流 ADC 零点报告](../../docs/stm32g431-current-zero-validation.md) 和 [机器可读摘要](../../examples/stm32g431-current-zero/summary.json)。
+见 [STM32G431 电流 ADC 零点报告](evidence/stm32g431-current-zero-validation.md) 和 [机器可读摘要](examples/stm32g431-current-zero/summary.json)。

@@ -1,0 +1,45 @@
+{
+  "passed": true,
+  "maximum_raw_integral_RMSE_difference_rpm": 1.4210854715202004e-14,
+  "compared_slots": 32,
+  "independent_physical_boots": 2,
+  "raw_primary_or_feedback_changed": false,
+  "sector_association_is_not_sensor_calibration": true,
+  "probe_sector_decomposition": {
+    "hold_raw_RMSE_rpm": 31.45149110427913,
+    "mean_error_rpm": -0.31736539938029273,
+    "sector_associated_MSE_fraction": 0.4297750603822212,
+    "within_sector_MSE_fraction": 0.5701231187785087,
+    "bias_MSE_fraction": 0.00010182083927010412,
+    "sector_means_rpm": [
+      20.18096722247652,
+      21.387850835757273,
+      -25.299202672020645,
+      12.453009580404949,
+      -2.8726108366038168,
+      -30.20397760970868
+    ],
+    "independent_speed_ground_truth": false
+  },
+  "baseline_sector_decomposition": {
+    "hold_raw_RMSE_rpm": 30.969389349161418,
+    "mean_error_rpm": 1.0553355293867877,
+    "sector_associated_MSE_fraction": 0.43552208226772726,
+    "within_sector_MSE_fraction": 0.5633166941821779,
+    "bias_MSE_fraction": 0.0011612235500949833,
+    "sector_means_rpm": [
+      21.01109597133752,
+      22.387964660362584,
+      -23.37312449279998,
+      13.43712056642474,
+      -0.047150332353573486,
+      -29.122898826592696
+    ],
+    "independent_speed_ground_truth": false
+  },
+  "hardware_accessed": false,
+  "training_performed": false,
+  "actor_applied": false,
+  "deployment_allowed": false,
+  "performance_claim_allowed": false
+}

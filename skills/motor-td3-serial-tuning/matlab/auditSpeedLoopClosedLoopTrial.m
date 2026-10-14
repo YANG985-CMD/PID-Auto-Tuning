@@ -7,7 +7,11 @@ arguments
 end
 if ~isfolder(outputDir), mkdir(outputDir); end
 run = jsondecode(fileread(fullfile(runDir,"summary.json")));
-assert(run.passed && any(string(run.firmware_id)==["g431-speedloop-pi-motion-v4","g431-speedloop-pi-motion-v5"]));
+assert(run.passed && any(string(run.firmware_id)==["g431-speedloop-pi-motion-v4","g431-speedloop-pi-motion-v5", ...
+    "g431-speedloop-pi-baseline-5s-v6","g431-speedloop-pi-response-8s-v7", ...
+    "g431-speedloop-pi-excitation-8s-v8","g431-speedloop-pi-startup-trace-5s-v9", ...
+    "g431-speedloop-pi-handover-5s-v10","g431-speedloop-pi-handover-excitation-8s-v11", ...
+    "g431-speedloop-pi-excitation-evidence-8s-v12"]));
 data = readJSONLines(fullfile(runDir,"telemetry.jsonl"));
 commands = readJSONLines(fullfile(runDir,"commands.jsonl"));
 ring = jsondecode(fileread(fullfile(runDir,"hall-edges.json")));
@@ -20,6 +24,47 @@ for name = names, T.(name) = [data.(name)]'; end
 assert(all(isfinite(T{:,:}),"all") && all(diff(T.seq)==1) && all(diff(T.t_us)>0));
 assert(all(T.fault==0) && all(arrayfun(@(r)isempty(r.temperature_c),data)));
 active = T(T.enabled==1,:);
+if any(string(run.firmware_id)==["g431-speedloop-pi-baseline-5s-v6", ...
+        "g431-speedloop-pi-startup-trace-5s-v9","g431-speedloop-pi-handover-5s-v10"])
+    assert(run.maximum_motion_seconds==5 && isfield(run,"trial_timing"));
+    assert(run.trial_timing.started==1 && run.trial_timing.run_seen==1 && run.trial_timing.fault==0);
+    assert(run.trial_timing.run_started_us>=run.trial_timing.started_us && ...
+        run.trial_timing.run_started_us-run.trial_timing.started_us<2600000);
+    assert(all(active.kp==double(single(.003389)) & active.ki==double(single(.00144))));
+    assert(all(active.elapsed_ms<5000));
+end
+if any(string(run.firmware_id)==["g431-speedloop-pi-response-8s-v7","g431-speedloop-pi-excitation-8s-v8", ...
+        "g431-speedloop-pi-handover-excitation-8s-v11","g431-speedloop-pi-excitation-evidence-8s-v12"])
+    assert(run.maximum_motion_seconds==8 && isfield(run,"trial_timing"));
+    assert(run.trial_timing.started==1 && run.trial_timing.run_seen==1 && run.trial_timing.fault==0);
+    assert(run.trial_timing.run_started_us>=run.trial_timing.started_us && ...
+        run.trial_timing.run_started_us-run.trial_timing.started_us<2600000);
+    assert(all(active.ki==double(single(.00144))) && all(active.elapsed_ms<8000));
+    assert(all(active.kp==double(single(.003389)) | active.kp==double(single(.00352456))));
+    probeRows=active(active.kp==double(single(.00352456)),:);
+    if string(run.gain_mode)=="baseline", assert(isempty(probeRows)); end
+    if ~isempty(probeRows)
+        appliedElapsed=(probeRows.t_apply_us-run.trial_timing.started_us)/1000;
+        if any(string(run.firmware_id)==["g431-speedloop-pi-excitation-8s-v8","g431-speedloop-pi-handover-excitation-8s-v11", ...
+                "g431-speedloop-pi-excitation-evidence-8s-v12"])
+            assert(all(appliedElapsed>=3800 & appliedElapsed<7100));
+        else
+            assert(all(appliedElapsed>=5000 & appliedElapsed<6100));
+        end
+        assert(all(probeRows.t_apply_us>=run.trial_timing.run_started_us));
+    end
+end
+if any(string(run.firmware_id)==["g431-speedloop-pi-excitation-8s-v8","g431-speedloop-pi-handover-excitation-8s-v11", ...
+        "g431-speedloop-pi-excitation-evidence-8s-v12"])
+    assert(isequal(run.reference_schedule_ms_rpm,[0 1000;4000 1100;5200 900;6400 1000]));
+    assert(all(ismember(active.speed_ref,[900 1000 1100])));
+    starts=[0 4000 5200 6400]; refs=[1000 1100 900 1000];
+    for q=1:4
+        last=8000;if q<4,last=starts(q+1);end
+        inside=active.elapsed_ms>starts(q)+2 & active.elapsed_ms<last-2;
+        assert(any(inside) && all(active.speed_ref(inside)==refs(q)),"Actual reference sequence mismatch");
+    end
+end
 assert(all(abs(active.speed)<1800) && all(active.current<2) && ...
     all(active.vbus>=18 & active.vbus<=30));
 stopped = T(T.seq>active.seq(end) & T.enabled==0,:);
@@ -164,8 +209,9 @@ writeJSON(fullfile(outputDir,"analysis.json"),report);
 fig = figure(Name="SpeedLoop real motor audit",Color="w",Visible="off");
 layout = tiledlayout(fig,4,1,TileSpacing="compact");
 nexttile(layout); plot(active.elapsed_ms/1000,active.speed,LineWidth=1.2);
-yline(1000,"--");yline(1800,":");xline(2.2,":");ylabel("Hall rpm");grid on;
-title("Real motor: actual startup and gain schedule, 1000 rpm target");
+hold on;stairs(active.elapsed_ms/1000,active.speed_ref,"--");hold off;
+yline(1800,":");xline(2.2,":");ylabel("Hall rpm");grid on;
+title("Real motor: actual speed and reference, retained startup and gain schedule");
 nexttile(layout);stairs(active.elapsed_ms/1000,active.kp/.003389,LineWidth=1.2);
 ylabel("Kp / baseline");grid on;
 nexttile(layout);plot(active.elapsed_ms/1000,active.current,LineWidth=1.2);

@@ -1,0 +1,30 @@
+{
+  "passed": false,
+  "audit_completed": true,
+  "old_v7_training_compatible": false,
+  "old_scale": 0.00054224,
+  "new_lowest_gain": 0.0023282431066036224,
+  "old_lowest_gain": 0.002856926992535591,
+  "new_lowest_in_old_normalized_coordinates": -1.9562497320613805,
+  "old_actor_lower_coordinate_limit": -1,
+  "new_low_targets": [
+    0.0023282431066036224,
+    0.0024604140780866146,
+    0.0025925850495696068,
+    0.002724756021052599
+  ],
+  "current_independent_training_boots_with_new_low_targets": 1,
+  "required_training_boots_per_action_group": 2,
+  "raw_provisional_windows": 291,
+  "new_training_rows_admitted": 0,
+  "clipping_new_actions_into_old_mapping_forbidden": true,
+  "training_performed": false,
+  "Ki_fixed": 0.00144,
+  "action_mask": [
+    1,
+    0
+  ],
+  "candidate_admission": false,
+  "deployment_allowed": false,
+  "performance_claim_allowed": false
+}

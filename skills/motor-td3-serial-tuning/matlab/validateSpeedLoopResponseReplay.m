@@ -10,10 +10,39 @@ assert(string(summary.dataset_sha256)==motorFileSHA256(file),'MotorTD3:Hash','Da
 items=splitlines(strtrim(fileread(file)));
 rows=cellfun(@jsondecode,cellstr(items),UniformOutput=false);
 assert(numel(rows)==summary.response_windows);
+historyAudit=struct;
+if isfield(summary,'history_depth_packets')
+    historyAudit=validateMotorHistoryReplay(rows,summary);
+end
 seenCommands=strings(0,1); seenResponses=strings(0,1);
 for k=1:numel(rows)
     r=rows{k};
-    assert(string(r.source)=="real_motor" && string(r.firmware_id)=="g431-speedloop-pi-motion-v5");
+    assert(string(r.source)=="real_motor" && any(string(r.firmware_id)== ...
+        ["g431-speedloop-pi-motion-v5","g431-speedloop-pi-response-8s-v7", ...
+         "g431-speedloop-pi-handover-excitation-8s-v11","g431-speedloop-pi-excitation-evidence-8s-v12"]));
+    if string(r.firmware_id)~="g431-speedloop-pi-motion-v5"
+        assert(r.state(9)==double(single(.00144)) && r.next_state(9)==double(single(.00144)) && ...
+            r.action_applied(2)==double(single(.00144)) && r.action_normalized(2)==0);
+        assert(r.state(10)>=3900 && r.next_state(10)<8000);
+    end
+    if any(string(r.firmware_id)==["g431-speedloop-pi-handover-excitation-8s-v11", ...
+            "g431-speedloop-pi-excitation-evidence-8s-v12"])
+        assert(string(summary.environment_control_family)=="v10-handover-v8-excitation");
+        assert(string(r.environment_control_family)==string(summary.environment_control_family));
+        assert(isequal(summary.reference_schedule_ms_rpm,[0 1000;4000 1100;5200 900;6400 1000]));
+        assert(numel(r.reference_response_schedule)==r.response_sample_count);
+        refs=r.reference_response_schedule;
+        assert(isequal([refs.telemetry_seq]',r.response_telemetry_seqs(:)));
+        for q=1:numel(refs)
+            t=refs(q).elapsed_ms;
+            expected=1000;
+            if t>=4000 && t<5200,expected=1100;
+            elseif t>=5200 && t<6400,expected=900;end
+            nearBoundary=any(abs(t-[4000 5200 6400])<=2);
+            assert(ismember(refs(q).speed_ref,[900 1000 1100]) && ...
+                (refs(q).speed_ref==expected || nearBoundary));
+        end
+    end
     assert(r.stage_confirmed_from_raw_edges && ~r.learner_eligible && ~r.deployment_allowed);
     assert(r.response_sample_count>=summary.minimum_response_samples);
     assert(numel(r.response_telemetry_seqs)==r.response_sample_count);
@@ -53,7 +82,7 @@ actions=cell2mat(cellfun(@(r)r.action_normalized(:),train,UniformOutput=false)')
 coverage=struct(positive=sum(actions>1e-7,2)',negative=sum(actions<-1e-7,2)',zero=sum(abs(actions)<=1e-7,2)');
 coverageReady=actionMask(2)==0 || (coverage.positive(2)>0 && coverage.negative(2)>0);
 ready=numel(train)>=128 && ~isempty(validation) && coverageReady;
-result=struct(rows={rows},train={train},validation={validation},summary=summary, ...
+result=struct(rows={rows},train={train},validation={validation},summary=summary,history_audit=historyAudit, ...
     training_ready=ready,training_action_coverage=coverage, ...
     remaining_training_windows=max(0,128-numel(train)),deployment_allowed=false);
 end

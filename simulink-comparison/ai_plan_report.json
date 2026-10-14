@@ -1,0 +1,19 @@
+{
+  "source": "Codex-managed deterministic offline Simulink parameter search",
+  "online_chat_decisions_simulated": false,
+  "search_scenario": "Independent 2.5s tuning scenario",
+  "comparison_scenario_used_for_search": false,
+  "objective": "Full tuning-scenario speed RMSE",
+  "candidate_count": 9,
+  "selected": {
+    "Kp": 0.0031178800000000004,
+    "Ki": 0.001296,
+    "rmse_rpm": 597.98912041787378,
+    "peak_phase_current_A": 1.0821425216448683,
+    "saturation_fraction": 0.076799999999999979
+  },
+  "approved_for": "Simulation plan replay only",
+  "hardware_accessed": false,
+  "deployment_allowed": false,
+  "performance_claim_allowed": false
+}
